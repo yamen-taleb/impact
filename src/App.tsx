@@ -3,12 +3,14 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+import {Progress} from "./components/ui/progress.tsx";
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
       <>
+        <Progress value={58} className={'my-4'}/>
         <h1 className="text-3xl font-bold underline text-red-600">
           Hello world!
         </h1>
