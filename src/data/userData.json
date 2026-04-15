@@ -1,0 +1,34 @@
+{
+  "personalInfo": {
+    "firstName": "IAMEN",
+    "lastName": "TALEB",
+    "email": "yamen@example.com",
+    "phone": "0999 999 999",
+    "profilePicture": null,
+    "avatar": "https://i.pravatar.cc/300",
+    "cvUrl": "https://i.pravatar.cc/300"
+  },
+  "additionalInfo": {
+    "address": "IAMEN, ALEPPO",
+    "governorate": "halab",
+    "governorateDisplay": "IAMEN, ALEPPO",
+    "birthDate": "2000-01-01",
+    "birthDateDisplay": "1/1/2000",
+    "education": "Civil Engineer",
+    "work": "",
+    "about": "Write a description about yourself",
+    "cvUploaded": false
+  },
+  "ui": {
+    "breadcrumb": ["IAMEN", "Personal Data"],
+    "pageTitle": "Personal Data",
+    "sectionTitle": "Personal Profile",
+    "editButton": "Edit",
+    "changePicture": "Change Picture",
+    "changePassword": "Change Password",
+    "uploadCV": "Upload CV",
+    "additionalInfoTitle": "Additional Information",
+    "additionalInfoDescription": "This data helps complete the profile and participate in platform activities.",
+    "formDescription": "Please enter personal data and participate in platform activities. All fields here are displayed statically for review only."
+  }
+}

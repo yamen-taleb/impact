@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {BrowserRouter, Route, Routes} from "react-router";
+import Profile from "./pages/Profile.tsx";
 
 const queryClient = new QueryClient()
 
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')!).render(
               <Routes>
                   <Route path="/" element={<App />} />
                   <Route path="/test" element={<div>test</div>} />
+                    <Route path="/profile" element={<Profile />} />
               </Routes>
           </QueryClientProvider>
       </BrowserRouter>
