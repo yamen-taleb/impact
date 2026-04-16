@@ -1,4 +1,5 @@
 import MainPersonalInformationForm from "../../forms/user/MainPersonalInformationForm.tsx";
+import SecondaryPersonalInformationForm from "../../forms/user/SecondaryPersonalInformationForm.tsx";
 
 const PersonalInfoSection = () => {
   return (
@@ -24,6 +25,7 @@ const PersonalInfoSection = () => {
 
               <div className="border-t border-slate-201"/>
 
+              <SecondaryPersonalInformationForm/>
 
           </div>
       </section>

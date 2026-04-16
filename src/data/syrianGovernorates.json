@@ -1,0 +1,72 @@
+[
+  {
+    "arabic": "دمشق",
+    "english": "DAMASCUS",
+    "value": "DAMASCUS"
+  },
+  {
+    "arabic": "ريف دمشق",
+    "english": "REEF_DAM",
+    "value": "REEF_DAM"
+  },
+  {
+    "arabic": "حلب",
+    "english": "ALEPPO",
+    "value": "ALEPPO"
+  },
+  {
+    "arabic": "حمص",
+    "english": "HOMS",
+    "value": "HOMS"
+  },
+  {
+    "arabic": "حماة",
+    "english": "HAMAH",
+    "value": "HAMAH"
+  },
+  {
+    "arabic": "إدلب",
+    "english": "IDLIB",
+    "value": "IDLIB"
+  },
+  {
+    "arabic": "القنيطرة",
+    "english": "QUNAITRA",
+    "value": "QUNAITRA"
+  },
+  {
+    "arabic": "درعا",
+    "english": "DARAA",
+    "value": "DARAA"
+  },
+  {
+    "arabic": "السويداء",
+    "english": "SUWAIDA",
+    "value": "SUWAIDA"
+  },
+  {
+    "arabic": "طرطوس",
+    "english": "TARTUS",
+    "value": "TARTUS"
+  },
+  {
+    "arabic": "اللاذقية",
+    "english": "LATAKIA",
+    "value": "LATAKIA"
+  },
+  {
+    "arabic": "الرقة",
+    "english": "RAQQA",
+    "value": "RAQQA"
+  },
+  {
+    "arabic": "دير الزور",
+    "english": "DEER",
+    "value": "DEER"
+  },
+  {
+    "arabic": "الحسكة",
+    "english": "HASAKA",
+    "value": "HASAKA"
+  }
+]

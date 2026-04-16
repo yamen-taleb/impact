@@ -10,13 +10,13 @@
   },
   "additionalInfo": {
     "address": "IAMEN, ALEPPO",
-    "governorate": "halab",
+    "governorate": "HOMS",
     "governorateDisplay": "IAMEN, ALEPPO",
     "birthDate": "2000-01-01",
     "birthDateDisplay": "1/1/2000",
     "education": "Civil Engineer",
     "work": "",
-    "about": "Write a description about yourself",
+    "about": "قم بكتابة وصف عنك",
     "cvUploaded": false
   },
   "ui": {
