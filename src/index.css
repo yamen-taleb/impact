@@ -16,6 +16,11 @@
   scroll-behavior: smooth;
 }
 
+@layer components {
+  .fieldClasses {
+    @apply w-full border-0 border-b border-slate-300 bg-transparent px-0 pb-3 pt-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-0;
+  }
+}
 
 @layer base {
   .theme {
