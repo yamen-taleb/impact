@@ -50,12 +50,12 @@ const DatePickerField = ({
                     <PopoverTrigger asChild>
                         <Button
                             type="button"
-                            variant="outline"
+                            variant="ghost"
                             disabled={disabled}
                             className={cn(
-                                "h-10 w-full justify-between rounded-md border border-slate-300 bg-white px-3 text-right font-normal hover:bg-slate-50",
+                                "h-10 w-full justify-between rounded-md border-0 bg-transparent px-3 text-right font-normal shadow-none outline-none hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
                                 !selectedDate && "text-slate-500",
-                                open && "border-primary ring-2 ring-primary/15",
+                                open && "border-0 ring-0 shadow-none",
                                 disabled && "cursor-not-allowed",
                                 className
                             )}
@@ -64,7 +64,7 @@ const DatePickerField = ({
                             <CalendarIcon className="h-4 w-4 text-slate-500" />
                         </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="z-50 w-[240px] min-w-[240px] rounded-xl border border-slate-200 bg-white p-2 shadow-xl" align="start">
+                    <PopoverContent className="ring-0 z-50 w-[240px] min-w-[240px] rounded-xl border border-slate-200 bg-white p-2 shadow-xl" align="start">
                         <Calendar
                             dir="rtl"
                             mode="single"

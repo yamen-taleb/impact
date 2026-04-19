@@ -30,7 +30,7 @@ const SelectField = ({field, options, placeholder, label, className, disabled = 
                     >
                         <SelectValue placeholder={placeholder || "اختر محافظة"} />
                     </SelectTrigger>
-                    <SelectContent className="z-50 bg-white border border-gray-200  shadow-lg">
+                    <SelectContent className="ring-0 z-50 bg-white border border-gray-200  shadow-lg">
                         <SelectGroup>
                             {options.map((item) => (
                                 <SelectItem key={item.value} value={item.value}>
