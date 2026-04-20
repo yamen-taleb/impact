@@ -6,14 +6,15 @@ import SelectField from "../../components/SelectField.tsx";
 import TextField from "../../components/TextField.tsx";
 import DatePickerField from "../../components/DatePickerField.tsx";
 import TextAreaField from "../../components/TextAreaField.tsx";
+import {useMemo} from "react";
 
 const SecondaryPersonalInformationForm = () => {
     const user = userData;
     const governorates = syrianGovernorates;
-    const SelectOption: {value: string; label: string}[] = governorates.map((governorate) => ({
+    const SelectOption: {value: string; label: string}[] = useMemo(() => governorates.map((governorate) => ({
         value: governorate.value,
         label: governorate.arabic,
-    }));
+    })), [governorates]);
 
     const form = useForm({
         defaultValues: {

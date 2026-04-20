@@ -7,22 +7,26 @@ interface Props {
     placeholder?: string,
     label?: string,
     className?: string,
-    disabled?: boolean
+    disabled?: boolean,
+    onAfterChange?: (value: string) => void
 }
 
-const SelectField = ({field, options, placeholder, label, className, disabled = false}: Props) => {
+const SelectField = ({field, options, placeholder, label, className, disabled = false, onAfterChange}: Props) => {
     const {errors, isTouched} = field.state.meta;
     return (
         <div className="flex flex-col gap-2">
             <label>
-                <span className="mb-4 block text-sm font-semibold text-slate-700">
+                {label && <span className="mb-4 block text-sm font-semibold text-slate-700">
                     {label}
-                </span>
+                </span>}
                 <Select
                     dir="rtl"
                     name={field.name}
                     value={field.state.value as string}
-                    onValueChange={(value) => field.handleChange(value)}
+                    onValueChange={(value) => {
+                        field.handleChange(value);
+                        onAfterChange?.(value);
+                    }}
                     disabled={disabled}
                 >
                     <SelectTrigger
