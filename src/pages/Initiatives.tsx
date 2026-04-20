@@ -2,10 +2,14 @@ import InitiativeHeader from "../components/initiative/InitiativeHeader";
 import InitiativeCard from "../components/initiative/InitiativeCard.tsx";
 import { initiativesSchema } from "../schemas/initiativePageSchema.ts";
 import initiativesData from "../data/initiatives.json";
+import {useState} from "react";
+import PaginationLinks from "../components/initiative/PaginationLinks.tsx";
 
 const Initiatives = () => {
     const initiatives = initiativesSchema.parse(initiativesData);
     const isLoading = false;
+    const [page, setPage] = useState(0);
+    const totalPages = 6;
 
 
     return (
@@ -26,6 +30,7 @@ const Initiatives = () => {
                     لا يوجد مبادرات حتى الآن...
                 </p>
             )}
+            <PaginationLinks page={page} setPage={setPage} totalPages={totalPages} />
         </div>
     );
 };
