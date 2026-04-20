@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "photo": "/images/problem-1.jpg",
+    "submissionDate": "2026-04-20T10:30:00.000Z",
+    "title": "تأهيل غرفة دراسة للطلاب",
+    "status": "PENDING_APPROVAL",
+    "description": "الحاجة إلى تجهيز غرفة دراسة داخل الكلية مع طاولات وكراسي وإنارة مناسبة.",
+    "college": "كلية الهندسة المعلوماتية",
+    "category": "تعليم",
+    "address": "دمشق - المزة - كلية الهندسة المعلوماتية",
+    "percentage": 45
+  },
+  {
+    "id": "2",
+    "photo": "",
+    "submissionDate": "2026-04-18T14:00:00.000Z",
+    "title": "دعم مختبر الحاسوب",
+    "status": "APPROVED",
+    "description": "توفير أجهزة حاسوب إضافية لدعم المختبر في أوقات الذروة.",
+    "college": "كلية العلوم",
+    "category": "تقنية",
+    "address": "حمص - شارع الجامعة - كلية العلوم",
+    "percentage": 72
+  },
+  {
+    "id": "3",
+    "photo": "/images/problem-3.jpg",
+    "submissionDate": "2026-04-10T08:15:00.000Z",
+    "title": "تحسين مدخل الكلية",
+    "status": "PENDING_FUNDING",
+    "description": "إعادة تأهيل مدخل الكلية وتوفير مسار مناسب للطلاب.",
+    "college": "كلية الآداب",
+    "category": "بنية تحتية",
+    "address": "حلب - المدينة الجامعية - كلية الآداب",
+    "percentage": 25
+  }
+]
