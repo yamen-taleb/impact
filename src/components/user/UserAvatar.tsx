@@ -6,16 +6,23 @@ interface Props {
     url?: string
     width: string,
     height: string
+    letterSize?: string
 }
 
-const UserAvatar = ({url, width, height}: Props) => {
+const UserAvatar = ({url, width, height, letterSize = "text-3xl"}: Props) => {
     const currentUser = userData.personalInfo
 
     return (
         <Avatar className={cn(width, height, "rounded-none")}>
             <AvatarImage src={url} className="w-full object-cover object-center"/>
             <AvatarFallback
-                className="flex items-center justify-center rounded-2xl bg-slate-200 text-3xl font-semibold text-slate-500">{currentUser?.firstName.split("")[0]}</AvatarFallback>
+                className={cn(
+                    "flex items-center justify-center rounded-2xl bg-slate-200 font-semibold text-slate-500",
+                    letterSize
+                )}
+            >
+                {currentUser?.firstName?.charAt(0)?.toUpperCase() ?? "?"}
+            </AvatarFallback>
         </Avatar>
     );
 };
