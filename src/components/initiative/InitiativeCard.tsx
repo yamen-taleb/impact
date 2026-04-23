@@ -5,36 +5,15 @@ import userData from "../../data/userData.json";
 import {Link} from "react-router";
 import { buildStyles, CircularProgressbarWithChildren } from "react-circular-progressbar";
 import type {Initiative} from "../../schemas/initiativePageSchema.ts";
+import {getInitiativeStatus} from "../../lib/initiativeStatus.ts";
 
 interface Props {
     initiative: Initiative;
 }
 
-const statusConfig = {
-    RESOLVED: {
-        label: "تم الحل",
-        className: "bg-green-100 text-green-700 border-green-200",
-    },
-    REJECTED: {
-        label: "مرفوضة",
-        className: "bg-red-100 text-red-700 border-red-200",
-    },
-    APPROVED: {
-        label: "جاري حل المبادرة",
-        className: "bg-slate-100 text-slate-700 border-slate-200",
-    },
-    PENDING_APPROVAL: {
-        label: "بانتظار الموافقة",
-        className: "bg-amber-100 text-amber-700 border-amber-200",
-    },
-};
-
 const InitiativeCard = ({initiative}: Props) => {
     const user = userData.personalInfo;
-    const status = statusConfig[initiative.status as keyof typeof statusConfig] ?? {
-        label: "جاري حل المبادرة",
-        className: "bg-slate-100 text-slate-700 border-slate-200",
-    };
+    const status = getInitiativeStatus(initiative.status);
 
   return (
       <Card className="w-full h-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg !py-0 !gap-0">

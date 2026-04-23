@@ -1,0 +1,15 @@
+{
+  "id": "1",
+  "photos": ["https://i.pravatar.cc/400", "https://i.pravatar.cc/300", "https://i.pravatar.cc/300", "https://i.pravatar.cc/500", "https://i.pravatar.cc/800"],
+  "submissionDate": "2026-04-20T10:30:00.000Z",
+  "title": "تأهيل غرفة دراسة للطلاب",
+  "status": "PENDING_APPROVAL",
+  "description": "الحاجة إلى تجهيز غرفة دراسة داخل الكلية مع طاولات وكراسي وإنارة مناسبة.",
+  "college": "كلية الهندسة المعلوماتية",
+  "category": "تعليم",
+  "address": "دمشق - المزة - كلية الهندسة المعلوماتية",
+  "estimatedTimeToComplete": "3 أشهر",
+  "startDate": "2026-05-01",
+  "endDate": "2026-08-31",
+  "percentage": 45
+}

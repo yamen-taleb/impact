@@ -7,6 +7,7 @@ import {BrowserRouter, Route, Routes} from "react-router";
 import Profile from "./pages/Profile.tsx";
 import Initiatives from "./pages/Initiatives.tsx";
 import AuthenticatedLayout from "./layouts/AuthenticatedLayout.tsx";
+import InitiativeDetails from "./pages/InitiativeDetails.tsx";
 
 const queryClient = new QueryClient()
 
@@ -17,7 +18,10 @@ createRoot(document.getElementById('root')!).render(
               <Routes>
                   <Route path="/" element={<App />} />
                   <Route element={<AuthenticatedLayout />}>
-                      <Route path="/initiatives" element={<Initiatives />} />
+                      <Route path="/initiatives">
+                          <Route index element={<Initiatives />} />
+                          <Route path=":initiativeId" element={<InitiativeDetails />} />
+                      </Route>
                       <Route path="/profile" element={<Profile />} />
                       <Route path="*" element={<Initiatives />} />
                   </Route>

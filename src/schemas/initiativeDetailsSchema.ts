@@ -3,13 +3,14 @@ import { z } from "zod";
 export const initiativeStatusEnum = z.enum([
     "PENDING_APPROVAL",
     "APPROVED",
+    "PENDING_FUNDING",
     "RESOLVED",
     "REJECTED",
 ]);
 
-export const initiativePageSchema = z.object({
+export const initiativeDetailsSchema = z.object({
     id: z.union([z.string(), z.number()]),
-    photo: z.string(),
+    photos: z.array(z.string()),
     submissionDate: z
         .string(),
     title: z
@@ -21,11 +22,11 @@ export const initiativePageSchema = z.object({
     category: z.string(),
     address: z
         .string(),
+    estimatedTimeToComplete: z.string(),
+    startDate: z.string(),
+    endDate: z.string(),
     percentage: z
         .number(),
 });
 
-export const initiativesSchema = z.array(initiativePageSchema);
-
-export type Initiative = z.infer<typeof initiativePageSchema>;
-export type Initiatives = z.infer<typeof initiativesSchema>;
+export type InitiativeDetails = z.infer<typeof initiativeDetailsSchema>;
