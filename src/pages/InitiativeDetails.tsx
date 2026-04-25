@@ -6,6 +6,7 @@ import InitiativeDetailsMetaGrid from "../components/initiative/details/Initiati
 import InitiativeDetailsDescription from "../components/initiative/details/InitiativeDetailsDescription.tsx";
 import InitiativeDetailsProgress from "../components/initiative/details/InitiativeDetailsProgress.tsx";
 import InitiativeDetailsActions from "../components/initiative/details/InitiativeDetailsActions.tsx";
+import Volunteer from "../components/initiative/volunteerManagement/Volunteer.tsx";
 
 const InitiativeDetails = () => {
 	const parsed = initiativeDetailsSchema.safeParse(initiativeDetails);
@@ -31,12 +32,15 @@ const InitiativeDetails = () => {
                 />
             </div>
 
-                <div className="grid gap-6 md:grid-cols-3">
-                    <InitiativeDetailsDescription description={initiative.description}/>
-                    <InitiativeDetailsProgress percentage={initiative.percentage}/>
-                </div>
+            <div className="grid gap-6 md:grid-cols-3">
+                <InitiativeDetailsDescription description={initiative.description}/>
+                <InitiativeDetailsProgress percentage={initiative.percentage}/>
+            </div>      
 
-                <InitiativeDetailsActions/>
+            <InitiativeDetailsActions/>
+
+            <Volunteer />
+
         </section>
 );
 };
