@@ -1,14 +1,13 @@
 import {Link} from "react-router";
+import AtharLogo2 from "../assets/Logo/AtharLogo2";
 
 const AppTittle = () => {
   return (
       <Link
           to="/"
-          className="flex items-center gap-2 transition hover:opacity-80"
+          className="w-[10%] flex items-center gap-2 transition hover:opacity-80"
       >
-          <span className="bg-gradient-to-r from-zinc-900 to-zinc-700 bg-clip-text text-3xl font-black text-transparent">
-                أثر
-          </span>
+          <AtharLogo2 className={"w-full"} />
       </Link>
   );
 };
