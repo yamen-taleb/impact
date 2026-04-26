@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import type { Volunteer } from '../../../schemas/volunteerSectionSchema';
+import { AttendanceCalendar } from './AttendanceCalendar';
 
 interface Props {
     volunteer: Volunteer;
@@ -62,13 +63,22 @@ const UserCard = ({volunteer}: Props) => {
           <div className="card-description">
             {volunteer.motivationLetter}
           </div>
+
+          <AttendanceCalendar />
+
           <div className="card-actions" dir='ltr'>
             <div className="price">
               {/* <span className="price-currency">$</span>899 */}
-              <span className="price-period"><h1 className='text-green-500'>{volunteer.status}</h1></span>
+              {/* <span className="price-period"><h1 className='text-green-500'>{volunteer.status}</h1></span> */}
             </div>
-            <button className="card-button">المزيد من التفاصيل</button>
+
+              <button className="card-button">المزيد من التفاصيل</button>
+              <div className="stamp">
+                <span className="text-green-500">{volunteer.status}</span>
+              </div>
+
           </div>
+
         </div>
         <div className="dots-pattern">
           <svg viewBox="0 0 80 40">
@@ -87,9 +97,6 @@ const UserCard = ({volunteer}: Props) => {
         </div>
         <div className="accent-shape" />
         <div className="corner-slice" />
-        <div className="stamp">
-          <span className="stamp-text">Approved</span>
-        </div>
       </div>
     </StyledWrapper>
   );
@@ -108,7 +115,7 @@ const StyledWrapper = styled.div`
     --pattern-color: #cfcfcf;
 
     position: relative;
-    width: 22em;
+    width: 25em;
     background: var(--bg);
     border: 0.35em solid var(--text);
     border-radius: 0.6em;
@@ -452,8 +459,7 @@ const StyledWrapper = styled.div`
 
   .stamp {
     position: absolute;
-    bottom: 1.5em;
-    left: 1.5em;
+    left: 3em;
     width: 4em;
     height: 4em;
     display: flex;
@@ -462,16 +468,9 @@ const StyledWrapper = styled.div`
     border: 0.15em solid rgba(0, 0, 0, 0.3);
     border-radius: 50%;
     transform: rotate(-15deg);
-    opacity: 0.2;
     z-index: 1;
   }
 
-  .stamp-text {
-    font-size: 0.6em;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
 
   .corner-slice {
     position: absolute;

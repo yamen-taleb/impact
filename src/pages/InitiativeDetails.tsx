@@ -18,7 +18,7 @@ const InitiativeDetails = () => {
 	const initiative = parsed.data;
 
 	return (
-        <section className="mx-auto max-w-5xl space-y-6">
+        <section className="mx-auto max-w-6xl space-y-6">
 
             <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
                 <InitiativeDetailsHero initiative={initiative}/>
