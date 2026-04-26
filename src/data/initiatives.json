@@ -1,7 +1,7 @@
 [
   {
     "id": "1",
-    "photo": "/images/problem-1.jpg",
+    "photo": "https://picsum.photos/401",
     "submissionDate": "2026-04-20T10:30:00.000Z",
     "title": "تأهيل غرفة دراسة للطلاب",
     "status": "PENDING_APPROVAL",
@@ -13,7 +13,7 @@
   },
   {
     "id": "2",
-    "photo": "",
+    "photo": "https://picsum.photos/402",
     "submissionDate": "2026-04-18T14:00:00.000Z",
     "title": "دعم مختبر الحاسوب",
     "status": "APPROVED",
@@ -25,7 +25,7 @@
   },
   {
     "id": "3",
-    "photo": "/images/problem-3.jpg",
+    "photo": "https://picsum.photos/403",
     "submissionDate": "2026-04-10T08:15:00.000Z",
     "title": "تحسين مدخل الكلية",
     "status": "REJECTED",
@@ -37,7 +37,7 @@
   },
   {
     "id": "1",
-    "photo": "/images/problem-1.jpg",
+    "photo": "https://picsum.photos/404",
     "submissionDate": "2026-04-20T10:30:00.000Z",
     "title": "تأهيل غرفة دراسة للطلاب",
     "status": "PENDING_APPROVAL",
@@ -49,7 +49,7 @@
   },
   {
     "id": "2",
-    "photo": "",
+    "photo": "https://picsum.photos/405",
     "submissionDate": "2026-04-18T14:00:00.000Z",
     "title": "دعم مختبر الحاسوب",
     "status": "APPROVED",
@@ -61,7 +61,7 @@
   },
   {
     "id": "3",
-    "photo": "/images/problem-3.jpg",
+    "photo": "https://picsum.photos/406",
     "submissionDate": "2026-04-10T08:15:00.000Z",
     "title": "تحسين مدخل الكلية",
     "status": "REJECTED",
