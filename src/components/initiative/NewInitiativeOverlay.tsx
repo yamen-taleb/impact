@@ -13,7 +13,7 @@ const NewInitiativeOverlay = () => {
           open={open}
           onOpenChange={setOpen}
           trigger={
-            <Button className="flex items-center gap-2 rounded-xl bg-black px-4 text-sm text-white hover:bg-gray-900 focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-0">
+            <Button className="flex items-center gap-2 rounded-lg bg-black px-4 text-sm text-white focus-visible:border-transparent focus-visible:outline-none focus-visible:ring-0 hover:bg-zinc-800">
               <Plus className="size-4" />
               <span>مبادرة جديدة</span>
             </Button>

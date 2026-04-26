@@ -1,4 +1,4 @@
-import {ArrowRight} from "lucide-react";
+import {ArrowRight, UserPlusIcon} from "lucide-react";
 import {Link} from "react-router";
 
 interface Props {
@@ -6,6 +6,9 @@ interface Props {
 }
 
 const InitiativeDetailsActions = ({backHref = "/initiatives"}: Props) => {
+
+    let role = "User";
+
     return (
         <div className="flex flex-wrap items-center gap-3">
             <Link
@@ -15,12 +18,15 @@ const InitiativeDetailsActions = ({backHref = "/initiatives"}: Props) => {
                 <ArrowRight size={16} />
                 العودة للمبادرات
             </Link>
-            <button
-                type="button"
-                className="inline-flex items-center rounded-xl bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
-            >
-                المشاركة في المبادرة
-            </button>
+            {(role === "User") && (
+                <button
+                    type="button"
+                    className="inline-flex gap-2 items-center rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
+                >
+                    التطوع في المبادرة
+                    <UserPlusIcon />
+                </button>
+            )}
         </div>
     );
 };
