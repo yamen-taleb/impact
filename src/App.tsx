@@ -9,7 +9,7 @@ const App = () => {
       <div className='w-screen h-screen'>
         <div className='w-full h-full flex flex-col items-center justify-center gap-10'>
           <h1 className='text-[100px] font-bold'><AtharLogo2 className='w-full' /></h1>
-          <p className='text-[20px]'>منصّة «أثر»… حيث تتحوّل أفكار طلاب جامعة حلب إلى مبادرات نابضة بالحياة، ويُكتب الأثر بالفعل التطوعي.</p>
+          <p className='text-[20px]'>منصّة «أثَر»… حيث تتحوّل أفكار طلاب جامعة حلب إلى مبادرات نابضة بالحياة، ويُكتب الأثَر بالفعل التطوعي.</p>
           <Button
             className='w-[20%] h-[50px] bg-black text-white'
             onClick={() => {window.location.href = '/initiatives'}}

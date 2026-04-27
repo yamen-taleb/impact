@@ -15,12 +15,13 @@ import {
   AccordionTrigger,
 } from "../../../components/ui/accordion"
 
+import userData from "../../../data/userData.json";
 
 
 const Volnteer = () => {
 
   // Change This Role between Admin and User
-  let role = "Admin";
+  const userRole = userData.additionalInfo.role;
 
   return (
       <div>
@@ -48,7 +49,7 @@ const Volnteer = () => {
         </div>
 
 
-        {(role === "Admin" || role === "SuperAdmin") && (
+        {(userRole === "Admin" || userRole === "SuperAdmin") && (
           <Accordion
             type="single"
             collapsible

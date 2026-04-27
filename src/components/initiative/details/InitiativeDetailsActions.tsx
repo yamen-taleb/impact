@@ -1,13 +1,15 @@
 import {ArrowRight, UserPlusIcon} from "lucide-react";
 import {Link} from "react-router";
 
+import userData from "../../../data/userData.json";
+
 interface Props {
     backHref?: string;
 }
 
 const InitiativeDetailsActions = ({backHref = "/initiatives"}: Props) => {
 
-    let role = "User";
+    const userRole = userData.additionalInfo.role;
 
     return (
         <div className="flex flex-wrap items-center gap-3">
@@ -18,7 +20,7 @@ const InitiativeDetailsActions = ({backHref = "/initiatives"}: Props) => {
                 <ArrowRight size={16} />
                 العودة للمبادرات
             </Link>
-            {(role === "User") && (
+            {(userRole === "User") && (
                 <button
                     type="button"
                     className="inline-flex gap-2 items-center rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"

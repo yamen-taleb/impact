@@ -25,7 +25,7 @@
     "college": "كلية الهندسة المعلوماتية",
     "academicYear": "5",
     "motivationLetter": "أعتقد أنني مناسب لهذه المهمة بسبب مهاراتي التطوعية العالية",
-    "status": "PENDING_APPROVAL"
+    "status": "REVIEWED"
   },
   {
     "id": "3",
@@ -53,7 +53,7 @@
     "college": "كلية الهندسة الكهربائية",
     "academicYear": "4",
     "motivationLetter": "أعتقد أنني مناسب لهذه المهمة بسبب مهاراتي التطوعية العالية",
-    "status": "PENDING_APPROVAL"
+    "status": "REVIEWED"
   },
   {
     "id": "5",

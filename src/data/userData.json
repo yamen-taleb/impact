@@ -17,7 +17,8 @@
     "education": "Civil Engineer",
     "work": "",
     "about": "قم بكتابة وصف عنك",
-    "cvUploaded": false
+    "cvUploaded": false,
+    "role": "Admin"
   },
   "ui": {
     "breadcrumb": ["IAMEN", "Personal Data"],

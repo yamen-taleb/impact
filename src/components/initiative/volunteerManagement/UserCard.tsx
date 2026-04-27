@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import type { Volunteer } from '../../../schemas/volunteerSectionSchema';
 import { AttendanceCalendar } from './AttendanceCalendar';
-import { MailIcon, Phone } from 'lucide-react';
+import { BackpackIcon, GraduationCapIcon, MailIcon, Phone } from 'lucide-react';
 
 interface Props {
     volunteer: Volunteer;
@@ -19,6 +19,7 @@ const UserCard = ({volunteer}: Props) => {
             <path strokeDasharray="15 10" strokeWidth={10} stroke="#000" fill="none" d="M0,0 L100,0 L100,100 L0,100 Z" />
           </svg>
         </div>
+
         <div className="card-title-area">
           <div className='flex flex-row items-center gap-2 px-2'>
             <img className='w-[30%] rounded-full' src={volunteer.photo} alt="" />
@@ -26,60 +27,60 @@ const UserCard = ({volunteer}: Props) => {
           </div>
           <span className="card-tag">{volunteer.sutdentNumber}</span>
         </div>
+
         <div className="card-body">
           <div className="feature-grid">
-            <div className="feature-item">
-              <div className="feature-icon">
-                {/* <svg viewBox="0 0 24 24">
-                  <path d="M20,4C21.1,4 22,4.9 22,6V18C22,19.1 21.1,20 20,20H4C2.9,20 2,19.1 2,18V6C2,4.9 2.9,4 4,4H20M4,6V18H20V6H4M6,9H18V11H6V9M6,13H16V15H6V13Z" />
-                </svg> */}
-                <MailIcon />
-              </div>
+            <div className="feature-item hover:cursor-default">
+              <MailIcon className='feature-icon p-[1px] text-white w-[1.4em] h-[1.4em] flex items-center justify-center bg-[--secondary] border-[0.12em] border-[--text] rounded-[0.3em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.2)]' />
               <span className="feature-text">{volunteer.email}</span>
             </div>
+
             <div className="feature-item">
-              <div className="feature-icon">
-                <Phone />
-              </div>
+              <Phone className='feature-icon p-[1px] text-white w-[1.4em] h-[1.4em] flex items-center justify-center bg-[--secondary] border-[0.12em] border-[--text] rounded-[0.3em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.2)]' />
               <span className="feature-text"><h4>{volunteer.phoneNumber}</h4></span>
             </div>
+
             <div className="feature-item">
-              <div className="feature-icon">
-                <svg viewBox="0 0 24 24">
-                  <path d="M18.5,4L19.66,8.35L18.7,8.61C18.25,7.74 17.79,6.87 17.26,6.43C16.73,6 16.11,6 15.5,6H13V16.5C13,17 13,17.5 13.33,17.75C13.67,18 14.33,18 15,18V19H9V18C9.67,18 10.33,18 10.67,17.75C11,17.5 11,17 11,16.5V6H8.5C7.89,6 7.27,6 6.74,6.43C6.21,6.87 5.75,7.74 5.3,8.61L4.34,8.35L5.5,4H18.5Z" />
-                </svg>
-              </div>
+              <BackpackIcon className='feature-icon p-[1px] text-white w-[1.4em] h-[1.4em] flex items-center justify-center bg-[--secondary] border-[0.12em] border-[--text] rounded-[0.3em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.2)]' />
               <span className="feature-text">{volunteer.college}</span>
             </div>
+
             <div className="feature-item">
-              <div className="feature-icon">
-                <svg viewBox="0 0 24 24">
-                  <path d="M9.19,6.35C8.41,7.13 7.75,8.05 7.25,9H5V11H7.12C7.05,11.32 7,11.66 7,12C7,12.34 7.05,12.68 7.12,13H5V15H7.25C7.75,15.95 8.41,16.87 9.19,17.65L7.77,19.07L9.88,21.18L11.3,19.77C11.85,20.03 12.41,20.2 13,20.31V23H15V20.31C15.59,20.2 16.15,20.03 16.7,19.77L18.12,21.18L20.23,19.07L18.81,17.65C19.59,16.87 20.25,15.95 20.75,15H23V13H20.88C20.95,12.68 21,12.34 21,12C21,11.66 20.95,11.32 20.88,11H23V9H20.75C20.25,8.05 19.59,7.13 18.81,6.35L20.23,4.93L18.12,2.82L16.7,4.23C16.15,3.97 15.59,3.8 15,3.69V1H13V3.69C12.41,3.8 11.85,3.97 11.3,4.23L9.88,2.82L7.77,4.93L9.19,6.35M13,17A5,5 0 0,1 8,12A5,5 0 0,1 13,7A5,5 0 0,1 18,12A5,5 0 0,1 13,17Z" />
-                </svg>
-              </div>
+              <GraduationCapIcon className='feature-icon p-[1px] text-white w-[1.4em] h-[1.4em] flex items-center justify-center bg-[--secondary] border-[0.12em] border-[--text] rounded-[0.3em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.2)]' />
               <span className="feature-text">السنة: {volunteer.academicYear}</span>
             </div>
           </div>
+          
           <div className="card-description">
             {volunteer.motivationLetter}
           </div>
 
           <AttendanceCalendar />
 
-          <div className="card-actions" dir='ltr'>
-            <div className="price">
-              {/* <span className="price-currency">$</span>899 */}
-              {/* <span className="price-period"><h1 className='text-green-500'>{volunteer.status}</h1></span> */}
-            </div>
-
-              <button className="card-button">المزيد من التفاصيل</button>
-              <div className="stamp">
-                <span className="text-green-500">{volunteer.status}</span>
+          <div className='flex flex-col gap-5'>
+            <div className="card-actions" dir='ltr'>
+              <div className="price">
+                {/* <span className="price-currency">$</span>899 */}
+                {/* <span className="price-period"><h1 className='text-green-500'>{volunteer.status}</h1></span> */}
               </div>
 
-          </div>
+                <button className="card-button bg-[--secondary] hover:bg-[--secondary-hover]">المزيد من التفاصيل</button>
 
+                <div className="stamp">
+                  <span className="text-green-500">{volunteer.status}</span>
+                </div>
+            </div>
+
+            {(volunteer.status === "PENDING_APPROVAL") ? (
+              <button className="card-button w-full bg-red-700 hover:bg-red-800">فصل الطالب</button>
+              // Add Dialoge to confirm student absence
+            ) : (
+              <button className="card-button w-full bg-orange-500 hover:bg-orange-600">مراجعة الطلب</button>
+              // Add Dialoge to review student application
+            )}
+          </div>
         </div>
+
         <div className="dots-pattern">
           <svg viewBox="0 0 80 40">
             <circle fill="#000" r={3} cy={10} cx={10} />
@@ -292,19 +293,6 @@ const StyledWrapper = styled.div`
     transform: translateX(0.3em);
   }
 
-  .feature-icon {
-    width: 1.4em;
-    height: 1.4em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--secondary);
-    border: 0.12em solid var(--text);
-    border-radius: 0.3em;
-    box-shadow: 0.2em 0.2em 0 rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
-  }
-
   .feature-item:hover .feature-icon {
     background: var(--secondary-hover);
     transform: rotate(-5deg);
@@ -381,7 +369,6 @@ const StyledWrapper = styled.div`
 
   .card-button {
     position: relative;
-    background: var(--secondary);
     color: var(--bg);
     font-size: 0.9em;
     font-weight: 700;
@@ -413,7 +400,6 @@ const StyledWrapper = styled.div`
   }
 
   .card-button:hover {
-    background: var(--secondary-hover);
     transform: translate(-0.1em, -0.1em);
     box-shadow: 0.4em 0.4em 0 var(--shadow-color);
   }
