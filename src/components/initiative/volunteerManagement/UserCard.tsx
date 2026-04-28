@@ -58,11 +58,7 @@ const UserCard = ({volunteer}: Props) => {
           <AttendanceCalendar />
 
           <div className='flex flex-col gap-5'>
-            <div className="card-actions" dir='ltr'>
-              <div className="price">
-                {/* <span className="price-currency">$</span>899 */}
-                {/* <span className="price-period"><h1 className='text-green-500'>{volunteer.status}</h1></span> */}
-              </div>
+            <div className="card-actions flex flex-row justify-between items-center">
 
                 <button className="card-button bg-[--secondary] hover:bg-[--secondary-hover]">المزيد من التفاصيل</button>
 
@@ -319,9 +315,6 @@ const StyledWrapper = styled.div`
   }
 
   .card-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-top: 1.5em;
     padding-top: 1.2em;
     border-top: 0.15em dashed rgba(0, 0, 0, 0.15);
@@ -338,41 +331,6 @@ const StyledWrapper = styled.div`
     padding: 0 0.5em;
     font-size: 1em;
     color: rgba(0, 0, 0, 0.4);
-  }
-
-  .price {
-    position: relative;
-    font-size: 1.8em;
-    font-weight: 800;
-    color: var(--text);
-    background: var(--bg);
-  }
-
-  .price::before {
-    content: "";
-    position: absolute;
-    bottom: 0.15em;
-    left: 0;
-    width: 100%;
-    height: 0.2em;
-    background: var(--accent);
-    z-index: -1;
-    opacity: 0.5;
-  }
-
-  .price-currency {
-    font-size: 0.6em;
-    font-weight: 700;
-    vertical-align: top;
-    margin-right: 0.1em;
-  }
-
-  .price-period {
-    display: block;
-    font-size: 0.4em;
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.6);
-    margin-top: 0.2em;
   }
 
   .card-button {
