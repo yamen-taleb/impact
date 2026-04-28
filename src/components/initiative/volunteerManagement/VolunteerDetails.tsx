@@ -4,6 +4,7 @@ import VolunteerData from "../../../data/volunteer.json";
 import { volunteersSchema } from "../../../schemas/volunteerSectionSchema";
 import { useState } from "react";
 import PaginationLinks from "../../../components/initiative/PaginationLinks.tsx";
+import VolunteerFilters from "../VolunteerFilters.tsx";
 
 const VolunteerDetails = () => {
 
@@ -14,6 +15,8 @@ const VolunteerDetails = () => {
 
   return (
     <div className="flex flex-col gap-5">
+      <VolunteerFilters />
+
       <div className="grid grid-cols-3 grid-rows-2 gap-6">
         {volunteers.map((volunteer) => (
             <UserCard key={volunteer.id} volunteer={volunteer}/>

@@ -67,13 +67,21 @@ const UserCard = ({volunteer}: Props) => {
                 <button className="card-button bg-[--secondary] hover:bg-[--secondary-hover]">المزيد من التفاصيل</button>
 
                 <div className="stamp">
-                  <span className="text-green-500">{volunteer.status}</span>
+                    {(volunteer.status === "PENDING_APPROVAL") ? (
+                      <h3 className="text-orange-500 w-[150.8%] absolute">قيد - المراجعة</h3>
+                    ) : (volunteer.status === "ACCEPTED") ? (
+                      <h3 className="text-green-500">مقبول</h3>
+                    ) : (
+                      <h3 className="text-red-500">مرفوض</h3>
+                    )}
                 </div>
             </div>
 
             {(volunteer.status === "PENDING_APPROVAL") ? (
-              <button className="card-button w-full bg-red-700 hover:bg-red-800">فصل الطالب</button>
+              <button className="card-button w-full bg-[--secondary] hover:bg-[--secondary-hover]">قبول الطالب</button>
               // Add Dialoge to confirm student absence
+            ) : (volunteer.status === "ACCEPTED") ? (
+              <button className="card-button w-full bg-red-700 hover:bg-red-800">فصل الطالب</button>
             ) : (
               <button className="card-button w-full bg-orange-500 hover:bg-orange-600">مراجعة الطلب</button>
               // Add Dialoge to review student application
