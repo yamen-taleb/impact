@@ -67,7 +67,7 @@ const InitiativeCard = ({initiative}: Props) => {
               </div>
           </CardContent>
 
-          <CardFooter className="flex items-center justify-between gap-4 px-5 pb-5 pt-2">
+          <CardFooter className="mt-auto flex items-center justify-between gap-4 px-5 pb-5 pt-2">
               <Link
                   to={`/initiatives/${initiative.id}`}
                   className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
