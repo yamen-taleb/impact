@@ -1,4 +1,4 @@
-import {ChartNoAxesColumn, FolderKanban, Home, Lightbulb} from "lucide-react";
+import {Calendar, ChartNoAxesColumn, FolderKanban, Home, Lightbulb} from "lucide-react";
 import {Link, useLocation} from "react-router";
 
 
@@ -9,6 +9,7 @@ const Navbar = () => {
         { label: "الرئيسية", href: "/", icon: Home },
         { label: "المبادرات", href: "/initiatives", icon: Lightbulb },
         { label: "مبادراتي", href: "/my-initiatives", icon: FolderKanban },
+        { label: "أنشطتي", href: "/my-applications", icon: Calendar },
         { label: "الاحصائيات", href: "/statistics", icon: ChartNoAxesColumn }
     ];
 

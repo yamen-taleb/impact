@@ -8,6 +8,7 @@ import Profile from "./pages/Profile.tsx";
 import Initiatives from "./pages/Initiatives.tsx";
 import AuthenticatedLayout from "./layouts/AuthenticatedLayout.tsx";
 import InitiativeDetails from "./pages/InitiativeDetails.tsx";
+import Applications from "./pages/Applications.tsx";
 
 const queryClient = new QueryClient()
 
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')!).render(
                           <Route path=":initiativeId" element={<InitiativeDetails />} />
                       </Route>
                       <Route path="/profile" element={<Profile />} />
+                      <Route path="/my-applications" element={<Applications />} />
                       <Route path="*" element={<Initiatives />} />
                   </Route>
               </Routes>
