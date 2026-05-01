@@ -35,22 +35,22 @@ const InitiativeCard = ({initiative}: Props) => {
           <CardHeader className="space-y-4 p-5 pb-3">
               <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1">
-                      <CardDescription className="text-xs text-slate-500">
+                      <CardDescription className="text-xs text-slate-500 font-[Thamanyah2]">
                           {user?.firstName} {user?.lastName ?? "مستخدم مجهول"} - {new Date(initiative.submissionDate).toLocaleDateString("ar-SY")}
                       </CardDescription>
                       <CardTitle className="line-clamp-2 text-lg leading-6 text-slate-900">{initiative.title}</CardTitle>
                   </div>
 
                   <span
-                      className={`inline-flex shrink-0 items-center rounded-full border px-3 py-1 text-xs font-medium ${status.className}`}
+                      className={`font-[Thamanyah2] inline-flex shrink-0 items-center rounded-full border px-3 py-1 text-xs font-medium ${status.className}`}
                   >
                       {status.label}
                   </span>
               </div>
           </CardHeader>
 
-          <CardContent className="space-y-4 px-5 pb-4">
-              <p className="line-clamp-3 text-sm leading-6 text-slate-600">
+          <CardContent className="space-y-4 px-5 pb-4 font-[Thamanyah2]">
+              <p className="line-clamp-3 text-sm leading-6 text-slate-600 font-[Thamanyah2]">
                   {initiative.description}
               </p>
 
@@ -67,7 +67,7 @@ const InitiativeCard = ({initiative}: Props) => {
               </div>
           </CardContent>
 
-          <CardFooter className="mt-auto flex items-center justify-between gap-4 px-5 pb-5 pt-2">
+          <CardFooter className="mt-auto flex items-center justify-between gap-4 px-5 pb-5 pt-2 font-[Thamanyah2]">
               <Link
                   to={`/initiatives/${initiative.id}`}
                   className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"

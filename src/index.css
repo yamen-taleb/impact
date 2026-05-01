@@ -12,18 +12,19 @@
 
 @font-face {
   font-family: "Thamanyah";
-  src: url('./assets/Thamanyah/thmanyahseriftext/otf/thmanyahseriftext-Black.otf') format('truetype');
+  src: url('./assets/Thamanyah/thmanyahserifdisplay/otf/thmanyahserifdisplay-Bold.otf') format('truetype');
 }
 
 @font-face {
   font-family: "Thamanyah2";
-  src: url('./assets/Thamanyah/thmanyahserifdisplay/otf/thmanyahserifdisplay-Regular.otf') format('truetype');
+  src: url('./assets/Thamanyah/thmanyahseriftext/otf/thmanyahseriftext-Regular.otf') format('truetype');
 }
 
 
 * {
   font-family: "Thamanyah", sans-serif;
   scroll-behavior: smooth;
+  font-feature-settings: "salt";
 }
 
 @layer components {
