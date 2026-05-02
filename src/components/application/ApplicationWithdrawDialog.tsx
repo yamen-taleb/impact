@@ -8,15 +8,17 @@ interface Props {
 
 const ApplicationWithdrawDialog = ({ open, handleDeleteApplication, setOpen }: Props) => {
   return (
-      <Dialog
-          open={open}
-          title="هل أنت متأكد أنك تريد سحب هذا الطلب؟"
-          actionButtonName="سحب الطلب"
-          actionButtonClassName="bg-red-600 text-white hover:bg-red-700"
-          description={"هذا الإجراء لا يمكن التراجع عنه. سيتم سحب الطلب نهائيًا ولم يعد بإمكانك بالمشاركة بالمبادرة."}
-          onAction={handleDeleteApplication}
-          onCancel={() => setOpen(false)}
-      />
+    <div>
+        <Dialog
+            open={open}
+            title="هل أنت متأكد أنك تريد سحب هذا الطلب؟"
+            actionButtonName="سحب الطلب"
+            actionButtonClassName="bg-red-600 text-white hover:bg-red-700"
+            description={"هذا الإجراء لا يمكن التراجع عنه. سيتم سحب الطلب نهائيًا ولم يعد بإمكانك بالمشاركة بالمبادرة."}
+            onAction={handleDeleteApplication}
+            onCancel={() => setOpen(false)}
+        />
+    </div>
   );
 };
 

@@ -14,7 +14,7 @@ const ApplicationsFilter = ({ filterStatus, setFilterStatus }: Props) => {
                 <Filter size={18} className="text-zinc-600" />
                 <h3 className="font-semibold text-zinc-900">فلترة حسب الحالة</h3>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 font-[Thamanyah2]">
                 {(["ALL", "ACCEPTED", "PENDING", "REJECTED", "WITHDRAWN"] as const).map(
                     (status) => (
                         <button

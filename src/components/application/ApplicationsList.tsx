@@ -22,7 +22,7 @@ const ApplicationsList = ({ filteredApplications, handleOpenDialogDeleteApplicat
                   <h3 className="text-lg font-semibold text-zinc-900">
                       لا توجد تطبيقات
                   </h3>
-                  <p className="mt-2 text-sm text-zinc-600">
+                  <p className="mt-2 text-sm text-zinc-600 font-[Thamanyah2]">
                       لم تقدم أي طلبات مطابقة للفلتر المختار
                   </p>
               </div>

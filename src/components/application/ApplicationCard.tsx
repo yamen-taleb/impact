@@ -38,11 +38,11 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                             <h3 className="text-lg font-bold text-zinc-900 line-clamp-2">
                                 {application.initiativeTitle}
                             </h3>
-                            <p className="mt-1 text-sm text-zinc-600">
+                            <p className="mt-1 text-sm text-zinc-600 font-[Thamanyah2]">
                                 {application.initiativeCollege}
                             </p>
                         </div>
-                        <Badge className={`shrink-0 border ${status.className}`}>
+                        <Badge className={`shrink-0 border rounded-full  font-[Thamanyah2] ${status.className}`}>
                             {status.label}
                         </Badge>
                     </div>
@@ -51,16 +51,16 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                     <div className="flex items-center gap-2">
                         <StatusIcon size={18} className={status.iconClass} />
                         <div className="text-sm text-zinc-600">
-                            <p>
+                            <p className="font-[Thamanyah2]">
                                 قُدمت في:{" "}
-                                <span className="font-medium">
+                                <span className="font-medium font-[Thamanyah2]">
                                     {new Date(application.applicationDate).toLocaleDateString("ar-SY")}
                                 </span>
                             </p>
                             {application.reviewDate && (
-                                <p className="mt-1">
+                                <p className="mt-1 font-[Thamanyah2]">
                                     تمت المراجعة:{" "}
-                                    <span className="font-medium">
+                                    <span className="font-medium font-[Thamanyah2]">
                                         {new Date(application.reviewDate).toLocaleDateString("ar-SY")}
                                     </span>
                                 </p>
@@ -72,7 +72,7 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                     {application.coverLetter && (
                         <div>
                             <p className="text-xs font-semibold text-zinc-600 mb-1 tracking-wide">رسالة التوصية:</p>
-                            <p className="text-sm leading-6 text-zinc-700 whitespace-pre-line break-words">
+                            <p className="text-sm leading-6 text-zinc-700 whitespace-pre-line break-words font-[Thamanyah2]">
                                 {application.coverLetter.slice(0, 100)} {application.coverLetter.length > 100 && "..."}
                             </p>
                         </div>
@@ -83,13 +83,13 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                     {application.reviewerFeedback && (
                         <div className="rounded-lg bg-zinc-50 p-3 border border-zinc-200">
                             <p className="text-xs font-semibold text-zinc-600 mb-1">تعليق المراجع:</p>
-                            <p className="text-sm text-zinc-700">{application.reviewerFeedback}</p>
+                            <p className="text-sm text-zinc-700 font-[Thamanyah2]">{application.reviewerFeedback}</p>
                         </div>
                     )}
 
                     {/* Meta and Actions */}
                     <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 pt-3">
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs rounded-full font-[Thamanyah2]">
                             {application.initiativeCategory}
                         </Badge>
                         {onDelete && application.status === "PENDING" && (
