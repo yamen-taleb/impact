@@ -20,11 +20,12 @@ const VolunteerFilters = () => {
     { value: ALL_STATUSES, label: "كل الحالات" },
     { value: "approved", label: "مقبول" },
     { value: "pending", label: "قيد المراجعة" },
+    { value: "removed", label: "مفصول" },
     { value: "rejected", label: "مرفوض" },
 ];
 
   const collegeOptions = [
-    { value: ALL_COLLEGIES, label: "كل الفئات" },
+    { value: ALL_COLLEGIES, label: "كل الكليات" },
     { value: "informaticsEn", label: "كلية الهندسة المعلوماتية" },
     { value: "civilEn", label: "كلية الهندسة المدنية" },
     { value: "architecturalEn", label: "كلية الهندسة المعمارية" },
@@ -107,6 +108,17 @@ const VolunteerFilters = () => {
               </div>)}
       </Field>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+          <Field form={form} name="college">
+              {(field) => (
+                  <SelectField
+                      field={field}
+                      options={collegeOptions}
+                      className={"w-full"}
+                      onAfterChange={() => form.handleSubmit()}
+                  />
+              )}
+          </Field>
+          
           <Field form={form} name="status">
               {(field) => (
                   <SelectField
@@ -118,16 +130,6 @@ const VolunteerFilters = () => {
               )}
           </Field>
 
-          <Field form={form} name="college">
-              {(field) => (
-                  <SelectField
-                      field={field}
-                      options={collegeOptions}
-                      className={"w-full"}
-                      onAfterChange={() => form.handleSubmit()}
-                  />
-              )}
-          </Field>
       </div>
     </form>
   );

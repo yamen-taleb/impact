@@ -34,7 +34,14 @@ type AttendanceRecord = {
   notes?: string;
 };
 
-export function AttendanceCalendar() {
+interface AttendanceCalendarProps {
+  disabled?: boolean;
+}
+
+
+export function AttendanceCalendar({
+  disabled = false,
+}: AttendanceCalendarProps) {
   /**
    * بيانات المبادرة
    */
@@ -114,7 +121,13 @@ export function AttendanceCalendar() {
 
   return (
     <>
-      <Card className="mx-auto w-full p-0">
+      <Card
+        className={`mx-auto w-full p-0 ${
+          disabled
+            ? "pointer-events-none opacity-60"
+            : ""
+        }`}
+      >
         <CardContent className="w-full p-0">
           <Calendar
             mode="single"
@@ -124,13 +137,18 @@ export function AttendanceCalendar() {
             captionLayout="dropdown"
             className="[--cell-size:--spacing(10)] md:[--cell-size:--spacing(12)] w-full"
             disabled={(date) =>
+              disabled ||
               !isWithinInterval(startOfDay(date), {
                 start: startOfDay(campaign.startDate),
                 end: startOfDay(campaign.endDate),
               })
             }
             onSelect={(date) => {
-              if (date) openAttendancePopup(date);
+              if (disabled) return;
+
+              if (date) {
+                openAttendancePopup(date);
+              }
             }}
             components={{
               DayButton: ({

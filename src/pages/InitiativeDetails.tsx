@@ -7,6 +7,10 @@ import InitiativeDetailsDescription from "../components/initiative/details/Initi
 import InitiativeDetailsProgress from "../components/initiative/details/InitiativeDetailsProgress.tsx";
 import InitiativeDetailsActions from "../components/initiative/details/InitiativeDetailsActions.tsx";
 import Volunteer from "../components/initiative/volunteerManagement/Volunteer.tsx";
+import InitiativeApprove from "../components/initiative/InitiativeApprove.tsx";
+import InitiativeDates from "../components/initiative/InitiativeDates.tsx";
+import InitiativeMaxVolunteers from "../components/initiative/InitiativeMaxVolunteers.tsx";
+import ProgressManagement from "../components/initiative/ProgressManagement.tsx";
 
 const InitiativeDetails = () => {
 	const parsed = initiativeDetailsSchema.safeParse(initiativeDetails);
@@ -39,7 +43,16 @@ const InitiativeDetails = () => {
 
             <InitiativeDetailsActions/>
 
+            <InitiativeApprove />
+
+            <div className="flex gap-6">
+                <InitiativeDates />
+                <InitiativeMaxVolunteers />
+            </div>
+
             <Volunteer />
+
+            <ProgressManagement />
 
         </section>
 );
