@@ -7,15 +7,15 @@ interface Props {
 
 const CVSection = ({ cvUrl }: Props) => {
     return (
-        <div className="flex flex-col justify-center items-center mt-10">
+        <div className="w-full flex flex-row justify-between items-center gap-5 mt-10">
             {cvUrl && (
                 <a
                     href={cvUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-black text-white w-full text-center px-4 py-2 rounded-lg hover:bg-zinc-800 hover:underline flex flex-row justify-between"
+                    className="bg-black text-white w-1/2 text-center h-1/2 px-4 py-[0.65rem] mt-5 rounded-xl hover:bg-zinc-800 flex flex-row justify-between items-center"
                 >
-                    <h3>عرض السيرة الذاتية</h3>
+                    <h3 className="text-sm">عرض السيرة الذاتية</h3>
                     <FileText />
                 </a>
             )}

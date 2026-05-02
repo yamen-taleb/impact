@@ -73,7 +73,7 @@ const InitiativeCard = ({initiative}: Props) => {
                   className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
               >
                   <span>المزيد من التفاصيل</span>
-                  <ChevronLeft size={16} />
+                  <ChevronLeft size={20} />
               </Link>
 
               <CircularProgressbarWithChildren

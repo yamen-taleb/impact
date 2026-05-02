@@ -64,6 +64,7 @@ const ProgressManagement = () => {
             min={0}
             max={100}
             placeholder="مثال: 50"
+            className="font-[Thamanyah2]"
             value={percentage}
             onChange={(e) =>
               setPercentage(e.target.value)
@@ -76,7 +77,7 @@ const ProgressManagement = () => {
 
           <label className="flex cursor-pointer items-center gap-2 rounded-lg border p-3 hover:bg-gray-50">
             <Upload className="w-4 h-4" />
-            <span>اختر الصور</span>
+            <span className="font-[Thamanyah2]">اختر الصور</span>
 
             <input
               type="file"
@@ -88,7 +89,7 @@ const ProgressManagement = () => {
           </label>
 
           {images.length > 0 && (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 font-[Thamanyah2]">
               تم اختيار {images.length} صورة
             </p>
           )}
@@ -100,6 +101,7 @@ const ProgressManagement = () => {
 
         <Textarea
           placeholder="اكتب تفاصيل التقدم..."
+          className="font-[Thamanyah2]"
           value={comment}
           onChange={(e) =>
             setComment(e.target.value)
@@ -129,12 +131,12 @@ const ProgressManagement = () => {
                     {record.percentage}%
                   </span>
 
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-500 font-[Thamanyah2]">
                     {record.createdAt.toLocaleDateString()}
                   </span>
                 </div>
 
-                <p>{record.comment}</p>
+                <p className="font-[Thamanyah2]">{record.comment}</p>
 
                 {record.images.length > 0 && (
                   <div className="grid grid-cols-3 gap-3">

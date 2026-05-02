@@ -28,7 +28,7 @@ const InitiativeDetailsHero = ({initiative}: Props) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-4 p-6 text-white">
                     <div>
-                        <Badge className={`font-[Thamanyah2] mb-3 border ${status.className}`}>{status.label}</Badge>
+                        <Badge className={`font-[Thamanyah2] mb-3 px-3 py-3 border rounded-full ${status.className}`}>{status.label}</Badge>
                         <h1 className="text-2xl font-black leading-tight md:text-3xl">{initiative.title}</h1>
                         <p className="mt-2 flex items-center gap-2 text-sm text-zinc-200">
                             <CalendarDays size={16} />

@@ -19,9 +19,9 @@ const UploadCVButton = () => {
       <>
           <label
               htmlFor='cv'
-              className="mt-6 items-center cursor-pointer justify-center rounded-xl bg-black px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+              className="w-1/2 mt-6 items-center text-center cursor-pointer justify-center rounded-xl bg-black px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
           >
-              رفع السيرة الذاتية
+              رفع السيرة الذاتية    
           </label>
           <input
               id="cv"

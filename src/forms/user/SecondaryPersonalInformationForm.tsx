@@ -46,7 +46,7 @@ const SecondaryPersonalInformationForm = () => {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                   <h2 className="text-xl font-bold text-slate-900">المعلومات الإضافية</h2>
-                  <p className="mt-2 text-sm text-slate-500">
+                  <p className="mt-2 text-sm text-slate-500 font-[Thamanyah2]">
                       هذه البيانات تساعد على إكمال الملف الشخصي والمشاركة في الأنشطة الخاصة بالمنصة.
                   </p>
               </div>
@@ -66,7 +66,7 @@ const SecondaryPersonalInformationForm = () => {
               <Field form={form} name="address">
                   {
                       (field) => (
-                          <TextField className="fieldClasses" field={field} type="text" label="العنوان"/>
+                          <TextField className="fieldClasses font-[Thamanyah2]" field={field} type="text" label="العنوان"/>
                       )
                   }
               </Field>
@@ -85,14 +85,14 @@ const SecondaryPersonalInformationForm = () => {
 
               <Field form={form} name="education">
                   {(field) => (
-                      <TextField className="fieldClasses" field={field} type="text" label="كلية"/>
+                      <TextField className="fieldClasses font-[Thamanyah2]" field={field} type="text" label="الكلية"/>
                   )}
               </Field>
           </div>
 
           <Field form={form} name="description">
               {(field) => (
-                  <TextAreaField field={field} label="وصف عنك" className={"fieldClasses min-h-10"}
+                  <TextAreaField field={field} label="وصف عنك" className={"fieldClasses min-h-10 font-[Thamanyah2]"}
                                  placeholder={"قم بكتابة وصف عنك"}/>
               )}
           </Field>

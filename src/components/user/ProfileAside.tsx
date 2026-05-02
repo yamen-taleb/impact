@@ -13,7 +13,7 @@ const ProfileAside = () => {
           <div className="flex w-full flex-col items-center">
               <UserAvatar url={avatar} width="w-[270px]" height="h-[270px]"/>
 
-              <ImageChangeButton label="تغير الصورة" setImage={setAvatar}/>
+              <ImageChangeButton label="تغيير الصورة" setImage={setAvatar}/>
               <CVSection cvUrl={user?.cvUrl}/>
           </div>
       </aside>

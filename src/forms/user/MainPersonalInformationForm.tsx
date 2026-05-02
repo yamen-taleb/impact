@@ -32,27 +32,27 @@ const MainPersonalInformationForm = () => {
               <div className="grid gap-7 md:grid-cols-2">
                   <Field form={form} name="firstName">
                       {(field) => (
-                          <TextField field={field} type="text" label="الاسم الأول" className="fieldClasses"/>
+                          <TextField field={field} type="text" label="الاسم الأول" className="fieldClasses font-[Thamanyah2]"/>
                       )}
                   </Field>
 
                   <Field form={form} name="lastName">
                       {(field) => (
-                          <TextField field={field} type="text" label="الكنية" className="fieldClasses"/>
+                          <TextField field={field} type="text" label="الكنية" className="fieldClasses font-[Thamanyah2]"/>
                       )}
                   </Field>
               </div>
 
-              <div className="grid gap-7 md:grid-cols-2">
+              <div className="grid gap-7 md:grid-cols-2" dir="ltr">
                   <Field form={form} name="phoneNumber">
                       {(field) => (
-                          <TextField field={field} type="text" label="رقم الهاتف" className="fieldClasses"/>
+                          <TextField field={field} type="text" label="رقم الهاتف" className="fieldClasses font-[Thamanyah2]"/>
                       )}
                   </Field>
 
                   <label className="block">
-                      <span className="mb-4 block text-sm font-semibold text-slate-700">البريد الإلكتروني</span>
-                      <input className="fieldClasses cursor-not-allowed" defaultValue="yamen@example.com" readOnly/>
+                      <span className="mb-4 block text-sm font-semibold text-slate-700 ">البريد الإلكتروني</span>
+                      <input className="fieldClasses cursor-not-allowed font-[Thamanyah2]" defaultValue="yamen@example.com" readOnly/>
                   </label>
               </div>
           </section>

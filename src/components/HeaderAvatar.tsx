@@ -39,7 +39,7 @@ const HeaderAvatar = () => {
                       <p className="text-sm font-semibold text-zinc-900">
                           {user?.firstName} {user?.lastName}
                       </p>
-                      <p className="text-xs text-zinc-500">{user?.email}</p>
+                      <p className="text-xs text-zinc-500 font-[Thamanyah2]">{user?.email}</p>
                   </div>
 
                   <Link

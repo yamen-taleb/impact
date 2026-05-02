@@ -76,7 +76,7 @@ const InitiativeForm = ({ setOpen }: Props) => {
                                 type="text"
                                 label="المبادرة"
                                 placeholder="اسم المبادرة"
-                                className="fieldClasses"
+                                className="fieldClasses font-[Thamanyah2]"
                             />
                         )}
                     </Field>
@@ -88,7 +88,7 @@ const InitiativeForm = ({ setOpen }: Props) => {
                                 type="text"
                                 label="الكلية"
                                 placeholder="اسم الكلية"
-                                className="fieldClasses"
+                                className="fieldClasses font-[Thamanyah2]"
                             />
                         )}
                     </Field>
@@ -100,7 +100,7 @@ const InitiativeForm = ({ setOpen }: Props) => {
                             type="text"
                             label="العنوان"
                             placeholder="عنوان المبادرة"
-                            className="fieldClasses"
+                            className="fieldClasses font-[Thamanyah2]"
                         />
                     )}
                 </Field>
@@ -111,7 +111,7 @@ const InitiativeForm = ({ setOpen }: Props) => {
                             field={field}
                             label="التفاصيل"
                             placeholder="اكتب تفاصيل المبادرة"
-                            className="fieldClasses"
+                            className="fieldClasses font-[Thamanyah2]"
                         />
                     )}
                 </Field>
@@ -119,7 +119,7 @@ const InitiativeForm = ({ setOpen }: Props) => {
                 <div className="flex items-center justify-between gap-4">
                     <div>
                         <h3 className="text-sm font-semibold text-slate-700">الصور</h3>
-                        <p className="text-xs text-slate-500">يمكنك اختيار أكثر من صورة واحدة</p>
+                        <p className="text-xs text-slate-500 font-[Thamanyah2]">يمكنك اختيار أكثر من صورة واحدة</p>
                     </div>
 
                     <Button
@@ -166,7 +166,7 @@ const InitiativeForm = ({ setOpen }: Props) => {
                         ))}
                     </div>
                 ) : (
-                    <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-sm text-slate-500">
+                    <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-sm text-slate-500 font-[Thamanyah2]">
                         لم يتم اختيار أي صور بعد.
                     </div>
                 )}

@@ -42,6 +42,7 @@ const InitiativeMaxVolunteers = () => {
               min={1}
               placeholder="أدخل العدد الأعظمي"
               value={maxVolunteers}
+              className="font-[Thamanyah2]"
               onChange={(e) =>
                 setMaxVolunteers(e.target.value)
               }
@@ -57,7 +58,7 @@ const InitiativeMaxVolunteers = () => {
           </Button>
 
           {confirmedVolunteers && (
-            <div className="rounded-lg bg-green-50 p-3 text-sm text-green-700">
+            <div className="rounded-lg bg-green-50 p-3 text-sm text-green-700 font-[Thamanyah2]">
               العدد المحدد حالياً: {confirmedVolunteers} طالب
             </div>
           )}
@@ -73,7 +74,7 @@ const InitiativeMaxVolunteers = () => {
             </DialogTitle>
           </DialogHeader>
 
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 font-[Thamanyah2]">
             العدد المحدد هو{" "}
             <strong>{maxVolunteers}</strong> طالب متطوع
           </p>

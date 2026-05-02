@@ -69,7 +69,6 @@ const AttachmentsPreview = ({
                 )
             }
             title={title}
-            description="استخدم الأسهم للتنقل بين الصور"
             open={open}
             onOpenChange={(nextOpen) => {
                 setOpen(nextOpen);
@@ -82,6 +81,7 @@ const AttachmentsPreview = ({
             contentClassName="w-[min(94vw,72rem)] bg-white p-4 sm:p-6"
         >
             <div className="mt-4 space-y-4 w-full">
+                <h1 className="font-[Thamanyah2]">استخدم الأسهم للتنقل بين الصور</h1>
                 <div className="relative overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100">
                     <div className="flex h-[50vh] min-h-[280px] w-full items-center justify-center">
                         {hasImages ? (
@@ -93,7 +93,7 @@ const AttachmentsPreview = ({
                         ) : (
                             <div className="flex flex-col items-center gap-2 text-zinc-500">
                                 <ImageIcon size={36}/>
-                                <span className="text-sm">لا توجد صور</span>
+                                <span className="text-sm font-[Thamanyah2]">لا توجد صور</span>
                             </div>
                         )}
                     </div>
@@ -123,7 +123,7 @@ const AttachmentsPreview = ({
                 </div>
 
                 {hasImages && (
-                    <p className="text-sm text-zinc-600">
+                    <p className="text-sm text-zinc-600 font-[Thamanyah2]">
                         صورة {index + 1} من {safeAttachments.length}
                     </p>
                 )}

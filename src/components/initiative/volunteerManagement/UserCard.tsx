@@ -84,33 +84,33 @@ const UserCard = ({volunteer}: Props) => {
           <img className='w-[30%] rounded-full' src={volunteer.photo} alt="" />
           <span>{volunteer.firstName + " " + volunteer.lastName}</span>
         </div>
-        <span className="card-tag">{volunteer.sutdentNumber}</span>
+        <span className="card-tag font-[Thamanyah2]">{volunteer.sutdentNumber}</span>
       </div>
 
       <div className="card-body">
         <div className="feature-grid">
           <div className="feature-item hover:cursor-default">
             <MailIcon className='feature-icon p-[1px] text-white w-[1.4em] h-[1.4em] flex items-center justify-center bg-[--secondary] border-[0.12em] border-[--text] rounded-[0.3em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.2)]' />
-            <span className="feature-text">{volunteer.email}</span>
+            <span className="feature-text font-[Thamanyah2]">{volunteer.email}</span>
           </div>
 
           <div className="feature-item">
             <Phone className='feature-icon p-[1px] text-white w-[1.4em] h-[1.4em] flex items-center justify-center bg-[--secondary] border-[0.12em] border-[--text] rounded-[0.3em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.2)]' />
-            <span className="feature-text"><h4>{volunteer.phoneNumber}</h4></span>
+            <span className="feature-text font-[Thamanyah2]"><h4>{volunteer.phoneNumber}</h4></span>
           </div>
 
           <div className="feature-item">
             <BackpackIcon className='feature-icon p-[1px] text-white w-[1.4em] h-[1.4em] flex items-center justify-center bg-[--secondary] border-[0.12em] border-[--text] rounded-[0.3em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.2)]' />
-            <span className="feature-text">{volunteer.college}</span>
+            <span className="feature-text font-[Thamanyah2]">{volunteer.college}</span>
           </div>
 
           <div className="feature-item">
             <GraduationCapIcon className='feature-icon p-[1px] text-white w-[1.4em] h-[1.4em] flex items-center justify-center bg-[--secondary] border-[0.12em] border-[--text] rounded-[0.3em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.2)]' />
-            <span className="feature-text">السنة: {volunteer.academicYear}</span>
+            <span className="feature-text font-[Thamanyah2]">السنة: {volunteer.academicYear}</span>
           </div>
         </div>
         
-        <div className="card-description">
+        <div className="card-description font-[Thamanyah2]">
           {volunteer.motivationLetter}
         </div>
 
@@ -208,13 +208,14 @@ const UserCard = ({volunteer}: Props) => {
 
           {requiresReason && (
             <div className="space-y-3">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 font-[Thamanyah2]">
                 يرجى كتابة السبب قبل المتابعة
               </p>
 
               <Textarea
                 placeholder="اكتب السبب هنا..."
                 value={reason}
+                className='font-[Thamanyah2]'
                 onChange={(e) =>
                   setReason(e.target.value)
                 }
@@ -224,13 +225,6 @@ const UserCard = ({volunteer}: Props) => {
 
           <DialogFooter>
             <Button
-              variant="outline"
-              onClick={closeDialog}
-            >
-              إلغاء
-            </Button>
-
-            <Button
               onClick={handleConfirm}
               disabled={
                 requiresReason && !reason.trim()
@@ -238,6 +232,14 @@ const UserCard = ({volunteer}: Props) => {
             >
               تأكيد
             </Button>
+            
+            <Button
+              variant="outline"
+              onClick={closeDialog}
+            >
+              إلغاء
+            </Button>
+
           </DialogFooter>
         </DialogContent>
       </Dialog>
