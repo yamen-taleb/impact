@@ -1,9 +1,11 @@
 import initiativesData from "../data/initiatives.json";
-import StudentInitiativeCard from "../components/initiative/StudentInitiativeCard";
 import Filters from "../components/initiative/Filters.tsx";
 import {initiativesSchema} from "../schemas/initiativePageSchema.ts";
 import PaginationLinks from "../components/initiative/PaginationLinks.tsx";
 import {useState} from "react";
+import StudentInitiativeHeader from "../components/initiative/students/StudentInitiativeHeader.tsx";
+import StudentInitiativeStats from "../components/initiative/students/StudentInitiativeStats.tsx";
+import StudentInitiativesList from "../components/initiative/students/StudentInitiativesList.tsx";
 
 
 const StudentInitiativesPage = () => {
@@ -20,36 +22,13 @@ const StudentInitiativesPage = () => {
 
     return (
         <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-6 lg:px-8">
-            <header className="mb-6">
-                <h1 className="text-2xl font-bold text-zinc-900">ساعات التطوع للطالب</h1>
-                <p className="mt-1 text-sm text-zinc-600">عرض ملخص ساعات التطوع في المبادرات للطالب</p>
-            </header>
+            <StudentInitiativeHeader/>
 
-
-            <section className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="rounded-lg border border-dashed border-zinc-300 bg-white p-4">
-                    <p className="text-sm text-zinc-500">عدد المبادرات</p>
-                    <p className="mt-1 text-2xl font-semibold text-zinc-900">{initiativesCount}</p>
-                </div>
-                <div className="rounded-lg border bg-white border-dashed border-zinc-300 p-4">
-                    <p className="text-sm text-zinc-500">مجموع ساعات التطوع</p>
-                    <p className="mt-1 text-2xl font-semibold text-zinc-900">{totalHours} ساعة</p>
-                </div>
-            </section>
+            <StudentInitiativeStats initiativesCount={initiativesCount} totalHours={totalHours} />
 
             <Filters/>
 
-            <section>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {initiatives.length === 0 && (
-                        <p className="text-sm text-zinc-600">لا توجد مبادرات تطابق الفلاتر المحددة.</p>
-                    )}
-
-                    {initiatives.map((initiative) => (
-                        <StudentInitiativeCard key={initiative.id} initiative={initiative} hours={30} />
-                    ))}
-                </div>
-            </section>
+            <StudentInitiativesList initiatives={initiatives}/>
 
             <PaginationLinks page={page} setPage={setPage} totalPages={5}/>
         </div>

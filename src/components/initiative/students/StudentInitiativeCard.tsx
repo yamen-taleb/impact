@@ -1,6 +1,6 @@
 import { Image as ImageIcon } from "lucide-react";
-import { Badge } from "../ui/badge.tsx";
-import type { Initiative } from "../../schemas/initiativePageSchema";
+import { Badge } from "../../ui/badge.tsx";
+import type { Initiative } from "../../../schemas/initiativePageSchema.ts";
 
 interface Props {
     initiative: Initiative;
