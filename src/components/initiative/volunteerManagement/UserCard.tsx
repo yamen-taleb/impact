@@ -225,6 +225,13 @@ const UserCard = ({volunteer}: Props) => {
 
           <DialogFooter>
             <Button
+              variant="outline"
+              onClick={closeDialog}
+            >
+              إلغاء
+            </Button>
+
+            <Button
               onClick={handleConfirm}
               disabled={
                 requiresReason && !reason.trim()
@@ -232,14 +239,6 @@ const UserCard = ({volunteer}: Props) => {
             >
               تأكيد
             </Button>
-            
-            <Button
-              variant="outline"
-              onClick={closeDialog}
-            >
-              إلغاء
-            </Button>
-
           </DialogFooter>
         </DialogContent>
       </Dialog>

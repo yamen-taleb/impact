@@ -18,7 +18,7 @@
     "work": "",
     "about": "قم بكتابة وصف عنك",
     "cvUploaded": false,
-    "role": "Admin"
+    "role": "Manager"
   },
   "ui": {
     "breadcrumb": ["IAMEN", "Personal Data"],

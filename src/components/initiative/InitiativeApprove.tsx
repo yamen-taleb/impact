@@ -67,10 +67,6 @@ const InitiativeApprove = () => {
           </DialogHeader>
 
           <DialogFooter>
-            <Button onClick={handleApprove}>
-              نعم
-            </Button>
-
             <Button
               variant="outline"
               onClick={() => setOpenApproveDialog(false)}
@@ -78,6 +74,9 @@ const InitiativeApprove = () => {
               لا
             </Button>
 
+            <Button onClick={handleApprove}>
+              نعم
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -95,7 +94,7 @@ const InitiativeApprove = () => {
           </DialogHeader>
 
           <div className="space-y-3">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 font-[Thamanyah2]">
               يرجى كتابة سبب الرفض قبل المتابعة.
             </p>
 
@@ -103,19 +102,11 @@ const InitiativeApprove = () => {
               placeholder="اكتب سبب الرفض هنا..."
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
+              className="font-[Thamanyah2]"
             />
           </div>
 
           <DialogFooter>
-
-            <Button
-              variant="destructive"
-              onClick={handleReject}
-              disabled={!rejectReason.trim()}
-            >
-              تأكيد الرفض
-            </Button>
-            
             <Button
               variant="outline"
               onClick={() => {
@@ -124,6 +115,14 @@ const InitiativeApprove = () => {
               }}
             >
               إلغاء
+            </Button>
+
+            <Button
+              variant="destructive"
+              onClick={handleReject}
+              disabled={!rejectReason.trim()}
+            >
+              تأكيد الرفض
             </Button>
           </DialogFooter>
         </DialogContent>
