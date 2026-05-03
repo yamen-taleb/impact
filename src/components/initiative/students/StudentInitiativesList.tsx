@@ -10,7 +10,7 @@ const StudentInitiativesList = ({initiatives}: Props) => {
         <section>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {initiatives.length === 0 && (
-                    <p className="text-sm text-zinc-600">لا توجد مبادرات تطابق الفلاتر المحددة.</p>
+                    <p className="text-sm text-zinc-600 font-[Thamanyah2]">لا توجد مبادرات تطابق الفلاتر المحددة.</p>
                 )}
 
                 {initiatives.map((initiative) => (

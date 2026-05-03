@@ -31,18 +31,18 @@ const StudentInitiativeCard = ({ initiative, hours }: Props) => {
                             <h3 className="text-base font-semibold text-zinc-900 line-clamp-2">
                                 {initiative.title}
                             </h3>
-                            <p className="mt-1 text-sm text-zinc-600 line-clamp-2">
+                            <p className="mt-1 text-sm text-zinc-600 line-clamp-2 font-[Thamanyah2]">
                                 {initiative.description}
                             </p>
                         </div>
-                        <Badge className="shrink-0 rounded-full bg-zinc-100 px-3 py-1 text-zinc-800">
+                        <Badge className="shrink-0 rounded-full bg-zinc-100 px-3 py-1 text-zinc-800 font-[Thamanyah2]">
                             {hours} ساعة تطوع
                         </Badge>
                     </div>
 
                     <div className="mt-auto flex items-center justify-start gap-2 text-sm text-zinc-600">
-                        <span className={"rounded-full border-zinc-900 bg-zinc-900/90 px-2 py-1 text-white text-xs"}>{initiative.college ?? "غير معروف"}</span>
-                        <span className="rounded-full bg-zinc-100 px-2 py-1 text-zinc-800 text-xs">{initiative.category ?? "غير معروف"}</span>
+                        <span className={"rounded-full border-zinc-900 bg-zinc-900/90 px-2 py-1 text-white text-xs font-[Thamanyah2]"}>{initiative.college ?? "غير معروف"}</span>
+                        <span className="rounded-full bg-zinc-100 px-2 py-1 text-zinc-800 text-xs font-[Thamanyah2]">{initiative.category ?? "غير معروف"}</span>
                     </div>
                 </div>
             </div>
