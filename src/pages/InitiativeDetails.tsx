@@ -11,6 +11,8 @@ import InitiativeApprove from "../components/initiative/InitiativeApprove.tsx";
 import InitiativeDates from "../components/initiative/InitiativeDates.tsx";
 import InitiativeMaxVolunteers from "../components/initiative/InitiativeMaxVolunteers.tsx";
 import ProgressManagement from "../components/initiative/ProgressManagement.tsx";
+import userData from "../../src/data/userData.json";
+import InitiativeDetailsVolunteersAvatar from "../components/initiative/details/InitiativeDetailsVolunteersAvatar.tsx";
 
 const InitiativeDetails = () => {
 	const parsed = initiativeDetailsSchema.safeParse(initiativeDetails);
@@ -20,6 +22,7 @@ const InitiativeDetails = () => {
 	}
 
 	const initiative = parsed.data;
+    const userRole = userData.additionalInfo.role;
 
 	return (
         <section className="mx-auto max-w-6xl space-y-6">
@@ -43,17 +46,22 @@ const InitiativeDetails = () => {
 
             <InitiativeDetailsActions/>
 
-            <InitiativeApprove />
+            <InitiativeDetailsVolunteersAvatar />
 
-            <div className="flex gap-6">
-                <InitiativeDates />
-                <InitiativeMaxVolunteers />
-            </div>
+            {(userRole === "Admin") && (
+                <div className="flex flex-col gap-5">
+                    <InitiativeApprove />
 
-            <Volunteer />
+                    <div className="flex gap-6">
+                        <InitiativeDates />
+                        <InitiativeMaxVolunteers />
+                    </div>
 
-            <ProgressManagement />
-
+                    <Volunteer />
+                    
+                    <ProgressManagement />
+                </div>
+            )}
         </section>
 );
 };

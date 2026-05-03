@@ -23,7 +23,7 @@ const InitiativeDetailsActions = ({backHref = "/initiatives"}: Props) => {
             {(userRole === "User") && (
                 <button
                     type="button"
-                    className="inline-flex gap-2 items-center rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
+                    className="inline-flex gap-2 items-center rounded-lg bg-black px-4 py-[0.35rem] text-sm font-medium text-white transition hover:bg-zinc-800"
                 >
                     التطوع في المبادرة
                     <UserPlusIcon />

@@ -1,6 +1,5 @@
 import {Field, useForm} from "@tanstack/react-form";
 import {useEffect, useMemo, useState} from "react";
-import syrianGovernorates from "../../data/syrianGovernorates.json";
 import SelectField from "../SelectField.tsx";
 import TextField from "../TextField.tsx";
 import debounce from "lodash.debounce";
@@ -9,12 +8,12 @@ import {Search} from "lucide-react";
 
 type Filters = {
     search: string;
-    governorate: string;
+    college: string;
     status: string;
     category: string;
 };
 
-const ALL_GOVERNORATES = "all_governorates";
+const ALL_COLLEGIES = "all_collegies";
 const ALL_STATUSES = "all_statuses";
 const ALL_CATEGORIES = "all_categories";
 
@@ -32,19 +31,42 @@ const categoryOptions = [
     { value: "community", label: "مجتمعي" },
 ];
 
-const Filters = () => {
+const collegeOptions = [
+    { value: ALL_COLLEGIES, label: "كل الكليات" },
+    { value: "informaticsEn", label: "كلية الهندسة المعلوماتية" },
+    { value: "civilEn", label: "كلية الهندسة المدنية" },
+    { value: "architecturalEn", label: "كلية الهندسة المعمارية" },
+    { value: "agriculturalEn", label: "كلية الهندسة الزراعية" },
+    { value: "electricalAndElectronicsEn", label: "كلية الهندسة الكهربائية والإلكترونية" },
+    { value: "mechanicalEn", label: "كلية الهندسة الميكانيكية" },
+    { value: "technicalEn", label: "كلية الهندسة التقنية" },
+    { value: "medicine", label: "كلية الطب البشري" },
+    { value: "dentistry", label: "كلية طب الأسنان" },
+    { value: "pharmacy", label: "كلية الصيدلة" },
+    { value: "nursing", label: "كلية التمريض" },
+    { value: "sciences", label: "كلية العلوم" },
+    { value: "economics", label: "كلية الاقتصاد" },
+    { value: "appliedFineArts", label: "كلية الفنون الجميلة التطبيقية" },
+    { value: "appliedScience", label: "الكلية التطبيقية" },
+    { value: "law", label: "كلية الحقوق" },
+    { value: "artsOfHumanity", label: "كلية الآداب والعلوم الإنسانية" },
+    { value: "education", label: "كلية التربية" },
+    { value: "sharia", label: "كلية الشريعة" },
+    { value: "medicineInst", label: "المعهد التقاني الطبي" },
+    { value: "dentistryInst", label: "المعهد التقاني لطب الأسنان" },
+    { value: "agriculturalInst", label: "المعهد التقاني الزراعي" },
+    { value: "marketingAndBusinessInst", label: "المعهد التقاني لإدارة الأعمال والتسويق" },
+    { value: "bankingAndFinanceInst", label: "المعهد التقاني للعلوم المالية والمصرفية" },
+    { value: "computerInst", label: "المعهد التقاني للحاسوب" },
+    { value: "mechanicalAndElectronicsInst", label: "المعهد التقاني للهندسة الميكانيكية والكهربائية" },
+    { value: "engineeringInst", label: "المعهد التقاني الهندسي" },
+  ];
 
-    const governorateOptions = useMemo(
-        () => [
-            { value: ALL_GOVERNORATES, label: "كل المحافظات" },
-            ...syrianGovernorates.map((g) => ({ value: g.value, label: g.arabic })),
-        ],
-        []
-    );
+const Filters = () => {
 
     const [appliedFilters, setAppliedFilters] = useState<Filters>({
         search: "",
-        governorate: ALL_GOVERNORATES,
+        college: ALL_COLLEGIES,
         status: ALL_STATUSES,
         category: ALL_CATEGORIES,
     });
@@ -54,7 +76,7 @@ const Filters = () => {
         onSubmit: ({ value }) => {
             const normalizedFilters: Filters = {
                 search: value.search,
-                governorate: value.governorate === ALL_GOVERNORATES ? "" : value.governorate,
+                college: value.college === ALL_COLLEGIES ? "" : value.college,
                 status: value.status === ALL_STATUSES ? "" : value.status,
                 category: value.category === ALL_CATEGORIES ? "" : value.category,
             };
@@ -95,12 +117,12 @@ const Filters = () => {
                     </div>)}
             </Field>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
-                <Field form={form} name="governorate">
+                <Field form={form} name="college">
                     {(field) => (
                         <SelectField
                             field={field}
                             className={"w-full"}
-                            options={governorateOptions}
+                            options={collegeOptions}
                             onAfterChange={() => form.handleSubmit()}
                         />
                     )}
