@@ -19,7 +19,7 @@ const Navbar = () => {
     const navLinksAdmin = [
         { label: "الرئيسية", href: "/", icon: Home },
         { label: "المبادرات", href: "/initiatives", icon: Lightbulb },
-        { label: "المبادرات الواردة", href: "/our-initiatives/yamen", icon: FolderKanban },
+        { label: "المبادرات الواردة", href: "/our-initiatives", icon: FolderKanban },
         { label: "أنشطتي", href: "/my-applications", icon: Calendar },
         { label: "الاحصائيات", href: "/statistics", icon: ChartNoAxesColumn }
     ]

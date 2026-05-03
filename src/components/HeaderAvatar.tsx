@@ -6,12 +6,16 @@ import {
 import UserAvatar from "./user/UserAvatar.tsx";
 import { Link, useNavigate } from "react-router";
 import userData from "../data/userData.json";
-import {LogOut, User} from "lucide-react";
+import {LogOut, User, Flame, Clock} from "lucide-react";
 
 const HeaderAvatar = () => {
 
     const navigate = useNavigate();
-    const user = userData.personalInfo;
+    const user = {
+        ...userData.personalInfo,
+        id: 1
+    };
+
 
     const handleLogout = () => {
         navigate("/login");
@@ -50,6 +54,13 @@ const HeaderAvatar = () => {
                       <span>الملف الشخصي</span>
                   </Link>
 
+                  <Link
+                      to={`/student-initiatives-participation/${user.id}`}
+                      className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900"
+                  >
+                      <Clock size={16}/>
+                      <span>سجل التطوع</span>
+                  </Link>
                   <button
                       onClick={handleLogout}
                       className="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-red-600 transition hover:bg-red-50"

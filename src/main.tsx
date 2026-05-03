@@ -26,7 +26,7 @@ createRoot(document.getElementById('root')!).render(
                       </Route>
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/my-applications" element={<Applications />} />
-                      <Route path="/our-initiatives/:username" element={<StudentInitiativesPage />} />
+                      <Route path="/student-initiatives-participation/:id" element={<StudentInitiativesPage />} />
                       <Route path="*" element={<Initiatives />} />
                   </Route>
               </Routes>
