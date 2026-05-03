@@ -48,9 +48,12 @@ const InitiativeDetails = () => {
 
             <InitiativeDetailsVolunteersAvatar />
 
-            {(userRole === "Admin") && (
+            {(userRole === "Admin" || userRole === "Manager") && (
                 <div className="flex flex-col gap-5">
-                    <InitiativeApprove />
+
+                    {(userRole === "Manager") && (
+                        <InitiativeApprove />
+                    )}
 
                     <div className="flex gap-6">
                         <InitiativeDates />

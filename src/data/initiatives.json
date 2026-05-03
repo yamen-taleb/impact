@@ -9,7 +9,8 @@
     "college": "كلية الهندسة المعلوماتية",
     "category": "تعليم",
     "address": "دمشق - المزة - كلية الهندسة المعلوماتية",
-    "percentage": 45
+    "percentage": 45,
+    "maxVolunteers": 10
   },
   {
     "id": "2",
@@ -21,7 +22,8 @@
     "college": "كلية العلوم",
     "category": "تقنية",
     "address": "حمص - شارع الجامعة - كلية العلوم",
-    "percentage": 72
+    "percentage": 72,
+    "maxVolunteers": 30
   },
   {
     "id": "3",
@@ -33,10 +35,11 @@
     "college": "كلية الآداب",
     "category": "بنية تحتية",
     "address": "حلب - المدينة الجامعية - كلية الآداب",
-    "percentage": 25
+    "percentage": 25,
+    "maxVolunteers": 25
   },
   {
-    "id": "1",
+    "id": "4",
     "photo": "https://loremflickr.com/g/320/240/idlib",
     "submissionDate": "2026-04-20T10:30:00.000Z",
     "title": "تأهيل غرفة دراسة للطلاب",
@@ -45,10 +48,11 @@
     "college": "كلية الهندسة المعلوماتية",
     "category": "تعليم",
     "address": "دمشق - المزة - كلية الهندسة المعلوماتية",
-    "percentage": 45
+    "percentage": 45,
+    "maxVolunteers": 100
   },
   {
-    "id": "2",
+    "id": "5",
     "photo": "https://loremflickr.com/g/320/240/hama",
     "submissionDate": "2026-04-18T14:00:00.000Z",
     "title": "دعم مختبر الحاسوب",
@@ -57,10 +61,11 @@
     "college": "كلية العلوم",
     "category": "تقنية",
     "address": "حمص - شارع الجامعة - كلية العلوم",
-    "percentage": 72
+    "percentage": 72,
+    "maxVolunteers": 85
   },
   {
-    "id": "3",
+    "id": "6",
     "photo": "https://loremflickr.com/g/320/240/latakia",
     "submissionDate": "2026-04-10T08:15:00.000Z",
     "title": "تحسين مدخل الكلية",
@@ -69,6 +74,85 @@
     "college": "كلية الآداب",
     "category": "بنية تحتية",
     "address": "حلب - المدينة الجامعية - كلية الآداب",
-    "percentage": 25
+    "percentage": 25,
+    "maxVolunteers": 43
+  },
+  {
+    "id": "7",
+    "photo": "https://loremflickr.com/g/320/240/damascus",
+    "submissionDate": "2026-04-18T14:00:00.000Z",
+    "title": "دعم مختبر الحاسوب",
+    "status": "APPROVED",
+    "description": "توفير أجهزة حاسوب إضافية لدعم المختبر في أوقات الذروة.",
+    "college": "كلية العلوم",
+    "category": "تقنية",
+    "address": "حمص - شارع الجامعة - كلية العلوم",
+    "percentage": 72,
+    "maxVolunteers": 50
+  },  
+  {
+    "id": "8",
+    "photo": "https://loremflickr.com/g/320/240/aleppo",
+    "submissionDate": "2026-04-20T10:30:00.000Z",
+    "title": "تأهيل غرفة دراسة للطلاب",
+    "status": "PENDING_APPROVAL",
+    "description": "الحاجة إلى تجهيز غرفة دراسة داخل الكلية مع طاولات وكراسي وإنارة مناسبة.",
+    "college": "كلية الهندسة المعلوماتية",
+    "category": "تعليم",
+    "address": "دمشق - المزة - كلية الهندسة المعلوماتية",
+    "percentage": 45,
+    "maxVolunteers": 20
+  },
+  {
+    "id": "9",
+    "photo": "https://loremflickr.com/g/320/240/homs",
+    "submissionDate": "2026-04-10T08:15:00.000Z",
+    "title": "تحسين مدخل الكلية",
+    "status": "REJECTED",
+    "description": "إعادة تأهيل مدخل الكلية وتوفير مسار مناسب للطلاب.",
+    "college": "كلية الآداب",
+    "category": "بنية تحتية",
+    "address": "حلب - المدينة الجامعية - كلية الآداب",
+    "percentage": 25,
+    "maxVolunteers": 110
+  },
+  {
+    "id": "10",
+    "photo": "https://loremflickr.com/g/320/240/idlib",
+    "submissionDate": "2026-04-20T10:30:00.000Z",
+    "title": "تأهيل غرفة دراسة للطلاب",
+    "status": "PENDING_APPROVAL",
+    "description": "الحاجة إلى تجهيز غرفة دراسة داخل الكلية مع طاولات وكراسي وإنارة مناسبة.",
+    "college": "كلية الهندسة المعلوماتية",
+    "category": "تعليم",
+    "address": "دمشق - المزة - كلية الهندسة المعلوماتية",
+    "percentage": 45,
+    "maxVolunteers": 70
+  },
+  {
+    "id": "11",
+    "photo": "https://loremflickr.com/g/320/240/hama",
+    "submissionDate": "2026-04-18T14:00:00.000Z",
+    "title": "دعم مختبر الحاسوب",
+    "status": "APPROVED",
+    "description": "توفير أجهزة حاسوب إضافية لدعم المختبر في أوقات الذروة.",
+    "college": "كلية العلوم",
+    "category": "تقنية",
+    "address": "حمص - شارع الجامعة - كلية العلوم",
+    "percentage": 72,
+    "maxVolunteers": 30
+  },
+  {
+    "id": "12",
+    "photo": "https://loremflickr.com/g/320/240/latakia",
+    "submissionDate": "2026-04-10T08:15:00.000Z",
+    "title": "تحسين مدخل الكلية",
+    "status": "REJECTED",
+    "description": "إعادة تأهيل مدخل الكلية وتوفير مسار مناسب للطلاب.",
+    "college": "كلية الآداب",
+    "category": "بنية تحتية",
+    "address": "حلب - المدينة الجامعية - كلية الآداب",
+    "percentage": 25,
+    "maxVolunteers": 20
   }
 ]

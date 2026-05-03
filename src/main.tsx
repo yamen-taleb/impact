@@ -10,6 +10,8 @@ import AuthenticatedLayout from "./layouts/AuthenticatedLayout.tsx";
 import InitiativeDetails from "./pages/InitiativeDetails.tsx";
 import Applications from "./pages/Applications.tsx";
 import StudentInitiativesPage from "./pages/StudentInitiatives.tsx";
+import StudentsUnion from './pages/StudentsUnion.tsx';
+import Students from './pages/Students.tsx';
 
 const queryClient = new QueryClient()
 
@@ -23,6 +25,14 @@ createRoot(document.getElementById('root')!).render(
                       <Route path="/initiatives">
                           <Route index element={<Initiatives />} />
                           <Route path=":initiativeId" element={<InitiativeDetails />} />
+                      </Route>
+                      <Route path="/students-union">
+                          <Route index element={<StudentsUnion />} />
+                          {/* <Route path=":initiativeId" element={<InitiativeDetails />} /> */}
+                      </Route>
+                      <Route path="/students">
+                          <Route index element={<Students />} />
+                          {/* <Route path=":initiativeId" element={<InitiativeDetails />} /> */}
                       </Route>
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/my-applications" element={<Applications />} />

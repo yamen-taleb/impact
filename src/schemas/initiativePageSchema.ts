@@ -23,6 +23,8 @@ export const initiativePageSchema = z.object({
         .string(),
     percentage: z
         .number(),
+    maxVolunteers: z
+        .number(),
 });
 
 export const initiativesSchema = z.array(initiativePageSchema);
