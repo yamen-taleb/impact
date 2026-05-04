@@ -1,0 +1,10 @@
+{
+  "volunteerHours": 45,
+  "attendanceDays": 12,
+  "proposedInitiatives": 3,
+  "submittedApplications": 5,
+  "acceptedApplications": 2,
+  "pendingApplications": 2,
+  "rejectedApplications": 1,
+  "totalApplications": 10
+}
