@@ -1,6 +1,7 @@
-import { Link } from "react-router";
 import {Clock, Calendar, Lightbulb, FileText, FileCheck, CheckCircle, Clock as ClockIcon, XCircle} from "lucide-react";
 import statsData from "../data/studentStats.json";
+import StatCard from "../components/StatCard";
+import StatSummaryCard from "../components/StatSummaryCard";
 
 const Statistics = () => {
     const stats = statsData;
@@ -13,117 +14,89 @@ const Statistics = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <Link
-                        to="/student-initiatives-participation/1"
-                        className="group relative rounded-xl border border-zinc-200 bg-white p-6 shadow-sm transition hover:shadow-md hover:border-zinc-300"
-                    >
-                        <div className="absolute top-4 right-4 rounded-lg bg-blue-100 p-3">
-                            <Clock className="h-6 w-6 text-blue-600"/>
-                        </div>
-                        <div className="mt-12">
-                            <p className="text-sm text-zinc-600 font-medium">ساعات التطوع</p>
-                            <p className="mt-1 text-4xl font-bold text-zinc-900">
-                                {stats.volunteerHours}
-                            </p>
-                            <p className="mt-2 text-xs text-blue-600 group-hover:text-blue-700">
-                                اضغط لعرض السجل الكامل →
-                            </p>
-                        </div>
-                    </Link>
-
-                    <div className="group relative rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-                        <div className="absolute top-4 right-4 rounded-lg bg-green-100 p-3">
-                            <Calendar className="h-6 w-6 text-green-600"/>
-                        </div>
-                        <div className="mt-12">
-                            <p className="text-sm text-zinc-600 font-medium">أيام الحضور</p>
-                            <p className="mt-1 text-4xl font-bold text-zinc-900">
-                                {stats.attendanceDays}
-                            </p>
-                            <p className="mt-2 text-xs text-zinc-400">
-                                يوم
-                            </p>
-                        </div>
-                    </div>
-
-                    <Link
-                        to="/my-initiatives"
-                        className="group relative rounded-xl border border-zinc-200 bg-white p-6 shadow-sm transition hover:shadow-md hover:border-zinc-300"
-                    >
-                        <div className="absolute top-4 right-4 rounded-lg bg-purple-100 p-3">
-                            <Lightbulb className="h-6 w-6 text-purple-600"/>
-                        </div>
-                        <div className="mt-12">
-                            <p className="text-sm text-zinc-600 font-medium">المبادرات المقترحة</p>
-                            <p className="mt-1 text-4xl font-bold text-zinc-900">
-                                {stats.proposedInitiatives}
-                            </p>
-                            <p className="mt-2 text-xs text-purple-600 group-hover:text-purple-700">
-                                اضغط لعرض مبادراتك →
-                            </p>
-                        </div>
-                    </Link>
-
-                    <Link
-                        to="/my-applications"
-                        className="group relative rounded-xl border border-zinc-200 bg-white p-6 shadow-sm transition hover:shadow-md hover:border-zinc-300"
-                    >
-                        <div className="absolute top-4 right-4 rounded-lg bg-orange-100 p-3">
-                            <FileText className="h-6 w-6 text-orange-600"/>
-                        </div>
-                        <div className="mt-12">
-                            <p className="text-sm text-zinc-600 font-medium">الطلبات المقدمة</p>
-                            <p className="mt-1 text-4xl font-bold text-zinc-900">
-                                {stats.submittedApplications}
-                            </p>
-                            <p className="mt-2 text-xs text-orange-600 group-hover:text-orange-700">
-                                اضغط لعرض أنشطتك →
-                            </p>
-                        </div>
-                    </Link>
+                    <StatCard
+                        icon={Clock}
+                        label="ساعات التطوع"
+                        value={stats.volunteerHours}
+                        description="اضغط لعرض السجل الكامل →"
+                        href="/student-initiatives-participation/1"
+                        bgColor="bg-blue-100"
+                        iconColor="text-blue-600"
+                        hoverTextColor="text-blue-600"
+                    />
+                    
+                    <StatCard
+                        icon={Calendar}
+                        label="أيام الحضور"
+                        disabled={true}
+                        value={stats.attendanceDays}
+                        description="يوم"
+                        href="#"
+                        bgColor="bg-green-100"
+                        iconColor="text-green-600"
+                        hoverTextColor="text-zinc-400"
+                    />
+                    
+                    <StatCard
+                        icon={Lightbulb}
+                        label="المبادرات المقترحة"
+                        value={stats.proposedInitiatives}
+                        description="اضغط لعرض مبادراتك →"
+                        href="/my-initiatives"
+                        bgColor="bg-purple-100"
+                        iconColor="text-purple-600"
+                        hoverTextColor="text-purple-600"
+                    />
+                    
+                    <StatCard
+                        icon={FileText}
+                        label="الطلبات المقدمة"
+                        value={stats.submittedApplications}
+                        description="اضغط لعرض أنشطتك →"
+                        href="/my-applications"
+                        bgColor="bg-orange-100"
+                        iconColor="text-orange-600"
+                        hoverTextColor="text-orange-600"
+                    />
                 </div>
 
-                <p className="mt-2 text-zinc-600">ملخص طلبات التطوع</p>
-                <div className={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"}>
-                    <div className="rounded-lg relative border border-zinc-200 bg-white p-4 shadow-sm">
-                        <div className="absolute top-4 right-4 rounded-lg bg-zinc-50 p-3">
-                            <FileCheck className="h-6 w-6 text-zinc-600"/>
-                        </div>
-                        <div className={"mt-14"}>
-                            <p className="text-sm font-medium text-zinc-600">إجمالي الطلبات</p>
-                            <p className="mt-2 text-3xl font-bold text-zinc-900">{statsData.totalApplications}</p>
-                        </div>
-                    </div>
+            <p className="mt-2 text-zinc-600">ملخص طلبات التطوع</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <StatSummaryCard
+                        icon={FileCheck}
+                        label="إجمالي الطلبات"
+                        value={statsData.totalApplications}
+                        bgColor="bg-zinc-50"
+                        iconColor="text-zinc-600"
+                        textColor="text-zinc-600"
+                    />
 
-                    <div className="rounded-lg relative border border-zinc-200 bg-white p-4 shadow-sm">
-                        <div className="absolute top-4 right-4 rounded-lg bg-green-100 p-3">
-                            <CheckCircle className="h-6 w-6 text-green-600"/>
-                        </div>
-                        <div className={"mt-14"}>
-                            <p className="text-sm font-medium text-green-700">مقبول</p>
-                            <p className="mt-2 text-3xl font-bold text-green-800">{statsData.acceptedApplications}</p>
-                        </div>
-                    </div>
+                    <StatSummaryCard
+                        icon={CheckCircle}
+                        label="مقبول"
+                        value={statsData.acceptedApplications}
+                        bgColor="bg-green-100"
+                        iconColor="text-green-600"
+                        textColor="text-green-700"
+                    />
 
-                    <div className="rounded-lg relative border border-zinc-200 bg-white p-4 shadow-sm">
-                        <div className="absolute top-4 right-4 rounded-lg bg-yellow-100 p-3">
-                            <ClockIcon className="h-6 w-6 text-yellow-600"/>
-                        </div>
-                        <div className={"mt-14"}>
-                            <p className="text-sm font-medium text-yellow-700">قيد الانتظار</p>
-                            <p className="mt-2 text-3xl font-bold text-yellow-800">{statsData.pendingApplications}</p>
-                        </div>
-                    </div>
+                    <StatSummaryCard
+                        icon={ClockIcon}
+                        label="قيد الانتظار"
+                        value={statsData.pendingApplications}
+                        bgColor="bg-yellow-100"
+                        iconColor="text-yellow-600"
+                        textColor="text-yellow-700"
+                    />
 
-                    <div className="rounded-lg relative border border-zinc-200 bg-white p-4 shadow-sm">
-                        <div className="absolute top-4 right-4 rounded-lg bg-red-100 p-3">
-                            <XCircle className="h-6 w-6 text-red-600"/>
-                        </div>
-                        <div className={"mt-14"}>
-                            <p className="text-sm font-medium text-red-700">مرفوض</p>
-                            <p className="mt-2 text-3xl font-bold text-red-800">{statsData.rejectedApplications}</p>
-                        </div>
-                    </div>
+                    <StatSummaryCard
+                        icon={XCircle}
+                        label="مرفوض"
+                        value={statsData.rejectedApplications}
+                        bgColor="bg-red-100"
+                        iconColor="text-red-600"
+                        textColor="text-red-700"
+                    />
                 </div>
             </div>
     );
