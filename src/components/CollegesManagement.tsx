@@ -83,7 +83,7 @@ const CollegesManagement = () => {
           إدارة الكليات
         </h2>
 
-        <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm">
+        <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-[Thamanyah2]">
           {colleges.length} كلية
         </span>
       </div>
