@@ -24,11 +24,8 @@ const HeaderAvatar = () => {
 	const {currentUser, isLoading} = useGetMyUser();
 
 	if(isLoading){
-		console.log("Loading to Get currentUser")
 		return null;
 	} 
-	console.log(currentUser);
-
 
 
 	const handleLogout = async () => {

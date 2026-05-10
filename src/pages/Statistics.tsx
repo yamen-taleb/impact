@@ -2,6 +2,8 @@ import {Clock, Calendar, Lightbulb, FileText, FileCheck, CheckCircle, Clock as C
 import statsData from "../data/studentStats.json";
 import StatCard from "../components/StatCard";
 import StatSummaryCard from "../components/StatSummaryCard";
+import CategoriesManagement from "../components/CategoriesManagement";
+import CollegesManagement from "../components/CollegesManagement";
 
 const Statistics = () => {
     const stats = statsData;
@@ -97,6 +99,11 @@ const Statistics = () => {
                         iconColor="text-red-600"
                         textColor="text-red-700"
                     />
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <CategoriesManagement />
+                    <CollegesManagement />
                 </div>
             </div>
     );
