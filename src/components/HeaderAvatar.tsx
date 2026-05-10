@@ -5,7 +5,6 @@ import {
 } from "./ui/popover.tsx";
 import UserAvatar from "./user/UserAvatar.tsx";
 import { Link } from "react-router";
-import userData from "../data/userData.json";
 import {LogOut, User, Clock} from "lucide-react";
 import { useState } from "react";
 import keycloak from "../lib/keycloak.ts";
@@ -17,14 +16,19 @@ import {
   DialogFooter,
 } from "./ui/dialog";
 import { Button } from "./ui/button.tsx";
+import { useGetMyUser } from "../hooks/use-user.ts";
 
 const HeaderAvatar = () => {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
 
-	const user = {
-		...userData.personalInfo,
-		id: 1
-	};
+	const {currentUser, isLoading} = useGetMyUser();
+
+	if(isLoading){
+		console.log("Loading to Get currentUser")
+		return null;
+	} 
+	console.log(currentUser);
+
 
 
 	const handleLogout = async () => {
@@ -52,10 +56,12 @@ const HeaderAvatar = () => {
 				<PopoverTrigger asChild>
 					<button className="relative flex items-center gap-2 rounded-lg p-1.5 transition hover:bg-zinc-100">
 						<UserAvatar
-								url={user?.avatar}
+								url={currentUser?.photo}
 								width="w-9"
 								height="h-9"
 								letterSize={"text-lg"}
+								firstName={currentUser?.firstName}
+								lastName={currentUser?.lastName}
 						/>
 					</button>
 				</PopoverTrigger>
@@ -67,9 +73,9 @@ const HeaderAvatar = () => {
 					<div className="space-y-0.5">
 						<div className="border-b border-zinc-200 px-4 py-3">
 							<p className="text-sm font-semibold text-zinc-900">
-									{user?.firstName} {user?.lastName}
+									{currentUser?.firstName} {currentUser?.lastName}
 							</p>
-							<p className="text-xs text-zinc-500 font-[Thamanyah2]">{user?.email}</p>
+							<p className="text-xs text-zinc-500 font-[Thamanyah2]">{currentUser?.email}</p>
 						</div>
 
 						<Link
@@ -81,7 +87,7 @@ const HeaderAvatar = () => {
 						</Link>
 
 						<Link
-							to={`/student-initiatives-participation/${user.id}`}
+							to={`/student-initiatives-participation/${currentUser?.id}`}
 							className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900"
 						>
 							<Clock size={16}/>

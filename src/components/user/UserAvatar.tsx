@@ -1,27 +1,31 @@
 import {Avatar, AvatarFallback, AvatarImage} from "../ui/avatar.tsx";
-import userData from "../../data/userData.json";
 import {cn} from "../../lib/utils.ts";
 
 interface Props {
-    url?: string
+    url?: string,
     width: string,
-    height: string
-    letterSize?: string
+    height: string,
+    letterSize?: string,
+    firstName?: string,
+    lastName?: string,
 }
 
-const UserAvatar = ({url, width, height, letterSize = "text-3xl"}: Props) => {
-    const currentUser = userData.personalInfo
+const UserAvatar = ({url, width, height, letterSize = "text-3xl", firstName, lastName}: Props) => {
 
     return (
         <Avatar className={cn(width, height, "rounded-none")}>
             <AvatarImage src={url} className="w-full object-cover object-center"/>
             <AvatarFallback
                 className={cn(
-                    "flex items-center justify-center rounded-2xl bg-slate-200 font-semibold text-slate-500",
+                    "w-full flex items-center justify-center rounded-2xl bg-slate-200 font-semibold text-slate-500",
                     letterSize
                 )}
             >
-                {currentUser?.firstName?.charAt(0)?.toUpperCase() ?? "?"}
+                {(firstName && lastName) ? (
+                    <h3 className="text-center">{firstName?.split("")[0] + lastName?.split("")[0]}</h3>
+                ) : (
+                    <h3>أثر</h3>
+                )}
             </AvatarFallback>
         </Avatar>
     );
