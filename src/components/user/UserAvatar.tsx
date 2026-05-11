@@ -17,12 +17,12 @@ const UserAvatar = ({url, width, height, letterSize = "text-3xl", firstName, las
             <AvatarImage src={url} className="w-full object-cover object-center"/>
             <AvatarFallback
                 className={cn(
-                    "w-full flex items-center justify-center rounded-2xl bg-slate-200 font-semibold text-slate-500",
+                    "w-full flex items-center justify-center rounded-full bg-slate-200 font-semibold text-slate-500",
                     letterSize
                 )}
             >
                 {(firstName && lastName) ? (
-                    <h3 className="text-center">{firstName?.split("")[0] + lastName?.split("")[0]}</h3>
+                    <h3 className="text-center">{firstName?.split("")[0] + " " + lastName?.split("")[0]}</h3>
                 ) : (
                     <h3>أثر</h3>
                 )}

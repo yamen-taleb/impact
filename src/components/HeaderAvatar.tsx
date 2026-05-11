@@ -54,8 +54,8 @@ const HeaderAvatar = () => {
 					<button className="relative flex items-center gap-2 rounded-lg p-1.5 transition hover:bg-zinc-100">
 						<UserAvatar
 								url={currentUser?.photo}
-								width="w-9"
-								height="h-9"
+								width="w-10"
+								height="h-10"
 								letterSize={"text-lg"}
 								firstName={currentUser?.firstName}
 								lastName={currentUser?.lastName}

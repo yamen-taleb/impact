@@ -28,11 +28,12 @@ import {
 } from "../components/ui/dialog";
 import VolunteerFilters from "../components/initiative/VolunteerFilters";
 import { useGetStudents, useToggleStudentBan } from "../hooks/use-students";
+import UserAvatar from "../components/user/UserAvatar";
 
 const ITEMS_PER_PAGE = 10;
 
 interface Student {
-  id: number;
+  userId: number;
   sutdentNumber: string;
   firstName: string;
   lastName: string;
@@ -73,10 +74,12 @@ const Students = () => {
   const handleToggleStudentStatus = () => {
     if (!selectedStudent) return;
 
+    console.log(selectedStudent);
+
     toggleStudentBan(
       {
         userId:
-          selectedStudent.id,
+          selectedStudent.userId,
         isBanned:
           !selectedStudent.isBanned,
       },
@@ -159,20 +162,27 @@ const Students = () => {
                   </TableCell>
 
                   <TableCell>
-                    <img
+                    {/* <img
                       src={student.photo}
                       alt=""
                       className="h-12 w-12 rounded-full object-cover"
-                    />
+                    /> */}
+                    <UserAvatar
+                      url={student?.photo}
+                      width="w-10"
+                      height="h-10"
+                      letterSize={"text-lg"}
+                      firstName={student?.firstName}
+                      lastName={student?.lastName}
+                  />
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.firstName}{" "}
-                    {student.lastName}
+                    {student.firstName}{" "}{student.lastName}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.sutdentNumber}
+                    {student.studentNumber}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -180,7 +190,7 @@ const Students = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.phoneNumber}
+                    {student.phone}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -203,12 +213,8 @@ const Students = () => {
                       size="sm"
                       className="font-[Thamanyah2] rounded-full hover:bg-zinc-200"
                       onClick={() => {
-                        setSelectedStudent(
-                          student
-                        );
-                        setOpenDialog(
-                          true
-                        );
+                        setSelectedStudent(student);
+                        setOpenDialog(true);
                       }}
                     >
                       {student.isBanned
