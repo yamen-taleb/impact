@@ -78,37 +78,45 @@ export const useGetCollegeById = (id: number) => {
 export const useCreateCollege = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (name: string) => {
-      const response = await axios.post(
-        `${API_BASE_URL}/api/v1/colleges`,
-        {
-          collegeId: 0,
-          name,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${keycloak.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+  const createCollegeRequest = async (
+    name: string
+  ): Promise<College> => {
+    const token = keycloak.token;
 
-      return response.data;
-    },
+    const payload = {
+      name,
+    };
+
+    const response = await axios.post(
+      `${API_BASE_URL}/api/v1/colleges`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  };
+
+  return useMutation({
+    mutationFn: createCollegeRequest,
 
     onSuccess: () => {
       toast.success("تم إضافة الكلية بنجاح");
+
       queryClient.invalidateQueries({
         queryKey: ["colleges"],
       });
     },
 
     onError: (error: any) => {
-      console.log(error.response?.data);
-      toast.error("فشل في إضافة الكلية");
+      toast.error(
+        error?.response?.data?.message ||
+          "حدث خطأ أثناء إضافة الكلية"
+      );
     },
   });
 };
@@ -120,30 +128,37 @@ export const useCreateCollege = () => {
 export const useDeleteCollege = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (id: number) => {
-      const response = await axios.delete(
-        `${API_BASE_URL}/api/v1/colleges/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${keycloak.token}`,
-          },
-        }
-      );
+  const deleteCollegeRequest = async (
+    collegeId: number
+  ) => {
+    const token = keycloak.token;
 
-      return response.data;
-    },
+    await axios.delete(
+      `${API_BASE_URL}/api/v1/colleges/${collegeId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
+
+  return useMutation({
+    mutationFn: deleteCollegeRequest,
 
     onSuccess: () => {
       toast.success("تم حذف الكلية بنجاح");
+
       queryClient.invalidateQueries({
         queryKey: ["colleges"],
       });
     },
 
     onError: (error: any) => {
-      console.log(error.response?.data);
-      toast.error("فشل في حذف الكلية");
+      toast.error(
+        error?.response?.data?.message ||
+          "حدث خطأ أثناء حذف الكلية"
+      );
     },
   });
 };
