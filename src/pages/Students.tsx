@@ -29,6 +29,7 @@ import {
 import VolunteerFilters from "../components/initiative/VolunteerFilters";
 import { useGetStudents, useToggleStudentBan } from "../hooks/use-students";
 import UserAvatar from "../components/user/UserAvatar";
+import { toArabicNumbers } from "../lib/utils";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -158,7 +159,7 @@ const Students = () => {
                   key={`${student.userId}-${currentPage}-${index}`}
                 >
                   <TableCell className="text-center font-[Thamanyah2]">
-                    {student.userId}
+                    {toArabicNumbers(student.userId)}
                   </TableCell>
 
                   <TableCell>
@@ -198,7 +199,7 @@ const Students = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.academicYear}
+                    {toArabicNumbers(student.academicYear)}
                   </TableCell>
 
 
