@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import studentsData from "../../src/data/students.json";
 
 import {
   Table,
@@ -28,11 +27,12 @@ import {
   DialogFooter,
 } from "../components/ui/dialog";
 import VolunteerFilters from "../components/initiative/VolunteerFilters";
+import { useGetStudents, useToggleStudentBan } from "../hooks/use-students";
 
 const ITEMS_PER_PAGE = 10;
 
 interface Student {
-  id: string;
+  id: number;
   sutdentNumber: string;
   firstName: string;
   lastName: string;
@@ -47,50 +47,49 @@ interface Student {
 }
 
 const Students = () => {
-  const [students, setStudents] = useState<Student[]>(
-    studentsData as Student[]
-  );
-
   const [currentPage, setCurrentPage] =
     useState(1);
 
-  const [selectedStudent, setSelectedStudent] =
-    useState<Student | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
-  const [openDialog, setOpenDialog] =
-    useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const totalPages = Math.ceil(
-    students.length / ITEMS_PER_PAGE
-  );
 
-  const paginatedStudents = useMemo(() => {
-    const start =
-      (currentPage - 1) * ITEMS_PER_PAGE;
+  const {
+    data,
+    isLoading,
+  } = useGetStudents({
+    page: currentPage - 1,
+    size: ITEMS_PER_PAGE,
+  });
 
-    const end = start + ITEMS_PER_PAGE;
+  const students = data?.content || [];
 
-    return students.slice(start, end);
-  }, [students, currentPage]);
+  const totalPages = data?.totalPages || 1;
+
+  const { mutate: toggleStudentBan } = useToggleStudentBan();
+
 
   const handleToggleStudentStatus = () => {
     if (!selectedStudent) return;
 
-    setStudents((prev) =>
-      prev.map((student) =>
-        student.id === selectedStudent.id
-          ? {
-              ...student,
-              isBanned:
-                !student.isBanned,
-            }
-          : student
-      )
+    toggleStudentBan(
+      {
+        userId:
+          selectedStudent.id,
+        isBanned:
+          !selectedStudent.isBanned,
+      },
+      {
+        onSuccess: () => {
+          setOpenDialog(false);
+          setSelectedStudent(null);
+        },
+      }
     );
-
-    setOpenDialog(false);
-    setSelectedStudent(null);
   };
+
+  console.log(students);
 
   return (
     <div className="flex flex-col gap-5">
@@ -151,13 +150,12 @@ const Students = () => {
           </TableHeader>
 
           <TableBody>
-            {paginatedStudents.map(
-              (student, index) => (
+            {students.map((student: any, index: number) => (
                 <TableRow
-                  key={`${student.id}-${currentPage}-${index}`}
+                  key={`${student.userId}-${currentPage}-${index}`}
                 >
                   <TableCell className="text-center font-[Thamanyah2]">
-                    {student.id}
+                    {student.userId}
                   </TableCell>
 
                   <TableCell>
@@ -276,7 +274,7 @@ const Students = () => {
         <Dialog
           open={openDialog}
           onOpenChange={setOpenDialog}
-        >
+        >s
           <DialogContent className="bg-white">
             <DialogHeader>
               <DialogTitle>
