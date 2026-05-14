@@ -1,9 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import keycloak from "../lib/keycloak";
+import axiosClient from "../axiosClient.ts";
 import { toast } from "sonner";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export interface College {
   collegeId: number;
@@ -30,15 +27,12 @@ export const useGetColleges = ({
   return useQuery({
     queryKey: ["colleges", page, size],
     queryFn: async () => {
-      const response = await axios.get(
-        `${API_BASE_URL}/api/v1/colleges`,
+      const response = await axiosClient.get(
+        'v1/colleges',
         {
           params: {
             page,
             size,
-          },
-          headers: {
-            Authorization: `Bearer ${keycloak.token}`,
           },
         }
       );
@@ -56,14 +50,7 @@ export const useGetCollegeById = (id: number) => {
   return useQuery({
     queryKey: ["college", id],
     queryFn: async () => {
-      const response = await axios.get(
-        `${API_BASE_URL}/api/v1/colleges/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${keycloak.token}`,
-          },
-        }
-      );
+      const response = await axiosClient.get(`v1/colleges/${id}`);
 
       return response.data;
     },
@@ -81,21 +68,14 @@ export const useCreateCollege = () => {
   const createCollegeRequest = async (
     name: string
   ): Promise<College> => {
-    const token = keycloak.token;
 
     const payload = {
       name,
     };
 
-    const response = await axios.post(
-      `${API_BASE_URL}/api/v1/colleges`,
+    const response = await axiosClient.post(
+      'v1/colleges',
       payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
     );
 
     return response.data;
@@ -131,16 +111,8 @@ export const useDeleteCollege = () => {
   const deleteCollegeRequest = async (
     collegeId: number
   ) => {
-    const token = keycloak.token;
 
-    await axios.delete(
-      `${API_BASE_URL}/api/v1/colleges/${collegeId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    await axiosClient.delete(`/v1/colleges/${collegeId}`);
   };
 
   return useMutation({

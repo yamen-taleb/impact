@@ -4,12 +4,8 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import axios from "axios";
-import keycloak from "../lib/keycloak";
+import axiosClient from "../axiosClient.ts";
 import { toast } from "sonner";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL;
 
 export interface User {
   userId: number;
@@ -53,17 +49,13 @@ export const useGetStudents = ({
 
     queryFn: async () => {
       const response =
-        await axios.get(
-          `${API_BASE_URL}/api/v1/users`,
+        await axiosClient.get(
+          'v1/users',
           {
             params: {
               page,
               size,
               sort,
-            },
-
-            headers: {
-              Authorization: `Bearer ${keycloak.token}`,
             },
           }
         );
@@ -92,18 +84,11 @@ export const useToggleStudentBan = () => {
       isBanned: boolean;
     }) => {
       const response =
-        await axios.patch(
-          `${API_BASE_URL}/api/v1/users/${userId}/ban`,
+        await axiosClient.patch(
+          'v1/users/${userId}/ban',
           {
             isBanned,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${keycloak.token}`,
-              "Content-Type":
-                "application/json",
-            },
-          }
         );
 
       return response.data;

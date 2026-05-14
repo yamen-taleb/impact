@@ -1,9 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import keycloak from "../lib/keycloak";
+import axiosClient from "../axiosClient.ts";
 import { toast } from "sonner";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export interface Category {
   categoryId: number;
@@ -27,14 +24,10 @@ export const useGetCategories = ({
   sort = ["categoryId,desc"],
 }: GetCategoriesParams) => {
   const fetchCategories = async () => {
-    const token = keycloak.token;
 
-    const response = await axios.get(
-      `${API_BASE_URL}/api/v1/categories`,
+    const response = await axiosClient.get(
+        'v1/categories',
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         params: {
           page,
           size,
@@ -57,16 +50,8 @@ export const useGetCategories = ({
 ========================= */
 export const useGetCategoryById = (id: number) => {
   const fetchCategoryById = async (): Promise<Category> => {
-    const token = keycloak.token;
 
-    const response = await axios.get(
-      `${API_BASE_URL}/api/v1/categories/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axiosClient.get(`v1/categories/${id}`);
 
     return response.data;
   };
@@ -87,21 +72,14 @@ export const useCreateCategory = () => {
   const createCategoryRequest = async (
     name: string
   ): Promise<Category> => {
-    const token = keycloak.token;
 
     const payload = {
       name,
     };
 
-    const response = await axios.post(
-      `${API_BASE_URL}/api/v1/categories`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
+    const response = await axiosClient.post(
+        'v1/categories',
+        payload,
     );
 
     return response.data;
@@ -136,16 +114,8 @@ export const useDeleteCategory = () => {
   const deleteCategoryRequest = async (
     categoryId: number
   ) => {
-    const token = keycloak.token;
 
-    await axios.delete(
-      `${API_BASE_URL}/api/v1/categories/${categoryId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    await axiosClient.delete(`v1/categories/${categoryId}`);
   };
 
   return useMutation({
