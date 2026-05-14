@@ -1,11 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { Link } from "react-router";
 
-import initiativesData from "../../data/initiatives.json";
 import userData from "../../data/userData.json";
-import { initiativesSchema } from "../../schemas/initiativePageSchema";
+import {type Initiative} from "../../schemas/initiativePageSchema";
 import { getInitiativeStatus } from "../../lib/initiativeStatus";
 
 import {
@@ -24,29 +22,15 @@ import {
   Eye,
 } from "lucide-react";
 
-const ITEMS_PER_PAGE = 10;
+interface Props {
+  initiatives: Initiative[];
+  page: number;
+  setPage: (page: number) => void;
+  totalPages: number;
+}
 
-const InitiativeTable = () => {
-  const initiatives = useMemo(() => {
-    return initiativesSchema.parse(initiativesData);
-  }, []);
-
-  const user = userData.personalInfo;
-
-  const [currentPage, setCurrentPage] =
-    useState(1);
-
-  const totalPages = Math.ceil(
-    initiatives.length / ITEMS_PER_PAGE
-  );
-
-  const paginatedInitiatives = useMemo(() => {
-    const start =
-      (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-
-    return initiatives.slice(start, end);
-  }, [currentPage, initiatives]);
+const InitiativeTable = ({initiatives, page, setPage, totalPages} : Props) => {
+  const user = userData.personalInfo
 
   return (
     <div className="w-full rounded-2xl border border-zinc-200 bg-white shadow-sm">
@@ -73,7 +57,7 @@ const InitiativeTable = () => {
         </TableHeader>
 
         <TableBody>
-          {paginatedInitiatives.map(
+          {initiatives?.map(
             (initiative) => {
               const status =
                 getInitiativeStatus(
@@ -82,10 +66,10 @@ const InitiativeTable = () => {
 
               return (
                 <TableRow
-                  key={initiative.id}
+                  key={initiative.campaignId}
                 >
                   <TableCell className="font-medium font-[Thamanyah2] text-center">
-                    {initiative.id}
+                    {initiative.campaignId}
                   </TableCell>
 
                   <TableCell className="font-medium font-[Thamanyah2]">
@@ -93,12 +77,12 @@ const InitiativeTable = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {user.firstName}{" "}
-                    {user.lastName}
+                    {user?.firstName}{" "}
+                    {user?.lastName}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {initiative.college}
+                    {initiative.collegeName}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -106,7 +90,7 @@ const InitiativeTable = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {initiative.percentage}%
+                    {initiative.lastProgress?.percentage ?? 0}%
                   </TableCell>
 
                   <TableCell>
@@ -119,7 +103,7 @@ const InitiativeTable = () => {
 
                   <TableCell className="font-[Thamanyah2]">
                     {new Date(
-                      initiative.submissionDate
+                      initiative.createdAt
                     ).toLocaleDateString(
                       "ar-SY"
                     )}
@@ -131,7 +115,7 @@ const InitiativeTable = () => {
 
                   <TableCell>
                     <Link
-                      to={`/initiatives/${initiative.id}`}
+                      to={`/initiatives/${initiative.campaignId}`}
                     >
                       <Button
                         size="sm"
@@ -154,10 +138,10 @@ const InitiativeTable = () => {
       <div className="flex items-center justify-between border-t p-4">
         <Button
           variant="outline"
-          disabled={currentPage === 1}
+          disabled={page + 1 === 1}
           onClick={() => {
-            if (currentPage > 1) {
-              setCurrentPage(currentPage - 1);
+            if (page + 1 > 1) {
+              setPage(page - 1);
             }
           }}
         >
@@ -166,17 +150,17 @@ const InitiativeTable = () => {
         </Button>
 
         <span className="text-sm text-zinc-600">
-          صفحة {currentPage} من {totalPages}
+          صفحة {page+1} من {totalPages}
         </span>
 
         <Button
           variant="outline"
           disabled={
-            currentPage === totalPages
+            page + 1 === totalPages
           }
           onClick={() => {
-            if (currentPage < totalPages) {
-              setCurrentPage(currentPage + 1);
+            if (page + 1 < totalPages) {
+              setPage(page + 1);
             }
           }}
         >

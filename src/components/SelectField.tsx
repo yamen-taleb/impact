@@ -3,7 +3,7 @@ import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVal
 
 interface Props {
     field: AnyFieldApi,
-    options: {value: string; label: string}[],
+    options: {value: string|number; label: string}[],
     placeholder?: string,
     label?: string,
     className?: string,

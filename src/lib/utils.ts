@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import keycloak from "./keycloak.ts";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -19,3 +20,9 @@ export const toArabicNumbers = (
       "٠١٢٣٤٥٦٧٨٩"[Number(digit)]
     );
 };
+
+export const getUserRole = () => {
+  return keycloak.hasRealmRole?.("ROLE_ADMIN") ? "Admin"
+      : keycloak.hasRealmRole?.("ROLE_SUPERADMIN") ? "Manager"
+          : "User"
+}

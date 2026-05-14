@@ -1,17 +1,22 @@
 import NewInitiativeOverlay from "./NewInitiativeOverlay";
-import Filters from "./Filters";
-import userData from "../../data/userData.json";
+import type {FiltersType} from "./Filters.tsx";
+import Filters from "./Filters.tsx";
+import { getUserRole } from "../../lib/utils.ts";
 
-const InitiativeHeader = () => {
+interface InitiativeHeaderProps {
+    onFiltersChange?: (filters: FiltersType) => void;
+}
 
-    const userRole = userData.additionalInfo.role;
+const InitiativeHeader = ({ onFiltersChange }: InitiativeHeaderProps) => {
+
+    const userRole = getUserRole();
 
     return (
         <div className="flex w-full justify-start items-center gap-5 pl-10">
             {(userRole === "Admin" || userRole === "User") && (
                 <NewInitiativeOverlay/>
             )}
-            <Filters/>
+            <Filters onFiltersChange={onFiltersChange} />
         </div>
     );
 };

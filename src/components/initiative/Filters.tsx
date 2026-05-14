@@ -4,9 +4,11 @@ import SelectField from "../SelectField.tsx";
 import TextField from "../TextField.tsx";
 import debounce from "lodash.debounce";
 import {Search} from "lucide-react";
+import {useGetColleges} from "../../hooks/use-college.ts";
+import {useGetCategories} from "../../hooks/use-category.ts";
 
 
-type Filters = {
+export type FiltersType = {
     search: string;
     college: string;
     status: string;
@@ -19,52 +21,60 @@ const ALL_CATEGORIES = "all_categories";
 
 const statusOptions = [
     { value: ALL_STATUSES, label: "كل الحالات" },
-    { value: "active", label: "نشطة" },
-    { value: "pending", label: "قيد المراجعة" },
-    { value: "closed", label: "مغلقة" },
+    { value: "ONGOING", label: "نشطة" },
+    { value: "APPROVED", label: "مقبولة"},
+    { value: "PENDING", label: "قيد المراجعة" },
+    { value: "REJECTED", label: "مرفوضة" },
+    { value: "COMPLETED", label: "مكتملة" },
+    { value: "CANCELED", label: "ملغاة" },
 ];
 
-const categoryOptions = [
-    { value: ALL_CATEGORIES, label: "كل الفئات" },
-    { value: "education", label: "تعليم" },
-    { value: "health", label: "صحة" },
-    { value: "community", label: "مجتمعي" },
-];
+interface FiltersProps {
+    onFiltersChange?: (filters: FiltersType) => void;
+}
 
-const collegeOptions = [
-    { value: ALL_COLLEGIES, label: "كل الكليات" },
-    { value: "informaticsEn", label: "كلية الهندسة المعلوماتية" },
-    { value: "civilEn", label: "كلية الهندسة المدنية" },
-    { value: "architecturalEn", label: "كلية الهندسة المعمارية" },
-    { value: "agriculturalEn", label: "كلية الهندسة الزراعية" },
-    { value: "electricalAndElectronicsEn", label: "كلية الهندسة الكهربائية والإلكترونية" },
-    { value: "mechanicalEn", label: "كلية الهندسة الميكانيكية" },
-    { value: "technicalEn", label: "كلية الهندسة التقنية" },
-    { value: "medicine", label: "كلية الطب البشري" },
-    { value: "dentistry", label: "كلية طب الأسنان" },
-    { value: "pharmacy", label: "كلية الصيدلة" },
-    { value: "nursing", label: "كلية التمريض" },
-    { value: "sciences", label: "كلية العلوم" },
-    { value: "economics", label: "كلية الاقتصاد" },
-    { value: "appliedFineArts", label: "كلية الفنون الجميلة التطبيقية" },
-    { value: "appliedScience", label: "الكلية التطبيقية" },
-    { value: "law", label: "كلية الحقوق" },
-    { value: "artsOfHumanity", label: "كلية الآداب والعلوم الإنسانية" },
-    { value: "education", label: "كلية التربية" },
-    { value: "sharia", label: "كلية الشريعة" },
-    { value: "medicineInst", label: "المعهد التقاني الطبي" },
-    { value: "dentistryInst", label: "المعهد التقاني لطب الأسنان" },
-    { value: "agriculturalInst", label: "المعهد التقاني الزراعي" },
-    { value: "marketingAndBusinessInst", label: "المعهد التقاني لإدارة الأعمال والتسويق" },
-    { value: "bankingAndFinanceInst", label: "المعهد التقاني للعلوم المالية والمصرفية" },
-    { value: "computerInst", label: "المعهد التقاني للحاسوب" },
-    { value: "mechanicalAndElectronicsInst", label: "المعهد التقاني للهندسة الميكانيكية والكهربائية" },
-    { value: "engineeringInst", label: "المعهد التقاني الهندسي" },
-  ];
+const Filters = ({ onFiltersChange }: FiltersProps) => {
 
-const Filters = () => {
+    const { data: collegesData } =
+        useGetColleges({
+            page: 0,
+            size: 50,
+        });
 
-    const [appliedFilters, setAppliedFilters] = useState<Filters>({
+    const collegeOptions = useMemo(() => {
+
+        const colleges = collegesData?.content || [];
+
+
+        return [
+            { value: ALL_COLLEGIES, label: "كل الكليات" },
+            ...colleges
+                .map((college: { collegeId?: string | number; name?: string }) => ({
+                    value: String(college.collegeId ?? ""),
+                    label: college.name ?? "-",
+                }))
+        ];
+    }, [collegesData]);
+
+    const {data: categoriesData } = useGetCategories({
+        page: 0,
+        size: 50,
+    });
+
+    const categoryOptions = useMemo(() => {
+        const  categories = categoriesData?.content || [];
+
+        return [
+            { value: ALL_CATEGORIES, label: "كل الفئات" },
+            ...categories
+                .map((category: { categoryId?: string | number; name?: string }) => ({
+                    value: String(category.categoryId ?? ""),
+                    label: category.name ?? "-",
+                }))
+        ];
+     }, [categoriesData]);
+
+    const [appliedFilters, setAppliedFilters] = useState<FiltersType>({
         search: "",
         college: ALL_COLLEGIES,
         status: ALL_STATUSES,
@@ -74,7 +84,7 @@ const Filters = () => {
     const form = useForm({
         defaultValues: appliedFilters,
         onSubmit: ({ value }) => {
-            const normalizedFilters: Filters = {
+            const normalizedFilters: FiltersType = {
                 search: value.search,
                 college: value.college === ALL_COLLEGIES ? "" : value.college,
                 status: value.status === ALL_STATUSES ? "" : value.status,
@@ -82,7 +92,7 @@ const Filters = () => {
             };
 
             setAppliedFilters(value);
-            console.log("Applying filters:", normalizedFilters);
+            onFiltersChange?.(normalizedFilters);
         },
     });
     const debouncedSubmit = useMemo(

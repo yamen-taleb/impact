@@ -15,6 +15,8 @@ const InitiativeCard = ({initiative}: Props) => {
     const user = userData.personalInfo;
     const status = getInitiativeStatus(initiative.status);
 
+    const percentage = initiative.lastProgress?.percentage ?? 0;
+
   return (
       <Card className="w-full h-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg !py-0 !gap-0">
           <div className="relative h-44 w-full bg-slate-100">
@@ -36,7 +38,7 @@ const InitiativeCard = ({initiative}: Props) => {
               <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1">
                       <CardDescription className="text-xs text-slate-500 font-[Thamanyah2]">
-                          {user?.firstName} {user?.lastName ?? "مستخدم مجهول"} - {new Date(initiative.submissionDate).toLocaleDateString("ar-SY")}
+                          {user?.firstName} {user?.lastName ?? "مستخدم مجهول"} - {new Date(initiative.createdAt).toLocaleDateString("ar-SY")}
                       </CardDescription>
                       <CardTitle className="line-clamp-2 text-lg leading-6 text-slate-900">{initiative.title}</CardTitle>
                   </div>
@@ -56,20 +58,20 @@ const InitiativeCard = ({initiative}: Props) => {
 
               <div className="flex flex-wrap gap-2">
                   <Badge variant="default" className="rounded-full border-zinc-900 bg-zinc-900/90 px-3 py-1 text-white">
-                      {initiative.college ?? "غير معروف"}
+                      {initiative.collegeName ?? "غير معروف"}
                   </Badge>
                   <Badge variant="secondary" className="rounded-full bg-zinc-100 px-3 py-1 text-zinc-800">
                       {initiative.category ?? "غير معروف"}
                   </Badge>
                   <Badge variant="outline" className="rounded-full border-zinc-300 bg-white px-3 py-1 text-zinc-700">
-                      {initiative.address?.slice(0, 20) ?? "غير معروف"}
+                      {initiative.location?.slice(0, 20) ?? "غير معروف"}
                   </Badge>
               </div>
           </CardContent>
 
           <CardFooter className="mt-auto flex items-center justify-between gap-4 px-5 pb-5 pt-2 font-[Thamanyah2]">
               <Link
-                  to={`/initiatives/${initiative.id}`}
+                  to={`/initiatives/${initiative.campaignId}`}
                   className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
               >
                   <span>المزيد من التفاصيل</span>
@@ -77,7 +79,7 @@ const InitiativeCard = ({initiative}: Props) => {
               </Link>
 
               <CircularProgressbarWithChildren
-                  value={initiative.percentage}
+                  value={percentage}
                   className="h-16 w-16 shrink-0"
                   styles={buildStyles({
                       pathTransitionDuration: 0.5,
@@ -85,7 +87,7 @@ const InitiativeCard = ({initiative}: Props) => {
                       trailColor: "#e5e7eb",
                   })}
               >
-                  <span className="text-sm font-semibold text-slate-900">{initiative.percentage}%</span>
+                  <span className="text-sm font-semibold text-slate-900">{percentage}%</span>
               </CircularProgressbarWithChildren>
           </CardFooter>
       </Card>
