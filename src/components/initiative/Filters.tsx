@@ -4,8 +4,8 @@ import SelectField from "../SelectField.tsx";
 import TextField from "../TextField.tsx";
 import debounce from "lodash.debounce";
 import {Search} from "lucide-react";
-import {useGetColleges} from "../../hooks/use-college.ts";
-import {useGetCategories} from "../../hooks/use-category.ts";
+import { useCategoryContext } from "../../context/CategoryContext.tsx";
+import {useCollegeContext} from "../../context/CollegeContext.tsx";
 
 
 export type FiltersType = {
@@ -35,44 +35,24 @@ interface FiltersProps {
 
 const Filters = ({ onFiltersChange }: FiltersProps) => {
 
-    const { data: collegesData } =
-        useGetColleges({
-            page: 0,
-            size: 50,
-        });
+    const {collegeOptions: rawCollegeOptions} = useCollegeContext();
 
     const collegeOptions = useMemo(() => {
 
-        const colleges = collegesData?.content || [];
-
-
         return [
             { value: ALL_COLLEGIES, label: "كل الكليات" },
-            ...colleges
-                .map((college: { collegeId?: string | number; name?: string }) => ({
-                    value: String(college.collegeId ?? ""),
-                    label: college.name ?? "-",
-                }))
+            ...rawCollegeOptions
         ];
-    }, [collegesData]);
+    }, [rawCollegeOptions]);
 
-    const {data: categoriesData } = useGetCategories({
-        page: 0,
-        size: 50,
-    });
+    const { categoryOptions: rawCategoryOptions } = useCategoryContext();
 
     const categoryOptions = useMemo(() => {
-        const  categories = categoriesData?.content || [];
-
         return [
             { value: ALL_CATEGORIES, label: "كل الفئات" },
-            ...categories
-                .map((category: { categoryId?: string | number; name?: string }) => ({
-                    value: String(category.categoryId ?? ""),
-                    label: category.name ?? "-",
-                }))
+            ...rawCategoryOptions
         ];
-     }, [categoriesData]);
+    }, [rawCategoryOptions]);
 
     const [appliedFilters, setAppliedFilters] = useState<FiltersType>({
         search: "",
