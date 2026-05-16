@@ -1,33 +1,83 @@
-import userData from "../../data/userData.json";
-import syrianGovernorates from "../../data/syrianGovernorates.json";
 import {Field, useForm} from "@tanstack/react-form";
 import {secondaryPersonalInfoSchema} from "../../schemas/secondaryPersonalInfoSchema.ts";
 import SelectField from "../../components/SelectField.tsx";
 import TextField from "../../components/TextField.tsx";
 import DatePickerField from "../../components/DatePickerField.tsx";
 import TextAreaField from "../../components/TextAreaField.tsx";
-import {useMemo} from "react";
+import {useUserContext} from "../../context/UserContext.tsx";
+import {useCollegeContext} from "../../context/CollegeContext.tsx";
+import {useGetUserById, useUpdateUser} from "../../hooks/use-user.ts";
+import {useEffect, useMemo} from "react";
+import {toast} from "sonner";
+import {useParams} from "react-router";
 
 const SecondaryPersonalInformationForm = () => {
-    const user = userData;
-    const governorates = syrianGovernorates;
-    const SelectOption: {value: string; label: string}[] = useMemo(() => governorates.map((governorate) => ({
-        value: governorate.value,
-        label: governorate.arabic,
-    })), [governorates]);
+    const {currentUser, isLoading: isCurrentUserLoading} = useUserContext();
+    const {id: userId} = useParams()
+    const {user} = useGetUserById(userId);
+
+    const {collegeOptions} = useCollegeContext()
+    const { mutate: updateUser, isPending } = useUpdateUser();
+
+    const sameUser = useMemo(() => {
+        if (!userId) return false;
+        if (!currentUser?.userId) return false;
+        return String(userId) === String(currentUser.userId);
+    }, [currentUser?.userId, userId]);
+
+    const canEdit = !isCurrentUserLoading && sameUser;
+
+    const selectedCollegeOptions = useMemo(() => {
+        if (!user?.collegeId) {
+            return collegeOptions;
+        }
+
+        const selectedCollegeId = String(user.collegeId);
+        const hasSelectedCollege = collegeOptions.some((option) => option.value === selectedCollegeId);
+
+        if (hasSelectedCollege) {
+            return collegeOptions;
+        }
+
+        return [
+            {
+                value: selectedCollegeId,
+                label: user.collegeName || "الكلية المحددة",
+            },
+            ...collegeOptions,
+        ];
+    }, [collegeOptions, user?.collegeId, user?.collegeName]);
 
     const form = useForm({
         defaultValues: {
-            governorate: user.additionalInfo.governorate,
-            address: user.additionalInfo.address,
-            birthDate: user.additionalInfo.birthDate,
-            education: user.additionalInfo.education,
-            description: user.additionalInfo.about,
+            collegeId: user?.collegeId?.toString() || "",
+            location: user?.location || "",
+            birthDate: user?.birthdate || "",
+            academicYear: user?.academicYear || "",
+            description: user?.description || "",
         },
-        onSubmit: (values) => {
-            console.log(values);
-            // TODO
-            // api call
+        onSubmit: ({value}) => {
+            if (!canEdit) {
+                toast.error("لا يمكنك تعديل بيانات مستخدم آخر");
+                return;
+            }
+            if (!user?.userId) {
+                toast.error("بيانات المستخدم غير مكتملة");
+                return;
+            }
+
+            updateUser({
+                userId: user.userId,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                phone: user.phone,
+                collegeId: parseInt(value.collegeId),
+                location: value.location,
+                birthdate: value.birthDate,
+                academicYear: value.academicYear,
+                description: value.description
+            });
         },
         validators: {
             onSubmit: secondaryPersonalInfoSchema,
@@ -53,20 +103,23 @@ const SecondaryPersonalInformationForm = () => {
           </div>
 
           <div className="grid gap-7 md:grid-cols-2">
-              <Field form={form} name="governorate">
+              <Field form={form} name="collegeId">
                   {
-                      (field) => (
-                          <SelectField
-                              className="!w-full !border-0 !border-b !border-slate-300 !pb-3 !pt-2 !h-10 !rounded-none"
-                              field={field} options={SelectOption} label="المحافظة"/>
-                      )
-                  }
+                      (field) => {
+                          const placeholder = !canEdit && field.state.value == "" ? "الكلية غير محددة" : "اختر الكلية"
+                          return (
+                              <SelectField
+                                  className="!w-full !border-0 !border-b !border-slate-300 !pb-3 !pt-2 !h-10 !rounded-none"
+                                  disabled={!canEdit}
+                                  field={field} options={selectedCollegeOptions} label="الكلية" placeholder={placeholder} />
+                          )
+                  }}
               </Field>
 
-              <Field form={form} name="address">
+              <Field form={form} name="location">
                   {
                       (field) => (
-                          <TextField className="fieldClasses font-[Thamanyah2]" field={field} type="text" label="العنوان"/>
+                          <TextField className="fieldClasses font-[Thamanyah2]" field={field} type="text" label="العنوان" disabled={!canEdit}/>
                       )
                   }
               </Field>
@@ -74,38 +127,54 @@ const SecondaryPersonalInformationForm = () => {
 
           <div className="grid gap-7 md:grid-cols-2">
               <Field form={form} name="birthDate">
-                  {(field) => (
-                      <DatePickerField
-                          field={field}
-                          label="تاريخ الميلاد"
-                          className="!w-full !border-0 !border-b !border-slate-300 !pb-3 !pt-2 !h-10 !rounded-none"
-                      />
-                  )}
+                  {(field) => {
+                      const placeholder = !canEdit && field.state.value == "" ? "تاريخ غير محدد" : "اختر التاريخ"
+                      return (
+                          <DatePickerField
+                              field={field}
+                              label="تاريخ الميلاد"
+                              placeholder={placeholder}
+                              className="!w-full !border-0 !border-b !border-slate-300 !pb-3 !pt-2 !h-10 !rounded-none"
+                              disabled={!canEdit}
+                          />
+                      )
+                  }}
               </Field>
 
-              <Field form={form} name="education">
-                  {(field) => (
-                      <TextField className="fieldClasses font-[Thamanyah2]" field={field} type="text" label="الكلية"/>
-                  )}
+              <Field form={form} name="academicYear">
+                  {
+                      (field) => (
+                          <TextField className="fieldClasses font-[Thamanyah2]" field={field} type="text" label="السنة الدراسية" disabled={!canEdit}/>
+                      )
+                  }
               </Field>
           </div>
 
           <Field form={form} name="description">
               {(field) => (
-                  <TextAreaField field={field} label="وصف عنك" className={"fieldClasses min-h-10 font-[Thamanyah2]"}
-                                 placeholder={"قم بكتابة وصف عنك"}/>
+                  <TextAreaField field={field}
+                                 label="وصف عنك"
+                                 className={"fieldClasses min-h-10 font-[Thamanyah2]"}
+                                 readOnly={!canEdit}
+                                 placeholder={"قم بكتابة وصف عنك"}
+                  />
               )}
           </Field>
 
           <div className="flex justify-end mt-2">
-              <button type="submit"
-                      className="inline-flex items-center gap-4 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">
-                  <span aria-hidden="true">‹</span>
-                  <span>حفظ</span>
-              </button>
+
+              {canEdit && (
+                  <button type="submit"
+                          disabled={isPending}
+                          className="inline-flex items-center gap-4 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50">
+                      <span aria-hidden="true">‹</span>
+                      <span>{isPending ? "جاري الحفظ..." : "حفظ"}</span>
+                  </button>
+              )}
           </div>
       </form>
   );
 };
 
 export default SecondaryPersonalInformationForm;
+

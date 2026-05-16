@@ -30,7 +30,7 @@ const SelectField = ({field, options, placeholder, label, className, disabled = 
                     disabled={disabled}
                 >
                     <SelectTrigger
-                        className={`${className} ${disabled ? 'cursor-not-allowed' : ''}`}
+                        className={`${className}`}
                     >
                         <SelectValue placeholder={placeholder || "اختر محافظة"} />
                     </SelectTrigger>

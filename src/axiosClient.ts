@@ -7,7 +7,9 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${keycloak.token}`
-    config.headers.setContentType("application/json")
+    if (!(config.data instanceof FormData)) {
+        config.headers.setContentType("application/json")
+    }
     return config
 })
 

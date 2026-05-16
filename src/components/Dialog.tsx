@@ -79,7 +79,20 @@ const Dialog = ({
         if (!open) return;
 
         const handlePointerDown = (event: PointerEvent) => {
-            if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
+            const target = event.target as Element | null;
+
+            // Ignore clicks if they originate from Radix UI portals like Select dropdowns or menus
+            if (
+                target?.closest('[role="listbox"]') || 
+                target?.closest('[role="menu"]') || 
+                target?.closest('[data-radix-portal]') ||
+                target?.closest('[data-radix-popper-content-wrapper]') ||
+                target?.closest('*[dir="rtl"]') && target.closest('[data-state]')
+            ) {
+                return;
+            }
+
+            if (dialogRef.current && !dialogRef.current.contains(target as Node)) {
                 handleCancel();
             }
         };

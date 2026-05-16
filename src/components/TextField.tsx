@@ -7,9 +7,10 @@ interface Props {
     label?: string,
     className?: string,
     onAfterChange?: (value: string) => void
+    disabled: boolean,
 }
 
-const TextField = ({field, type, placeholder, label, className, onAfterChange}: Props) => {
+const TextField = ({field, type, placeholder, label, className, onAfterChange, disabled}: Props) => {
     const {errors, isTouched} = field.state.meta;
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         field.handleChange(
@@ -32,6 +33,7 @@ const TextField = ({field, type, placeholder, label, className, onAfterChange}: 
                     value={field.state.value as string | number}
                     onChange={handleOnChange}
                     onBlur={field.handleBlur}
+                    disabled={disabled}
                 />
             </label>
             {errors.length > 0 && isTouched && (

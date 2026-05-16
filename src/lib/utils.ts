@@ -26,3 +26,9 @@ export const getUserRole = () => {
       : keycloak.hasRealmRole?.("ROLE_SUPERADMIN") ? "Manager"
           : "User"
 }
+
+export const getImageUrl = (url: string|null) => {
+  return url?.startsWith("https")
+      ? url
+      : import.meta.env.VITE_API_BASE_URL + url;
+}

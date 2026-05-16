@@ -16,17 +16,13 @@ import {
   DialogFooter,
 } from "./ui/dialog";
 import { Button } from "./ui/button.tsx";
-import { useGetMyUser } from "../hooks/use-user.ts";
+import {useUserContext} from "../context/UserContext.tsx";
+import {getImageUrl} from "../lib/utils.ts";
 
 const HeaderAvatar = () => {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
 
-	const {currentUser, isLoading} = useGetMyUser();
-
-	if(isLoading){
-		return null;
-	} 
-
+  const {currentUser} = useUserContext()
 
 	const handleLogout = async () => {
 		try {
@@ -53,7 +49,7 @@ const HeaderAvatar = () => {
 				<PopoverTrigger asChild>
 					<button className="relative flex items-center gap-2 rounded-lg p-1.5 transition hover:bg-zinc-100">
 						<UserAvatar
-								url={currentUser?.photo}
+								url={getImageUrl(currentUser?.photo)}
 								width="w-10"
 								height="h-10"
 								letterSize={"text-lg"}
@@ -76,7 +72,7 @@ const HeaderAvatar = () => {
 						</div>
 
 						<Link
-							to="/profile"
+							to={`/profile/${currentUser?.userId}`}
 							className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900"
 						>
 							<User size={16} />
@@ -84,7 +80,7 @@ const HeaderAvatar = () => {
 						</Link>
 
 						<Link
-							to={`/student-initiatives-participation/${currentUser?.id}`}
+							to={`/student-initiatives-participation/${currentUser?.userId}`}
 							className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900"
 						>
 							<Clock size={16}/>
