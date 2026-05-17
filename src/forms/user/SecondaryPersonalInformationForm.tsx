@@ -27,30 +27,9 @@ const SecondaryPersonalInformationForm = () => {
 
     const canEdit = !isCurrentUserLoading && sameUser;
 
-    const selectedCollegeOptions = useMemo(() => {
-        if (!user?.collegeId) {
-            return collegeOptions;
-        }
-
-        const selectedCollegeId = String(user.collegeId);
-        const hasSelectedCollege = collegeOptions.some((option) => option.value === selectedCollegeId);
-
-        if (hasSelectedCollege) {
-            return collegeOptions;
-        }
-
-        return [
-            {
-                value: selectedCollegeId,
-                label: user.collegeName || "الكلية المحددة",
-            },
-            ...collegeOptions,
-        ];
-    }, [collegeOptions, user?.collegeId, user?.collegeName]);
-
     const form = useForm({
         defaultValues: {
-            collegeId: user?.collegeId?.toString() || "",
+            collegeId: collegeOptions.find((option) => option.label === user?.collegeName)?.value || "",
             location: user?.location || "",
             birthDate: user?.birthdate || "",
             academicYear: user?.academicYear || "",
@@ -111,7 +90,7 @@ const SecondaryPersonalInformationForm = () => {
                               <SelectField
                                   className="!w-full !border-0 !border-b !border-slate-300 !pb-3 !pt-2 !h-10 !rounded-none"
                                   disabled={!canEdit}
-                                  field={field} options={selectedCollegeOptions} label="الكلية" placeholder={placeholder} />
+                                  field={field} options={collegeOptions} label="الكلية" placeholder={placeholder} />
                           )
                   }}
               </Field>
