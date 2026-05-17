@@ -9,8 +9,13 @@ interface Props {
 }
 
 const InitiativeDetailsHero = ({initiative}: Props) => {
-    const primaryPhoto = initiative.photos[0];
+
+    // TODO : use actual initiative photo instead of placeholder
+    const primaryPhoto = "https://loremflickr.com/g/320/240/aleppo";
     const status = getInitiativeStatus(initiative.status);
+
+    const validAttachments = initiative.progressPhotos?.filter((v): v is string => !!v) ?? [];
+
 
     return (
             <div className="relative h-72 w-full bg-zinc-100">
@@ -32,12 +37,12 @@ const InitiativeDetailsHero = ({initiative}: Props) => {
                         <h1 className="text-2xl font-black leading-tight md:text-3xl">{initiative.title}</h1>
                         <p className="mt-2 flex items-center gap-2 text-sm text-zinc-200">
                             <CalendarDays size={16} />
-                            تاريخ النشر: {new Date(initiative.submissionDate).toLocaleDateString("ar-SY")}
+                            تاريخ النشر: {new Date(initiative.createdAt).toLocaleDateString("ar-SY")}
                         </p>
                     </div>
 
                     <AttachmentsPreview
-                        attachments={initiative.photos}
+                        attachments={validAttachments}
                         title="صور المبادرة"
                         trigger={
                             <button

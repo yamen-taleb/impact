@@ -9,7 +9,7 @@ const InitiativeDetailsEmptyState = ({backHref = "/initiatives"}: Props) => {
     return (
         <section className="mx-auto max-w-4xl rounded-2xl border border-dashed border-zinc-300 bg-white p-8 text-center shadow-sm">
             <h1 className="text-2xl font-bold text-zinc-900">لم يتم العثور على المبادرة</h1>
-            <p className="mt-3 text-sm text-zinc-600">
+            <p className="mt-3 text-sm text-zinc-600 font-[Thamanyah2]">
                 قد يكون الرابط غير صحيح، أو أن المبادرة لم تعد متاحة.
             </p>
             <Link

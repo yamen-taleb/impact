@@ -13,16 +13,35 @@ import InitiativeMaxVolunteers from "../components/initiative/InitiativeMaxVolun
 import ProgressManagement from "../components/initiative/ProgressManagement.tsx";
 import userData from "../../src/data/userData.json";
 import InitiativeDetailsVolunteersAvatar from "../components/initiative/details/InitiativeDetailsVolunteersAvatar.tsx";
+import { useGetCampaignById } from "../hooks/use-initiative.ts";
+import { useParams } from "react-router";
 
 const InitiativeDetails = () => {
-	const parsed = initiativeDetailsSchema.safeParse(initiativeDetails);
+	const { initiativeId } = useParams();
 
-	if (!parsed.success) {
-		return <InitiativeDetailsEmptyState />;
-	}
+    const campaignId = Number(initiativeId);
 
-	const initiative = parsed.data;
-    const userRole = userData.additionalInfo.role;
+    const {
+        data: initiative,
+        isLoading,
+        error
+    } = useGetCampaignById(campaignId);
+
+    const userRole =
+        userData.additionalInfo.role;
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !initiative) {
+        return (
+        <InitiativeDetailsEmptyState />
+        );
+    }
+
+    console.log(initiative);
+
 
 	return (
         <section className="mx-auto max-w-6xl space-y-6">
@@ -30,10 +49,10 @@ const InitiativeDetails = () => {
             <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
                 <InitiativeDetailsHero initiative={initiative}/>
                 <InitiativeDetailsMetaGrid
-                    college={initiative.college}
+                    college={String(initiative.collegeId)}
                     category={initiative.category}
-                    address={initiative.address}
-                    estimatedTimeToComplete={initiative.estimatedTimeToComplete}
+                    address={initiative.location}
+                    estimatedTimeToComplete={String(initiative.endDate ? new Date(initiative.endDate).getTime() - new Date(initiative.startDate).getTime() : null)}
                     startDate={initiative.startDate}
                     endDate={initiative.endDate}
                 />
@@ -41,7 +60,7 @@ const InitiativeDetails = () => {
 
             <div className="grid gap-6 md:grid-cols-3">
                 <InitiativeDetailsDescription description={initiative.description}/>
-                <InitiativeDetailsProgress percentage={initiative.percentage}/>
+                <InitiativeDetailsProgress percentage={Number(initiative.lastProgress?.percentage)}/>
             </div>      
 
             <InitiativeDetailsActions/>

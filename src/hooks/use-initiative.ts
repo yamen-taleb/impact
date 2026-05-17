@@ -1,6 +1,8 @@
 import {initiativeStatusEnum, paginatedInitiativesSchema} from "../schemas/initiativePageSchema.ts";
 import axiosClient from "../axiosClient.ts";
 import {useQuery} from "@tanstack/react-query";
+import { initiativeDetailsSchema } from "../schemas/initiativeDetailsSchema.ts";
+
 
 interface InitiativeParams {
     page?: number;
@@ -12,6 +14,7 @@ interface InitiativeParams {
     categoryId?: string|number;
     proposedByUserId?: string|number;
 }
+
 
 export const useGetInitiatives = ({
     page = 0,
@@ -69,3 +72,47 @@ export const useGetInitiatives = ({
         error,
     }
 }
+
+
+export const useGetCampaignById = (
+  campaignId?: number
+) => {
+  const fetchCampaignById =
+    async () => {
+      const response =
+        await axiosClient.get(
+          `v1/campaigns/${campaignId}`
+        );
+
+      return initiativeDetailsSchema.parse(
+        response.data
+      );
+    };
+
+  const {
+    data,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: [
+      "campaign-details",
+      campaignId,
+    ],
+
+    queryFn: fetchCampaignById,
+
+    enabled:
+      !!campaignId &&
+      !isNaN(campaignId),
+  });
+
+  if (error) {
+    console.error(error);
+  }
+
+  return {
+    data,
+    isLoading,
+    error,
+  };
+};
