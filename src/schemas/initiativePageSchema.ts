@@ -35,11 +35,12 @@ export const initiativePageSchema = z.object({
     updatedAt: z.string().nullable(),
     publishedAt: z.string().nullable().optional(),
     photo: z.string().nullable().optional(),
-    photos: z.array(z.string()).nullable().optional(), // backend sends null
+    photos: z.array(z.string()).nullable().optional(),
     collegeId: z.number().nullable().optional(),
     collegeName: z.string().nullable().optional(),
     lastProgress: lastProgressSchema.nullable().optional(),
     progressPhotos: z.array(z.string()).nullable().optional(),
+    proposedByName: z.string(),
 });
 
 export const initiativesSchema = z.array(initiativePageSchema);

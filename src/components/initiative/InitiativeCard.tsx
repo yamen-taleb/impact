@@ -1,7 +1,6 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "../ui/card.tsx";
 import {Badge} from "../ui/badge.tsx";
 import {ChevronLeft, Image} from 'lucide-react';
-import userData from "../../data/userData.json";
 import {Link} from "react-router";
 import { buildStyles, CircularProgressbarWithChildren } from "react-circular-progressbar";
 import type {Initiative} from "../../schemas/initiativePageSchema.ts";
@@ -13,7 +12,6 @@ interface Props {
 }
 
 const InitiativeCard = ({initiative}: Props) => {
-    const user = userData.personalInfo;
     const status = getInitiativeStatus(initiative.status);
 
     const percentage = initiative.lastProgress?.percentage ?? 0;
@@ -39,7 +37,7 @@ const InitiativeCard = ({initiative}: Props) => {
               <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1">
                       <CardDescription className="text-xs text-slate-500 font-[Thamanyah2]">
-                          {user?.firstName} {user?.lastName ?? "مستخدم مجهول"} - {new Date(initiative.createdAt).toLocaleDateString("ar-SY")}
+                           {initiative?.proposedByName ?? "مستخدم مجهول"} - {new Date(initiative.createdAt).toLocaleDateString("ar-SY")}
                       </CardDescription>
                       <CardTitle className="line-clamp-2 text-lg leading-6 text-slate-900">{initiative.title}</CardTitle>
                   </div>
