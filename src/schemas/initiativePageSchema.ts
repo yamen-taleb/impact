@@ -12,11 +12,11 @@ export const initiativeStatusEnum = z.enum([
 export const lastProgressSchema = z.object({
     progressId: z.number(),
     percentage: z.number(),
-    notes: z.string().optional().nullable(),
-    createdAt: z.string().optional().nullable(),
-    updatedAt: z.string().optional().nullable(),
-    campaign: z.number(),
-    updatedBy: z.number().optional().nullable(),
+    notes: z.string(),
+    createdAt: z.string(),
+    updatedAt: z.string().nullable(),
+    updatedByName: z.string().nullable(),
+    campaignTitle: z.string().nullable(),
 });
 
 export const initiativePageSchema = z.object({
@@ -24,22 +24,22 @@ export const initiativePageSchema = z.object({
     title: z.string(),
     description: z.string(),
     status: initiativeStatusEnum,
-    startDate: z.string(),
-    endDate: z.string(),
+    startDate: z.string().nullable(),
+    endDate: z.string().nullable(),
     location: z.string(),
     category: z.string(),
-    maxVolunteers: z.number(),
-    proposedById: z.number(),
-    managedById: z.number().optional().nullable(),
-    approvedById: z.number().optional().nullable(),
+    maxVolunteers: z.number().nullable(),
+    managedById: z.number().nullable().optional(),
+    approvedById: z.number().nullable().optional(),
     createdAt: z.string(),
-    updatedAt: z.string(),
-    publishedAt: z.string().optional().nullable(),
-    photo: z.string().optional().nullable(),
-    collegeId: z.number().optional().nullable(),
-    collegeName: z.string().optional().nullable(),
-    lastProgress: lastProgressSchema.optional().nullable(),
-    progressPhotos: z.array(z.string()).optional().nullable(),
+    updatedAt: z.string().nullable(),
+    publishedAt: z.string().nullable().optional(),
+    photo: z.string().nullable().optional(),
+    photos: z.array(z.string()).nullable().optional(), // backend sends null
+    collegeId: z.number().nullable().optional(),
+    collegeName: z.string().nullable().optional(),
+    lastProgress: lastProgressSchema.nullable().optional(),
+    progressPhotos: z.array(z.string()).nullable().optional(),
 });
 
 export const initiativesSchema = z.array(initiativePageSchema);

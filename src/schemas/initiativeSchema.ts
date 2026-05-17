@@ -1,17 +1,16 @@
 import {z} from "zod";
 
 export const initiativeSchema = z.object({
-    initiativeName: z.string()
+    title: z.string()
         .min(2, "يجب أن يكون اسم المبادرة على الأقل حرفين")
         .max(100, "يجب أن يكون اسم المبادرة أقل من 100 حرف"),
-    details: z.string()
+    description: z.string()
         .min(10, "يجب أن تكون التفاصيل على الأقل 10 أحرف")
         .max(1000, "يجب أن تكون التفاصيل أقل من 1000 حرف"),
-    title: z.string()
-        .min(2, "يجب أن يكون العنوان على الأقل حرفين")
-        .max(150, "يجب أن يكون العنوان أقل من 150 حرفًا"),
-    college: z.string()
-        .min(2, "يجب أن تكون الكلية على الأقل حرفين")
-        .max(150, "يجب أن تكون الكلية أقل من 150 حرفًا"),
+    location: z.string()
+        .min(2, "يجب أن يكون الموقع على الأقل حرفين")
+        .max(100, "يجب أن يكون الموقع أقل من 100 حرف"),
+    collegeId: z.string(),
+    categoryId: z.string()
 });
 

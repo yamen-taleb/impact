@@ -1,62 +1,27 @@
 import InitiativeHeader from "../components/initiative/InitiativeHeader";
 import InitiativeCard from "../components/initiative/InitiativeCard.tsx";
-import {useMemo, useState} from "react";
 import PaginationLinks from "../components/initiative/PaginationLinks.tsx";
 
 import InitiativeTable from "../components/initiative/InitiativeTable.tsx";
-import {useGetInitiatives} from "../hooks/use-initiative.ts";
-import { paginatedInitiativesSchema } from "../schemas/initiativePageSchema.ts";
 import type {Initiative} from "../schemas/initiativePageSchema.ts";
-import {getUserRole} from "../lib/utils.ts";
-import type { FiltersType } from "../components/initiative/Filters.tsx"
+import {useInitiativesContext} from "../context/InitiativeContext.tsx";
 
 const Initiatives = () => {
-    const ITEMS_PER_PAGE = 1;
-    const [page, setPage] = useState(0);
-    const userRole = getUserRole();
-    const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
-    
-    const [filters, setFilters] = useState<FiltersType>({
-        search: "",
-        college: "",
-        status: "",
-        category: "",
-    });
-
-    const { data, isLoading, error } = useGetInitiatives({
+    const {
+        viewMode,
+        setViewMode,
+        initiatives,
+        totalPages,
+        isLoading,
+        error,
+        userRole,
         page,
-        size: ITEMS_PER_PAGE,
-        searchText: filters.search || undefined,
-        collegeId: filters.college || undefined,
-        status: (filters.status as any) || undefined,
-        categoryId: filters.category || undefined,
-    });
-
-    const handleFiltersChange = (newFilters: FiltersType) => {
-        setFilters(newFilters);
-        setPage(0);
-    };
-
-    const { initiatives, totalPages } = useMemo(() => {
-        if (!data) return { initiatives: [], totalPages: 0 };
-        try {
-            const validatedData = paginatedInitiativesSchema.parse(data);
-            return { 
-                initiatives: validatedData.content, 
-                totalPages: validatedData.totalPages 
-            };
-        } catch (e) {
-            console.error("Zod Validation Error:", e);
-            return { 
-                initiatives: data?.content || [], 
-                totalPages: data?.totalPages || 0 
-            };
-        }
-    }, [data]);
+        setPage
+    } = useInitiativesContext();
 
     return (
         <div className="flex flex-col gap-6 pr-10 mb-25">
-            <InitiativeHeader onFiltersChange={handleFiltersChange} />
+            <InitiativeHeader/>
 
             {/* View Toggle for Managers */}
             {userRole === "Manager" && (

@@ -6,6 +6,7 @@ import {Link} from "react-router";
 import { buildStyles, CircularProgressbarWithChildren } from "react-circular-progressbar";
 import type {Initiative} from "../../schemas/initiativePageSchema.ts";
 import {getInitiativeStatus} from "../../lib/initiativeStatus.ts";
+import {getImageUrl} from "../../lib/utils.ts";
 
 interface Props {
     initiative: Initiative;
@@ -22,7 +23,7 @@ const InitiativeCard = ({initiative}: Props) => {
           <div className="relative h-44 w-full bg-slate-100">
               {initiative.photo ? (
                   <img
-                      src={initiative.photo}
+                      src={getImageUrl(initiative.photo)}
                       alt="صورة المبادرة"
                       className="h-full w-full object-cover"
                   />

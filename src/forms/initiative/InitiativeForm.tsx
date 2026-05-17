@@ -5,6 +5,11 @@ import TextField from "../../components/TextField.tsx";
 import TextAreaField from "../../components/TextAreaField.tsx";
 import {Button} from "../../components/ui/button.tsx";
 import {ImagePlus, X} from "lucide-react";
+import SelectField from "../../components/SelectField.tsx";
+import { useCategoryContext } from "../../context/CategoryContext.tsx";
+import {useCollegeContext} from "../../context/CollegeContext.tsx";
+import {useCreateInitiative} from "../../hooks/use-initiative.ts";
+import {useUserContext} from "../../context/UserContext.tsx";
 
 
 interface Props {
@@ -14,6 +19,9 @@ interface Props {
 const InitiativeForm = ({ setOpen }: Props) => {
     const [images, setImages] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const { categoryOptions } = useCategoryContext();
+    const { collegeOptions } = useCollegeContext();
+    const {currentUser} = useUserContext();
 
     const imagePreviews = useMemo(
         () => images.map((file) => URL.createObjectURL(file)),
@@ -26,21 +34,33 @@ const InitiativeForm = ({ setOpen }: Props) => {
         };
     }, [imagePreviews]);
 
+    const { mutate: createInitiative, isPending } = useCreateInitiative();
+
     const form = useForm({
         defaultValues: {
-            initiativeName: "",
-            details: "",
             title: "",
-            college: "",
+            description: "",
+            location: "",
+            collegeId: "",
+            categoryId: "",
         },
         validators: {
             onSubmit: initiativeSchema,
             onBlur: initiativeSchema,
         },
-        onSubmit: (values) => {
-            console.log({
-                ...values,
-                images,
+        onSubmit: ({value}) => {
+            createInitiative({
+                ...value,
+                proposedById: currentUser.userId,
+                photos: images,
+            }, {
+                onSuccess: () => {
+                    setOpen(false);
+                    setImages([]);
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = "";
+                    }
+                }
             });
             setOpen(false);
             setImages([]);
@@ -69,7 +89,7 @@ const InitiativeForm = ({ setOpen }: Props) => {
         >
             <section className="w-full flex flex-col gap-6">
                 <div className={"grid md:grid-cols-2 gap-6"}>
-                    <Field form={form} name="initiativeName">
+                    <Field form={form} name="title">
                         {(field) => (
                             <TextField
                                 field={field}
@@ -81,31 +101,45 @@ const InitiativeForm = ({ setOpen }: Props) => {
                         )}
                     </Field>
 
-                    <Field form={form} name="college">
+                    <Field form={form} name="location">
                         {(field) => (
                             <TextField
                                 field={field}
                                 type="text"
-                                label="الكلية"
-                                placeholder="اسم الكلية"
+                                label="العنوان"
+                                placeholder="عنوان المبادرة"
                                 className="fieldClasses font-[Thamanyah2]"
                             />
                         )}
                     </Field>
                 </div>
-                <Field form={form} name="title">
-                    {(field) => (
-                        <TextField
-                            field={field}
-                            type="text"
-                            label="العنوان"
-                            placeholder="عنوان المبادرة"
-                            className="fieldClasses font-[Thamanyah2]"
-                        />
-                    )}
-                </Field>
+                <div className={"grid md:grid-cols-2 gap-6"}>
+                    <Field form={form} name="collegeId">
+                        {(field) => (
+                            <SelectField
+                                field={field}
+                                label="الكلية"
+                                placeholder="اختر اسم الكلية"
+                                className="font-[Thamanyah2] w-full"
+                                options={collegeOptions}
+                            />
+                        )}
+                    </Field>
 
-                <Field form={form} name="details">
+                    <Field form={form} name="categoryId">
+                        {(field) => (
+                            <SelectField
+                                field={field}
+                                label={"التصنيف"}
+                                className={"w-full font-[Thamanyah2]"}
+                                placeholder={"اختر تصنيف لمبادرة"}
+                                options={categoryOptions}
+                            />
+                        )}
+                    </Field>
+                </div>
+
+                <Field form={form} name="description">
                     {(field) => (
                         <TextAreaField
                             field={field}
@@ -127,7 +161,7 @@ const InitiativeForm = ({ setOpen }: Props) => {
                         className="flex items-center gap-2 rounded-xl bg-black px-4 text-sm font-semibold text-white hover:bg-slate-800"
                         onClick={() => fileInputRef.current?.click()}
                     >
-                        <ImagePlus className="size-4" />
+                        <ImagePlus className="size-4"/>
                         <span>إضافة صور</span>
                     </Button>
                 </div>
@@ -144,13 +178,15 @@ const InitiativeForm = ({ setOpen }: Props) => {
                 {imagePreviews.length > 0 ? (
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {imagePreviews.map((src, index) => (
-                            <figure key={src} className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <figure key={src}
+                                    className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
                                 <img
                                     src={src}
                                     alt={`صورة ${index + 1}`}
                                     className="h-40 w-full object-cover"
                                 />
-                                <figcaption className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-600">
+                                <figcaption
+                                    className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-600">
                                     <span className="truncate">{images[index]?.name}</span>
                                     <button
                                         type="button"
@@ -159,14 +195,15 @@ const InitiativeForm = ({ setOpen }: Props) => {
                                             setImages((currentImages) => currentImages.filter((_, currentIndex) => currentIndex !== index));
                                         }}
                                     >
-                                        <X className="size-4" />
+                                        <X className="size-4"/>
                                     </button>
                                 </figcaption>
                             </figure>
                         ))}
                     </div>
                 ) : (
-                    <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-sm text-slate-500 font-[Thamanyah2]">
+                    <div
+                        className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-sm text-slate-500 font-[Thamanyah2]">
                         لم يتم اختيار أي صور بعد.
                     </div>
                 )}
@@ -189,9 +226,10 @@ const InitiativeForm = ({ setOpen }: Props) => {
 
                 <Button
                     type="submit"
+                    disabled={isPending}
                     className="rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700"
                 >
-                    إرسال المبادرة
+                    {isPending ? "جاري الإرسال..." : "إرسال المبادرة"}
                 </Button>
             </div>
         </form>

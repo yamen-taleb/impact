@@ -1,7 +1,10 @@
 import {initiativeStatusEnum, paginatedInitiativesSchema} from "../schemas/initiativePageSchema.ts";
 import axiosClient from "../axiosClient.ts";
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import { initiativeDetailsSchema } from "../schemas/initiativeDetailsSchema.ts";
+import {z} from "zod";
+import {initiativeSchema} from "../schemas/initiativeSchema.ts";
+import {toast} from "sonner";
 
 
 interface InitiativeParams {
@@ -73,6 +76,51 @@ export const useGetInitiatives = ({
     }
 }
 
+export const useCreateInitiative = () => {
+    const queryClient = useQueryClient();
+
+    const createInitiativeRequest = async (
+        data: z.infer<typeof initiativeSchema> & {
+            photos: File[];
+            proposedById: string | number;
+        }) => {
+        const { title, description, location, proposedById, categoryId, collegeId, photos } = data;
+
+        const formData = new FormData();
+
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("location", location);
+        formData.append("proposedById", proposedById.toString());
+        formData.append("categoryId", categoryId.toString());
+        formData.append("collegeId", collegeId.toString());
+        formData.append("status", "PENDING");
+
+        photos.forEach((file) => {
+            formData.append("photoFiles", file); // name must match backend
+        });
+
+        const response = await axiosClient.post("v1/campaigns", formData);
+
+        return response.data;
+    };
+
+    return useMutation({
+        mutationFn: createInitiativeRequest,
+        onSuccess: () => {
+            toast.success("تم إضافة مبادرة بنجاح");
+            queryClient.invalidateQueries({
+                queryKey: ["initiatives"],
+            });
+        },
+        onError: (error: any) => {
+            toast.error(
+                error?.response?.data?.message ||
+                "حدث خطأ أثناء إضافة المبادرة"
+            );
+        },
+    });
+};
 
 export const useGetCampaignById = (
   campaignId?: number
