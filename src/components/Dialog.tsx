@@ -86,8 +86,7 @@ const Dialog = ({
                 target?.closest('[role="listbox"]') || 
                 target?.closest('[role="menu"]') || 
                 target?.closest('[data-radix-portal]') ||
-                target?.closest('[data-radix-popper-content-wrapper]') ||
-                target?.closest('*[dir="rtl"]') && target.closest('[data-state]')
+                target?.closest('[data-radix-popper-content-wrapper]')
             ) {
                 return;
             }
