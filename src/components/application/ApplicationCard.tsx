@@ -1,7 +1,8 @@
 import { Trash2, Image as ImageIcon } from "lucide-react";
 import { Badge } from "../ui/badge.tsx"
-import type {Application} from "../../schemas/applicationSchema.ts";
+import type {Application} from "../../schemas/applicationsSchema.ts";
 import { applicationStatusConfig } from "../../lib/applicationStatus.ts";
+import {getImageUrl} from "../../lib/utils.ts";
 
 interface Props {
     application: Application;
@@ -9,7 +10,8 @@ interface Props {
 }
 
 const ApplicationCard = ({ application, onDelete }: Props) => {
-    const status = applicationStatusConfig[application.status];
+    const statusKey = application.status || "PENDING";
+    const status = applicationStatusConfig[statusKey];
     const StatusIcon = status.icon;
 
     return (
@@ -17,10 +19,10 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
             <div className="grid h-full grid-cols-1 md:flex md:items-stretch">
                 {/* Image Section */}
                 <div className="relative h-48 w-full overflow-hidden bg-zinc-100 md:w-56 md:self-stretch md:h-auto">
-                    {application.initiativePhoto ? (
+                    {application.campaignPhoto ? (
                         <img
-                            src={application.initiativePhoto}
-                            alt={application.initiativeTitle}
+                            src={getImageUrl(application.campaignPhoto)}
+                            alt={application.campaignTitle || ""}
                             className="absolute inset-0 object-cover w-full h-full transition-transform duration-300 hover:scale-105"
                         />
                     ) : (
@@ -36,13 +38,13 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                     <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0 flex-1">
                             <h3 className="text-lg font-bold text-zinc-900 line-clamp-2">
-                                {application.initiativeTitle}
+                                {application.campaignTitle}
                             </h3>
                             <p className="mt-1 text-sm text-zinc-600 font-[Thamanyah2]">
-                                {application.initiativeCollege}
+                                {application.campaignCollegeName}
                             </p>
                         </div>
-                        <Badge className={`shrink-0 border rounded-full  font-[Thamanyah2] ${status.className}`}>
+                        <Badge className={`shrink-0 border rounded-full font-[Thamanyah2] ${status.className}`}>
                             {status.label}
                         </Badge>
                     </div>
@@ -51,46 +53,47 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                     <div className="flex items-center gap-2">
                         <StatusIcon size={18} className={status.iconClass} />
                         <div className="text-sm text-zinc-600">
-                            <p className="font-[Thamanyah2]">
-                                قُدمت في:{" "}
-                                <span className="font-medium font-[Thamanyah2]">
-                                    {new Date(application.applicationDate).toLocaleDateString("ar-SY")}
-                                </span>
-                            </p>
-                            {application.reviewDate && (
+                            {application.appliedAt && (
+                                <p className="font-[Thamanyah2]">
+                                    قُدمت في:{" "}
+                                    <span className="font-medium font-[Thamanyah2]">
+                                        {new Date(application.appliedAt).toLocaleDateString("ar-SY")}
+                                    </span>
+                                </p>
+                            )}
+                            {application.reviewedAt && (
                                 <p className="mt-1 font-[Thamanyah2]">
                                     تمت المراجعة:{" "}
                                     <span className="font-medium font-[Thamanyah2]">
-                                        {new Date(application.reviewDate).toLocaleDateString("ar-SY")}
+                                        {new Date(application.reviewedAt ?? application.removedAt).toLocaleDateString("ar-SY")}
                                     </span>
                                 </p>
                             )}
                         </div>
                     </div>
 
-                    {/* Cover Letter */}
-                    {application.coverLetter && (
+                    {/* Motivation Letter */}
+                    {application.motivationLetter && (
                         <div>
-                            <p className="text-xs font-semibold text-zinc-600 mb-1 tracking-wide">رسالة التوصية:</p>
+                            <p className="text-xs font-semibold text-zinc-600 mb-1 tracking-wide">رسالة الدافع:</p>
                             <p className="text-sm leading-6 text-zinc-700 whitespace-pre-line break-words font-[Thamanyah2]">
-                                {application.coverLetter.slice(0, 100)} {application.coverLetter.length > 100 && "..."}
+                                {application.motivationLetter.slice(0, 100)} {application.motivationLetter.length > 100 && "..."}
                             </p>
                         </div>
                     )}
 
-
-                    {/* Feedback */}
-                    {application.reviewerFeedback && (
+                    {/* Admin Notes */}
+                    {application.adminNotes && (
                         <div className="rounded-lg bg-zinc-50 p-3 border border-zinc-200">
-                            <p className="text-xs font-semibold text-zinc-600 mb-1">تعليق المراجع:</p>
-                            <p className="text-sm text-zinc-700 font-[Thamanyah2]">{application.reviewerFeedback}</p>
+                            <p className="text-xs font-semibold text-zinc-600 mb-1">ملاحظات المسؤول:</p>
+                            <p className="text-sm text-zinc-700 font-[Thamanyah2]">{application.adminNotes ?? application.removalReason ?? application.rejectionReason}</p>
                         </div>
                     )}
 
                     {/* Meta and Actions */}
                     <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 pt-3">
                         <Badge variant="outline" className="text-xs rounded-full font-[Thamanyah2]">
-                            {application.initiativeCategory}
+                            {application.campaignCategory}
                         </Badge>
                         {onDelete && application.status === "PENDING" && (
                             <button
@@ -109,4 +112,3 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
 };
 
 export default ApplicationCard;
-

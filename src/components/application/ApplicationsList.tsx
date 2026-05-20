@@ -1,8 +1,8 @@
 import ApplicationCard from "./ApplicationCard.tsx";
-import type { Applications } from "../../schemas/applicationSchema.ts";
+import type { Application } from "../../schemas/applicationsSchema.ts";
 
 interface Props {
-    filteredApplications: Applications,
+    filteredApplications: Application[],
     handleOpenDialogDeleteApplication: (id: string | number) => void,
 }
 

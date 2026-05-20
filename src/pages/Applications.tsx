@@ -1,36 +1,28 @@
-import { useMemo, useState } from "react";
-import ApplicationsList  from "../components/application/ApplicationsList.tsx";
-import { applicationsSchema } from "../schemas/applicationSchema.ts";
-import applicationsData from "../data/applications.json";
+import { useState } from "react";
+import ApplicationsList from "../components/application/ApplicationsList.tsx";
 import ApplicationHeader from "../components/application/ApplicationHeader.tsx";
 import ApplicationsStats from "../components/application/ApplicationsStats.tsx";
 import ApplicationsFilter from "../components/application/ApplicationsFilter.tsx";
-import type {FilterStatus} from "../types.ts";
 import ApplicationWithdrawDialog from "../components/application/ApplicationWithdrawDialog.tsx";
 import PaginationLinks from "../components/initiative/PaginationLinks.tsx";
+import { ApplicationsProvider, useApplicationsContext } from "../context/AppilcationsContext.tsx";
+import { useGetMyUser } from "../hooks/use-user.ts";
 
-const Applications = () => {
-    const [filterStatus, setFilterStatus] = useState<FilterStatus>("ALL");
-    const [applications, setApplications] = useState(
-        applicationsSchema.parse(applicationsData)
-    );
+const ApplicationsContent = () => {
+    const {
+        applications,
+        isLoading,
+        error,
+        stats,
+        filterStatus,
+        setFilterStatus,
+        page,
+        setPage,
+        totalPages,
+    } = useApplicationsContext();
+    
     const [open, setOpen] = useState(false);
     const [deleteApplicationId, setDeleteApplicationId] = useState<string | number | null>(null);
-    const [page, setPage] = useState(1);
-
-    const filteredApplications = useMemo(() => {
-        if (filterStatus === "ALL") {
-            return applications;
-        }
-        return applications.filter((app) => app.status === filterStatus);
-    }, [applications, filterStatus]);
-
-    const statsCount = {
-        total: applications.length,
-        accepted: applications.filter((a) => a.status === "ACCEPTED").length,
-        pending: applications.filter((a) => a.status === "PENDING").length,
-        rejected: applications.filter((a) => a.status === "REJECTED").length,
-    };
 
     const handleOpenDialogDeleteApplication = (id: string | number) => {
         setOpen(true);
@@ -38,31 +30,49 @@ const Applications = () => {
     };
 
     const handleDeleteApplication = () => {
-        if (deleteApplicationId !== null) {
-            setApplications((prev) =>
-                prev.filter((app) => app.id !== deleteApplicationId)
-            );
-            setDeleteApplicationId(null);
-            setOpen(false);
-        }
+        // This should be a mutation
+        console.log("Deleting", deleteApplicationId);
+        setOpen(false);
+    };
+
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error loading applications.</div>;
+
+    if (!applications || applications.length === 0) {
+        return (
+            <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-6 lg:px-8">
+                <ApplicationHeader />
+                <ApplicationsStats statsCount={stats} />
+                <ApplicationsFilter filterStatus={filterStatus} setFilterStatus={setFilterStatus} />
+                <p className="rounded-lg mt-4 border border-dashed border-zinc-300 bg-white px-4 py-6 text-center text-md font-medium text-zinc-500">
+                    لا توجد أي طلبات تطوع حتى الآن.
+                </p>
+            </div>
+        );
     }
 
     return (
         <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-6 lg:px-8">
-            <ApplicationHeader/>
-
-            <ApplicationsStats statsCount={statsCount} />
-
+            <ApplicationHeader />
+            <ApplicationsStats statsCount={stats} />
             <ApplicationsFilter filterStatus={filterStatus} setFilterStatus={setFilterStatus} />
-
-            <ApplicationsList filteredApplications={filteredApplications} handleOpenDialogDeleteApplication={handleOpenDialogDeleteApplication} />
-
+            <ApplicationsList filteredApplications={applications} handleOpenDialogDeleteApplication={handleOpenDialogDeleteApplication} />
             <ApplicationWithdrawDialog open={open} handleDeleteApplication={handleDeleteApplication} setOpen={setOpen} />
-
-            <PaginationLinks page={page} setPage={setPage} totalPages={5}  />
+            <PaginationLinks page={page} setPage={setPage} totalPages={totalPages} />
         </div>
     );
 };
 
-export default Applications;
+const Applications = () => {
+    const { currentUser, isLoading } = useGetMyUser();
 
+    if (isLoading || !currentUser) return <div>Loading user...</div>;
+
+    return (
+        <ApplicationsProvider userId={currentUser.userId}>
+            <ApplicationsContent />
+        </ApplicationsProvider>
+    );
+};
+
+export default Applications;

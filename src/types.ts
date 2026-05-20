@@ -1,1 +1,1 @@
-export type FilterStatus = "ALL" | "ACCEPTED" | "REJECTED" | "PENDING" | "WITHDRAWN";
+export type FilterStatus = "ALL" | "APPROVED" | "REJECTED" | "PENDING" | "WITHDRAWN";

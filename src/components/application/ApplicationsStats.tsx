@@ -2,7 +2,7 @@ import {CheckCircle, Clock, XCircle} from "lucide-react";
 interface Props {
     statsCount: {
         total: number;
-        accepted: number;
+        approved: number;
         pending: number;
         rejected: number;
     }
@@ -21,7 +21,7 @@ const ApplicationsStats = ({statsCount} : Props) => {
                     <p className="text-sm font-medium text-green-700">مقبول</p>
                     <CheckCircle size={20} className="text-green-600" />
                 </div>
-                <p className="mt-2 text-3xl font-bold text-green-900">{statsCount.accepted}</p>
+                <p className="mt-2 text-3xl font-bold text-green-900">{statsCount.approved}</p>
             </div>
 
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 shadow-sm">
