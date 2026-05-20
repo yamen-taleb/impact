@@ -4,7 +4,6 @@ interface Props {
     college: string;
     category: string;
     address: string;
-    estimatedTimeToComplete: string;
     startDate: string;
     endDate: string;
 }
@@ -13,10 +12,22 @@ const InitiativeDetailsMetaGrid = ({
     college,
     category,
     address,
-    estimatedTimeToComplete,
     startDate,
     endDate,
 }: Props) => {
+
+    const estimatedTimeToComplete = (() => {
+        if (!startDate || !endDate) return 0;
+
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const diffTime = end.getTime() - start.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    })();
+
+
+
     return (
         <div className="grid gap-4 p-6 md:grid-cols-4">
             <article className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
@@ -42,8 +53,8 @@ const InitiativeDetailsMetaGrid = ({
 
             <article className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
                 <p className="mb-2 flex items-center gap-2 text-xs font-medium text-zinc-500">
-                    <Clock3 size={15} /> الوقت التقديري للحل
-                </p>
+                    <Clock3 size={15} /> الوقت التقديري للإنتهاء
+                </p>    
                 <p className="text-sm font-semibold text-zinc-900 font-[Thamanyah2]">{estimatedTimeToComplete || "غير محدد"}</p>
                 {estimatedTimeToComplete && (
                     <span className="mt-2 block text-xs text-zinc-500 font-[Thamanyah2]">

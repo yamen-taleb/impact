@@ -3,6 +3,7 @@ import { useGetInitiatives } from "../hooks/use-initiative";
 import { paginatedInitiativesSchema, type Initiative } from "../schemas/initiativePageSchema";
 import { getUserRole } from "../lib/utils";
 import type { FiltersType } from "../components/initiative/Filters";
+import { useGetMyUser } from "../hooks/use-user";
 
 interface InitiativesContextType {
   page: number;
@@ -19,13 +20,56 @@ interface InitiativesContextType {
   userRole: string;
 }
 
+interface InitiativesProviderProps {
+  children: ReactNode;
+  mode: "initiatives" | "my-initiatives" | "our-initiatives";
+}
+
 const InitiativesContext = createContext<InitiativesContextType | undefined>(undefined);
 
-export const InitiativesProvider = ({ children }: { children: ReactNode }) => {
+export const InitiativesProvider = ({
+  children,
+  mode,
+}: InitiativesProviderProps) => {
   const ITEMS_PER_PAGE = 6;
   const [page, setPage] = useState(0);
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+
+  const me = useGetMyUser();
   const userRole = getUserRole();
+  const currentUserId = me.currentUser?.userId;
+  const currentCollegeId = me.currentUser?.collegeId;
+
+  const isManager = userRole === "Manager";
+  const isAdmin = userRole === "Admin";
+
+  /*** /initiatives * فقط الحالات المعروضة */
+
+  const statusFilter =
+    mode === "initiatives" && !isManager
+      ? ["APPROVED", "ONGOING", "COMPLETED"]
+      : undefined;
+
+  /**
+   * /my-initiatives
+   * مبادرات المستخدم الحالي
+   */
+  const proposedByUserFilter =
+    mode === "my-initiatives" &&
+    currentUserId != null
+      ? Number(currentUserId)
+      : undefined;
+
+  /**
+   * /our-initiatives
+   * مبادرات نفس الكلية
+   */
+  const collegeFilter =
+    mode === "our-initiatives" &&
+    isAdmin &&
+    currentCollegeId != null
+      ? Number(currentCollegeId)
+      : undefined;
 
   const [filters, setFilters] = useState<FiltersType>({
     search: "",
@@ -36,11 +80,30 @@ export const InitiativesProvider = ({ children }: { children: ReactNode }) => {
 
   const { data, isLoading, error } = useGetInitiatives({
     page,
+
     size: ITEMS_PER_PAGE,
-    searchText: filters.search || undefined,
-    collegeId: filters.college || undefined,
-    status: (filters.status as any) || undefined,
-    categoryId: filters.category || undefined,
+
+    /**
+     * الأحدث أولاً
+     */
+    sort: "createdAt,desc",
+
+    searchText:
+      filters.search || undefined,
+
+    categoryId:
+      filters.category || undefined,
+
+    collegeId:
+      mode === "our-initiatives"
+        ? collegeFilter
+        : filters.college || undefined,
+
+    status:
+      filters.status || statusFilter,
+
+    proposedByUserId:
+      proposedByUserFilter,
   });
 
   const handleFiltersChange = (newFilters: FiltersType) => {

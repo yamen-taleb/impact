@@ -1,4 +1,4 @@
-import {initiativeStatusEnum, paginatedInitiativesSchema} from "../schemas/initiativePageSchema.ts";
+import {initiativeStatusEnum, paginatedInitiativesSchema, type InitiativeStatus} from "../schemas/initiativePageSchema.ts";
 import axiosClient from "../axiosClient.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import { initiativeDetailsSchema } from "../schemas/initiativeDetailsSchema.ts";
@@ -10,19 +10,21 @@ import {toast} from "sonner";
 interface InitiativeParams {
     page?: number;
     size?: number;
-    sort?: string[];
+    sort?: string;
     searchText?: string;
-    status?: typeof initiativeStatusEnum;
-    collegeId?: string|number;
-    categoryId?: string|number;
-    proposedByUserId?: string|number;
+
+    status?: InitiativeStatus | InitiativeStatus[];
+
+    collegeId?: string | number | null;
+    categoryId?: string | number | null;
+    proposedByUserId?: string | number | null;
 }
 
 
 export const useGetInitiatives = ({
     page = 0,
     size = 6,
-    sort = ["campaignId,desc"],
+    sort = "createdAt,desc",
     status,
     searchText,
     collegeId,
@@ -35,7 +37,7 @@ export const useGetInitiatives = ({
                 page,
                 size,
                 sort,
-                status,
+                ...(status ? { status } : {}),
                 searchText,
                 collegeId,
                 categoryId,
@@ -122,45 +124,23 @@ export const useCreateInitiative = () => {
     });
 };
 
-export const useGetCampaignById = (
-  campaignId?: number
-) => {
-  const fetchCampaignById =
-    async () => {
-      const response =
-        await axiosClient.get(
-          `v1/campaigns/${campaignId}`
-        );
 
-      return initiativeDetailsSchema.parse(
-        response.data
-      );
-    };
+export const useGetCampaignById = (campaignId?: number) => {
+  const fetchCampaignById = async () => {
+    const response = await axiosClient.get(
+      `v1/campaigns/${campaignId}`
+    );
 
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: [
-      "campaign-details",
-      campaignId,
-    ],
-
-    queryFn: fetchCampaignById,
-
-    enabled:
-      !!campaignId &&
-      !isNaN(campaignId),
-  });
-
-  if (error) {
-    console.error(error);
-  }
-
-  return {
-    data,
-    isLoading,
-    error,
+    return response.data;
   };
+
+  return useQuery({
+    queryKey: ["campaign-details", campaignId],
+    queryFn: fetchCampaignById,
+    enabled: !!campaignId && !isNaN(campaignId),
+
+    // مهم: يمنع الرجوع القديم عند تغيير id
+    staleTime: 0,
+    gcTime: 0,
+  });
 };

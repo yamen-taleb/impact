@@ -11,37 +11,34 @@ import InitiativeApprove from "../components/initiative/InitiativeApprove.tsx";
 import InitiativeDates from "../components/initiative/InitiativeDates.tsx";
 import InitiativeMaxVolunteers from "../components/initiative/InitiativeMaxVolunteers.tsx";
 import ProgressManagement from "../components/initiative/ProgressManagement.tsx";
-import userData from "../../src/data/userData.json";
 import InitiativeDetailsVolunteersAvatar from "../components/initiative/details/InitiativeDetailsVolunteersAvatar.tsx";
-import { useGetCampaignById } from "../hooks/use-initiative.ts";
 import { useParams } from "react-router";
+import { useGetCampaignById } from "../hooks/use-initiative.ts";
+import { getUserRole } from "../lib/utils.ts";
 
 const InitiativeDetails = () => {
-	const { initiativeId } = useParams();
+    const userRole = getUserRole();
 
+	const { initiativeId } = useParams();
     const campaignId = Number(initiativeId);
 
     const {
         data: initiative,
         isLoading,
-        error
+        error,
     } = useGetCampaignById(campaignId);
 
-    const userRole =
-        userData.additionalInfo.role;
-
     if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error || !initiative) {
         return (
-        <InitiativeDetailsEmptyState />
+            <div className="flex h-64 items-center justify-center">
+                جاري التحميل...
+            </div>
         );
     }
 
-    console.log(initiative);
-
+    if (error || !initiative) {
+        return <InitiativeDetailsEmptyState />;
+    }
 
 	return (
         <section className="mx-auto max-w-6xl space-y-6">
@@ -49,10 +46,9 @@ const InitiativeDetails = () => {
             <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
                 <InitiativeDetailsHero initiative={initiative}/>
                 <InitiativeDetailsMetaGrid
-                    college={String(initiative.collegeId)}
+                    college={String(initiative.collegeName)}
                     category={initiative.category}
                     address={initiative.location}
-                    estimatedTimeToComplete={String(initiative.endDate ? new Date(initiative.endDate).getTime() - new Date(initiative.startDate).getTime() : null)}
                     startDate={initiative.startDate}
                     endDate={initiative.endDate}
                 />
@@ -65,7 +61,9 @@ const InitiativeDetails = () => {
 
             <InitiativeDetailsActions/>
 
-            <InitiativeDetailsVolunteersAvatar />
+            <InitiativeDetailsVolunteersAvatar
+                campaignId={campaignId}
+            />
 
             {(userRole === "Admin" || userRole === "Manager") && (
                 <div className="flex flex-col gap-5">

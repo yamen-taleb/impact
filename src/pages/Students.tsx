@@ -30,6 +30,7 @@ import VolunteerFilters from "../components/initiative/VolunteerFilters";
 import { useGetStudents, useToggleStudentBan } from "../hooks/use-students";
 import UserAvatar from "../components/user/UserAvatar";
 import { toArabicNumbers } from "../lib/utils";
+import { useRole } from "../hooks/use-role";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -55,6 +56,11 @@ const Students = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   const [openDialog, setOpenDialog] = useState(false);
+
+  const { addRole, removeRole } = useRole();
+  const [roleDialogOpen, setRoleDialogOpen] = useState(false);
+  const [roleTargetStudent, setRoleTargetStudent] = useState<Student | null>(null);
+  const [roleAction, setRoleAction] = useState<"add" | "remove">("add");
 
 
   const {
@@ -93,7 +99,30 @@ const Students = () => {
     );
   };
 
-  console.log(students);
+  const handleRoleConfirm = () => {
+    if (!roleTargetStudent) return;
+
+    const payload = {
+      userId: roleTargetStudent.userId,
+      role: "ROLE_ADMIN",
+    };
+
+    if (roleAction === "add") {
+      addRole.mutate(payload, {
+        onSuccess: () => {
+          setRoleDialogOpen(false);
+          setRoleTargetStudent(null);
+        },
+      });
+    } else {
+      removeRole.mutate(payload, {
+        onSuccess: () => {
+          setRoleDialogOpen(false);
+          setRoleTargetStudent(null);
+        },
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col gap-5">
@@ -146,6 +175,8 @@ const Students = () => {
               <TableHead>
                 الحالة
               </TableHead>
+
+              <TableHead>الدور</TableHead>
 
               <TableHead>
                 الإجراء
@@ -221,6 +252,26 @@ const Students = () => {
                       {student.isBanned
                         ? "إعادة الطالب"
                         : "فصل الطالب"}
+                    </Button>
+                  </TableCell>
+
+                  <TableCell>
+                    <Button
+                      size="sm"
+                      className="rounded-full font-[Thamanyah2]"
+                      variant={student.roles?.includes("ROLE_ADMIN") ? "destructive" : "default"}
+                      onClick={() => {
+                        setRoleTargetStudent(student);
+
+                        const isAdmin = student.roles?.includes("ROLE_ADMIN");
+
+                        setRoleAction(isAdmin ? "remove" : "add");
+                        setRoleDialogOpen(true);
+                      }}
+                    >
+                      {student.roles?.includes("ROLE_ADMIN")
+                        ? "إزالة عضو هيئة"
+                        : "إضافة عضو هيئة"}
                     </Button>
                   </TableCell>
 
@@ -312,6 +363,37 @@ const Students = () => {
                 onClick={
                   handleToggleStudentStatus
                 }
+              >
+                تأكيد
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={roleDialogOpen}
+          onOpenChange={setRoleDialogOpen}
+        >
+          <DialogContent className="bg-white">
+            <DialogHeader>
+              <DialogTitle>
+                {roleAction === "add"
+                  ? `هل أنت متأكد من تعيين الطالب ${roleTargetStudent?.firstName} ${roleTargetStudent?.lastName} كعضو هيئة طلابية؟`
+                  : `هل أنت متأكد من إزالة الطالب ${roleTargetStudent?.firstName} ${roleTargetStudent?.lastName} من الهيئة الطلابية؟`}
+              </DialogTitle>
+            </DialogHeader>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setRoleDialogOpen(false)}
+              >
+                إلغاء
+              </Button>
+
+              <Button
+                variant={roleAction === "add" ? "default" : "destructive"}
+                onClick={handleRoleConfirm}
               >
                 تأكيد
               </Button>

@@ -5,6 +5,7 @@ import PaginationLinks from "../components/initiative/PaginationLinks.tsx";
 import InitiativeTable from "../components/initiative/InitiativeTable.tsx";
 import type {Initiative} from "../schemas/initiativePageSchema.ts";
 import {useInitiativesContext} from "../context/InitiativeContext.tsx";
+import { ClipboardListIcon, Table } from "lucide-react";
 
 const Initiatives = () => {
     const {
@@ -19,6 +20,7 @@ const Initiatives = () => {
         setPage
     } = useInitiativesContext();
 
+
     return (
         <div className="flex flex-col gap-6 pr-10 mb-25">
             <InitiativeHeader/>
@@ -28,15 +30,17 @@ const Initiatives = () => {
                 <div className="flex gap-2 self-start font-[Thamanyah2] pl-10">
                     <button 
                         onClick={() => setViewMode("grid")}
-                        className={`rounded-xl px-5 py-2 text-sm font-medium transition-colors ${viewMode === "grid" ? "bg-black text-white" : "bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50"}`}
+                        className={`flex flex-row gap-4 items-center rounded-xl px-5 py-2 text-sm font-medium transition-colors ${viewMode === "grid" ? "bg-black text-white" : "bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50"}`}
                     >
                         عرض البطاقات
+                        <ClipboardListIcon />
                     </button>
                     <button 
                         onClick={() => setViewMode("table")}
-                        className={`rounded-xl px-5 py-2 text-sm font-medium transition-colors ${viewMode === "table" ? "bg-black text-white" : "bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50"}`}
+                        className={`flex flex-row gap-4 items-center rounded-xl px-5 py-2 text-sm font-medium transition-colors ${viewMode === "table" ? "bg-black text-white" : "bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50"}`}
                     >
                         عرض الجدول
+                        <Table />
                     </button>
                 </div>
             )}

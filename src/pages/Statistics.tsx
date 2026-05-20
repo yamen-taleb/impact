@@ -4,10 +4,13 @@ import StatCard from "../components/StatCard";
 import StatSummaryCard from "../components/StatSummaryCard";
 import CategoriesManagement from "../components/CategoriesManagement";
 import CollegesManagement from "../components/CollegesManagement";
+import { getUserRole } from "../lib/utils";
 
 const Statistics = () => {
     const stats = statsData;
     const isStudent = true; // This should be determined based on the user's role in a real application
+    const userRole = getUserRole();
+
     return isStudent && (
         <div className="space-y-8">
                 <div>
@@ -101,10 +104,12 @@ const Statistics = () => {
                     />
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <CategoriesManagement />
-                    <CollegesManagement />
-                </div>
+                {(userRole === "Manager") && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <CategoriesManagement />
+                        <CollegesManagement />
+                    </div>
+                )}
             </div>
     );
 };

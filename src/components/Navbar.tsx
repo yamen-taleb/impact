@@ -1,12 +1,12 @@
-import {Calendar, ChartNoAxesColumn, FolderKanban, Home, Lightbulb, BookMarked, ShieldUserIcon, Users} from "lucide-react";
+import {Calendar, ChartNoAxesColumn, FolderKanban, Lightbulb, BookMarked, ShieldUserIcon, Users} from "lucide-react";
 import {Link, useLocation} from "react-router";
-import userData from "../data/userData.json";
+import { getUserRole } from "../lib/utils";
 
 
 const Navbar = () => {
     const { pathname } = useLocation();
 
-    const userRole = userData.additionalInfo.role;
+    const userRole = getUserRole();
     
     const navLinks = [
         // { label: "الرئيسية", href: "/", icon: Home },

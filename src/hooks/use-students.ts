@@ -25,7 +25,7 @@ export interface User {
 interface GetStudentsParams {
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: string;
 }
 
 
@@ -37,7 +37,7 @@ interface GetStudentsParams {
 export const useGetStudents = ({
   page = 0,
   size = 10,
-  sort = [],
+  sort = "createdAt,desc",
 }: GetStudentsParams) => {
   return useQuery({
     queryKey: [
@@ -66,6 +66,23 @@ export const useGetStudents = ({
 };
 
 
+// GET ALL CAMPAIGNS STUDENTS
+export const useGetCampaignsStudents = ({
+  page = 0,
+  size = 1000, // مهم: نحتاج كل الطلاب
+  sort = []
+}: GetStudentsParams) => {
+  return useQuery({
+    queryKey: ["students", page, size, sort],
+    queryFn: async () => {
+      const response = await axiosClient.get("v1/users", {
+        params: { page, size, sort },
+      });
+
+      return response.data;
+    },
+  });
+};
 
 
 

@@ -57,13 +57,53 @@ keycloak.init({
                                 <Route path="/" element={<App />} />
                                 <Route element={<PrivateRoute><AuthenticatedLayout /></PrivateRoute>}>
                                     <Route path="/initiatives">
-                                        <Route index element={
-                                            <InitiativesProvider>
-                                                <Initiatives />
-                                            </InitiativesProvider>
-                                        } />
-                                        <Route path=":initiativeId" element={<InitiativeDetails />} />
+                                        <Route
+                                            index
+                                            element={
+                                                <InitiativesProvider mode="initiatives">
+                                                    <Initiatives />
+                                                </InitiativesProvider>
+                                            }
+                                        />
+
+                                        <Route
+                                            path=":initiativeId"
+                                            element={<InitiativeDetails />}
+                                        />
                                     </Route>
+
+                                    <Route path="/my-initiatives">
+                                        <Route
+                                            index
+                                            element={
+                                                <InitiativesProvider mode="my-initiatives">
+                                                    <Initiatives />
+                                                </InitiativesProvider>
+                                            }
+                                        />
+
+                                        <Route
+                                            path=":initiativeId"
+                                            element={<InitiativeDetails />}
+                                        />
+                                    </Route>
+
+                                    <Route path="/our-initiatives">
+                                        <Route
+                                            index
+                                            element={
+                                                <InitiativesProvider mode="our-initiatives">
+                                                    <Initiatives />
+                                                </InitiativesProvider>
+                                            }
+                                        />
+
+                                        <Route
+                                            path=":initiativeId"
+                                            element={<InitiativeDetails />}
+                                        />
+                                    </Route>
+
                                     <Route path="/students-union">
                                         <Route index element={<StudentsUnion />} />
                                         {/* <Route path=":initiativeId" element={<InitiativeDetails />} /> */}
@@ -76,7 +116,14 @@ keycloak.init({
                                     <Route path="/my-applications" element={<Applications />} />
                                     <Route path="/student-initiatives-participation/:id" element={<StudentInitiativesPage />} />
                                     <Route path="/statistics" element={<Statistics/>}/>
-                                    <Route path="*" element={<Initiatives />} />
+                                    <Route
+                                        path="*"
+                                        element={
+                                            <InitiativesProvider mode="initiatives">
+                                                <Initiatives />
+                                            </InitiativesProvider>
+                                        }
+                                    />
                                 </Route>
                             </Routes>
                         </BrowserRouter>
