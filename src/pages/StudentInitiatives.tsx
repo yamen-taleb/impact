@@ -1,39 +1,53 @@
-import initiativesData from "../data/initiatives.json";
+import { UserCampaignsProvider, useUserCampaignsContext } from "../context/UserCampaignsContext";
+import { useGetMyUser } from "../hooks/use-user";
 import Filters from "../components/initiative/Filters.tsx";
-import {initiativesSchema} from "../schemas/initiativePageSchema.ts";
 import PaginationLinks from "../components/initiative/PaginationLinks.tsx";
-import {useState} from "react";
 import StudentInitiativeHeader from "../components/initiative/students/StudentInitiativeHeader.tsx";
 import StudentInitiativeStats from "../components/initiative/students/StudentInitiativeStats.tsx";
 import StudentInitiativesList from "../components/initiative/students/StudentInitiativesList.tsx";
+import {useParams} from "react-router";
 
 
-const StudentInitiativesPage = () => {
-    const initiatives = initiativesSchema.parse(initiativesData);
-    const totalHours = 300;
-    const initiativesCount = 6;
-    const [page, setPage] = useState(1);
+const StudentInitiativesContent = () => {
+    const { 
+        campaigns, 
+        isLoading, 
+        error, 
+        totalHours, 
+        totalCampaigns,
+        page,
+        setPage,
+        totalPages,
+        handleFiltersChange,
+        filters
+    } = useUserCampaignsContext();
 
-    if (initiatives.length === 0) {
-        return (
-            <p className="rounded-lg ml-10 border border-dashed border-zinc-300 bg-white px-4 py-6 text-center text-md font-medium text-zinc-500">لم يتطوع هذا الطالب بأي مبادرة حتى الآن.</p>
-        );
-    }
-
+    if (error) return <p className="ml-10 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-600">
+        حدث خطأ أثناء تحميل المبادرات
+    </p>;
+    
     return (
         <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-6 lg:px-8">
             <StudentInitiativeHeader/>
 
-            <StudentInitiativeStats initiativesCount={initiativesCount} totalHours={totalHours} />
+            <StudentInitiativeStats initiativesCount={totalCampaigns} totalHours={totalHours} />
 
-            <Filters/>
+            <Filters onFiltersChange={handleFiltersChange} initialFilters={filters} />
 
-            <StudentInitiativesList initiatives={initiatives}/>
+            <StudentInitiativesList initiatives={campaigns} isLoading={isLoading}/>
 
-            <PaginationLinks page={page} setPage={setPage} totalPages={5}/>
+            <PaginationLinks page={page} setPage={setPage} totalPages={totalPages}/>
         </div>
     );
 };
 
-export default StudentInitiativesPage;
+const StudentInitiativesPage = () => {
+    const {id} = useParams()
+    return (
+        <UserCampaignsProvider userId={id}>
+            <StudentInitiativesContent />
+        </UserCampaignsProvider>
+    );
+};
 
+export default StudentInitiativesPage;

@@ -1,21 +1,22 @@
 import { Image as ImageIcon } from "lucide-react";
 import { Badge } from "../../ui/badge.tsx";
-import type { Initiative } from "../../../schemas/initiativePageSchema.ts";
+import type {AttendedCampaign} from "../../../schemas/campaignsSchema.ts";
+import {getImageUrl} from "../../../lib/utils.ts";
 
 interface Props {
-    initiative: Initiative;
-    hours: number;
+    initiative: AttendedCampaign;
+    hours: number|null;
 }
 
 const StudentInitiativeCard = ({ initiative, hours }: Props) => {
     return (
         <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:shadow-md">
-            <div className="grid grid-cols-1 md:flex md:items-stretch">
-                <div className="relative h-40 w-full overflow-hidden bg-zinc-100 md:w-48 md:self-stretch md:h-auto">
+            <div className="grid h-full grid-cols-1 md:flex md:items-stretch">
+                <div className="relative h-48 w-full overflow-hidden bg-zinc-100 md:w-48 md:self-stretch md:h-auto">
                     {initiative.photo ? (
                         <img
-                            src={initiative.photo}
-                            alt={initiative.title}
+                            src={getImageUrl(initiative.photo)}
+                            alt={initiative.title || "صورة المبادرة"}
                             className="absolute inset-0 object-cover w-full h-full"
                         />
                     ) : (
@@ -41,8 +42,8 @@ const StudentInitiativeCard = ({ initiative, hours }: Props) => {
                     </div>
 
                     <div className="mt-auto flex items-center justify-start gap-2 text-sm text-zinc-600">
-                        <span className={"rounded-full border-zinc-900 bg-zinc-900/90 px-2 py-1 text-white text-xs font-[Thamanyah2]"}>{initiative.college ?? "غير معروف"}</span>
-                        <span className="rounded-full bg-zinc-100 px-2 py-1 text-zinc-800 text-xs font-[Thamanyah2]">{initiative.category ?? "غير معروف"}</span>
+                        <span className={"rounded-full border-zinc-900 bg-zinc-900/90 px-2 py-1 text-white text-xs font-[Thamanyah2]"}>{initiative.collegeName ?? "غير معروف"}</span>
+                        <span className="rounded-full bg-zinc-100 px-2 py-1 text-zinc-800 text-xs font-[Thamanyah2]">{initiative.categoryName ?? "غير معروف"}</span>
                     </div>
                 </div>
             </div>

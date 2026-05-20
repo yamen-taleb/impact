@@ -15,6 +15,8 @@ type PaginationCompProps = {
 };
 
 const PaginationComp = ({ page, setPage, totalPages }: PaginationCompProps) => {
+    if (totalPages <= 1) return null;
+
     const generatePages = () => {
         const pages: number[] = [];
 

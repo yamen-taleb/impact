@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import axiosClient from "../axiosClient.ts";
 import {useMutation, useQueryClient, useQuery} from "@tanstack/react-query";
 import {userSchema, type UserType} from "../schemas/userSchema.ts";
+import { campaignsSchema } from "../schemas/campaignsSchema";
 
 export const useGetMyUser = () => {
     const getMyUserRequest =
@@ -127,3 +128,39 @@ export const useGetUserById = (id: string|undefined) => {
         refetch,
     };
 }
+
+export const useGetUserCampaigns = ({
+  userId,
+  page,
+  size,
+  searchText,
+  collegeId,
+  status,
+  categoryId,
+}: {
+  userId: number | string | undefined;
+  page?: number;
+  size?: number;
+  searchText?: string;
+  collegeId?: string;
+  status?: string;
+  categoryId?: string;
+}) => {
+  return useQuery({
+    queryKey: ["fetchUserCampaigns", userId, page, searchText, collegeId, status, categoryId],
+    queryFn: async () => {
+      const response = await axiosClient.get(`/v1/users/${userId}/attended-campaigns`, {
+        params: {
+            page,
+            size,
+            searchText,
+            collegeId,
+            status,
+            categoryId,
+        },
+      });
+      return campaignsSchema.parse(response.data);
+    },
+  });
+};
+
