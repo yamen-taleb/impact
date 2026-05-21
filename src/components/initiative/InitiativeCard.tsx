@@ -16,6 +16,8 @@ const InitiativeCard = ({initiative}: Props) => {
 
     const percentage = initiative.lastProgress?.percentage ?? 0;
 
+    console.log(initiative);
+
   return (
       <Card className="w-full h-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg !py-0 !gap-0">
           <div className="relative h-44 w-full bg-slate-100">
@@ -57,7 +59,7 @@ const InitiativeCard = ({initiative}: Props) => {
 
               <div className="flex flex-wrap gap-2">
                   <Badge variant="default" className="rounded-full border-zinc-900 bg-zinc-900/90 px-3 py-1 text-white">
-                      {initiative.collegeName ?? "غير معروف"}
+                      {initiative.college?.name ?? "غير معروف"}
                   </Badge>
                   <Badge variant="secondary" className="rounded-full bg-zinc-100 px-3 py-1 text-zinc-800">
                       {initiative.category ?? "غير معروف"}

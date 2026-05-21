@@ -20,6 +20,15 @@ interface InitiativeParams {
     proposedByUserId?: string | number | null;
 }
 
+interface UpdateCampaignPayload {
+    campaignId: number;
+
+    approvedById?: number;
+    managedById?: number;
+
+    status?: "PENDING" | "APPROVED" | "REJECTED" | "ONGOING" | "COMPLETED";
+}
+
 
 export const useGetInitiatives = ({
     page = 0,
@@ -142,5 +151,46 @@ export const useGetCampaignById = (campaignId?: number) => {
     // مهم: يمنع الرجوع القديم عند تغيير id
     staleTime: 0,
     gcTime: 0,
+  });
+};
+
+
+
+export const useUpdateCampaign = () => {
+  const queryClient = useQueryClient();
+
+  const updateCampaignRequest = async ({
+    campaignId,
+    ...payload
+  }: UpdateCampaignPayload) => {
+    const response = await axiosClient.patch(
+      `/v1/campaigns/${campaignId}`,
+      payload
+    );
+
+    return response.data;
+  };
+
+  return useMutation({
+    mutationFn: updateCampaignRequest,
+
+    onSuccess: (_, variables) => {
+      toast.success("تم تحديث حالة المبادرة بنجاح");
+
+      queryClient.invalidateQueries({
+        queryKey: ["campaign-details", variables.campaignId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["initiatives"],
+      });
+    },
+
+    onError: (error: any) => {
+      toast.error(
+        error?.response?.data?.message ||
+          "حدث خطأ أثناء تحديث المبادرة"
+      );
+    },
   });
 };

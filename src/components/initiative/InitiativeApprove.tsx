@@ -11,34 +11,114 @@ import {
 } from "../ui/dialog";
 import { Textarea } from "../ui/textarea";
 
-const InitiativeApprove = () => {
-  const [openRejectDialog, setOpenRejectDialog] = useState(false);
-  const [openApproveDialog, setOpenApproveDialog] = useState(false);
-  const [rejectReason, setRejectReason] = useState("");
+import {
+  useGetStudents,
+} from "../../hooks/use-students";
+
+import { useUpdateCampaign } from "../../hooks/use-initiative";
+import { useGetMyUser } from "../../hooks/use-user";
+
+
+interface Props {
+  campaignId: number;
+
+  initiative: {
+    collegeId: number;
+  };
+}
+
+const InitiativeApprove = ({
+  campaignId,
+  initiative,
+}: Props) => {
+  const [openRejectDialog, setOpenRejectDialog] =
+    useState(false);
+
+  const [openApproveDialog, setOpenApproveDialog] =
+    useState(false);
+
+  const [rejectReason, setRejectReason] =
+    useState("");
+
+  const { mutate: updateCampaign } =
+    useUpdateCampaign();
+
+  const currentUser = useGetMyUser();
+
+  const currentUserId = Number(currentUser?.currentUser?.userId);
+
+
+  const { data: studentsData } =
+    useGetStudents({
+      page: 0,
+      size: 1000,
+    });
+
+  const students = studentsData?.content || [];
+
+  const managerAdmin = students.find(
+    (student: any) =>
+      student.role === "ROLE_ADMIN" &&
+      Number(student.collegeId) === Number(initiative.collegeId)
+  );
+
+  console.log(students);
 
   const handleReject = () => {
-    console.log("سبب الرفض:", rejectReason);
+    updateCampaign(
+      {
+        campaignId,
 
-    setOpenRejectDialog(false);
-    setRejectReason("");
+        approvedById: currentUserId,
+
+        managedById:
+          managerAdmin?.userId,
+
+        status: "APPROVED",
+      },
+      {
+        onSuccess: () => {
+          setOpenRejectDialog(false);
+          setRejectReason("");
+        },
+      }
+    );
   };
 
   const handleApprove = () => {
-    console.log("تم قبول المبادرة");
+    updateCampaign(
+      {
+        campaignId,
 
-    setOpenApproveDialog(false);
+        approvedById: currentUserId,
+
+        managedById:
+          managerAdmin?.userId,
+
+        status: "APPROVED",
+      },
+      {
+        onSuccess: () => {
+          setOpenApproveDialog(false);
+        },
+      }
+    );
   };
 
   return (
     <>
       <article className="flex flex-col gap-5 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm md:col-span-2">
-        <h1 className="text-lg">حالة المبادرة</h1>
+        <h1 className="text-lg">
+          حالة المبادرة
+        </h1>
 
         <div className="flex w-full flex-row justify-between">
           {/* زر الموافقة */}
           <Button
             className="w-[47%]"
-            onClick={() => setOpenApproveDialog(true)}
+            onClick={() =>
+              setOpenApproveDialog(true)
+            }
           >
             صحيحة
           </Button>
@@ -47,7 +127,9 @@ const InitiativeApprove = () => {
           <Button
             variant="destructive"
             className="w-[47%]"
-            onClick={() => setOpenRejectDialog(true)}
+            onClick={() =>
+              setOpenRejectDialog(true)
+            }
           >
             يوجد خطأ ما!
           </Button>
@@ -62,14 +144,17 @@ const InitiativeApprove = () => {
         <DialogContent className="bg-white">
           <DialogHeader>
             <DialogTitle>
-              هل أنت متأكد أن هذه المبادرة صحيحة؟
+              هل أنت متأكد أن هذه
+              المبادرة صحيحة؟
             </DialogTitle>
           </DialogHeader>
 
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setOpenApproveDialog(false)}
+              onClick={() =>
+                setOpenApproveDialog(false)
+              }
             >
               لا
             </Button>
@@ -89,19 +174,25 @@ const InitiativeApprove = () => {
         <DialogContent className="bg-white">
           <DialogHeader>
             <DialogTitle>
-              هل أنت متأكد من أن هناك خطأ في هذه المبادرة؟
+              هل أنت متأكد من أن هناك
+              خطأ في هذه المبادرة؟
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-3">
-            <p className="text-sm text-gray-500 font-[Thamanyah2]">
-              يرجى كتابة سبب الرفض قبل المتابعة.
+            <p className="font-[Thamanyah2] text-sm text-gray-500">
+              يرجى كتابة سبب الرفض قبل
+              المتابعة.
             </p>
 
             <Textarea
               placeholder="اكتب سبب الرفض هنا..."
               value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
+              onChange={(e) =>
+                setRejectReason(
+                  e.target.value
+                )
+              }
               className="font-[Thamanyah2]"
             />
           </div>
@@ -120,7 +211,9 @@ const InitiativeApprove = () => {
             <Button
               variant="destructive"
               onClick={handleReject}
-              disabled={!rejectReason.trim()}
+              disabled={
+                !rejectReason.trim()
+              }
             >
               تأكيد الرفض
             </Button>

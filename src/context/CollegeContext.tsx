@@ -20,10 +20,12 @@ export const CollegeProvider = ({children}: { children: React.ReactNode }) => {
 
         const colleges = collegesData?.content || [];
 
+        console.log(colleges);
+
         return colleges
             .map((college: { collegeId?: string | number; name?: string }) => {
                 return ({
-                    value: String(college.collegeId ?? ""),
+                    value: college.collegeId,
                     label: college.name ?? "-",
                 });
             });

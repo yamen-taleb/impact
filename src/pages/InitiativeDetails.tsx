@@ -69,7 +69,10 @@ const InitiativeDetails = () => {
                 <div className="flex flex-col gap-5">
 
                     {(userRole === "Manager") && (
-                        <InitiativeApprove />
+                        <InitiativeApprove
+                            campaignId={campaignId}
+                            initiative={initiative}
+                        />
                     )}
 
                     <div className="flex gap-6">
