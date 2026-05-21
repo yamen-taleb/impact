@@ -12,7 +12,7 @@ export const initiativeStatusConfig: Record<InitiativeStatus, { label: string; c
         className: "bg-red-100 text-red-700 border-red-200",
     },
     APPROVED: {
-        label: "جاري حل المبادرة",
+        label: "تمت الموافقة",
         className: "bg-slate-100 text-slate-700 border-slate-200",
     },
     PENDING: {

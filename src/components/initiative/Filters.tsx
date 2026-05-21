@@ -6,6 +6,8 @@ import debounce from "lodash.debounce";
 import {Search} from "lucide-react";
 import { useCategoryContext } from "../../context/CategoryContext.tsx";
 import {useCollegeContext} from "../../context/CollegeContext.tsx";
+import {getUserRole} from "../../lib/utils.ts";
+import {useLocation} from "react-router";
 
 
 export type FiltersType = {
@@ -34,6 +36,14 @@ interface FiltersProps {
 }
 
 const Filters = ({ onFiltersChange }: FiltersProps) => {
+    const location = useLocation();
+
+    const filteredStatusOptions = useMemo(() => {
+        if (location.pathname === "/initiatives" && getUserRole() === "User") {
+            return statusOptions.filter(option => !["PENDING", "REJECTED", "CANCELED"].includes(option.value));
+        }
+        return statusOptions;
+    }, [location.pathname]);
 
     const {collegeOptions: rawCollegeOptions} = useCollegeContext();
 
@@ -122,7 +132,7 @@ const Filters = ({ onFiltersChange }: FiltersProps) => {
                     {(field) => (
                         <SelectField
                             field={field}
-                            options={statusOptions}
+                            options={filteredStatusOptions}
                             className={"w-full"}
                             onAfterChange={() => form.handleSubmit()}
                         />
