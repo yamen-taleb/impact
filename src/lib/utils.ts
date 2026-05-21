@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import keycloak from "./keycloak.ts";
+import {useCollegeContext} from "../context/CollegeContext.tsx";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -31,4 +32,8 @@ export const getImageUrl = (url: string|null) => {
   return url?.startsWith("https")
       ? url
       : import.meta.env.VITE_API_BASE_URL + url;
+}
+
+export const getCollegeId = (collegeOptions, collegeName) => {
+  return collegeOptions.find((option) => option.label === collegeName)?.value
 }

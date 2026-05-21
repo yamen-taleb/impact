@@ -1,13 +1,10 @@
 import InitiativeHeader from "../components/initiative/InitiativeHeader";
-import InitiativeCard from "../components/initiative/InitiativeCard.tsx";
-import PaginationLinks from "../components/initiative/PaginationLinks.tsx";
-
 import InitiativeTable from "../components/initiative/InitiativeTable.tsx";
-import type {Initiative} from "../schemas/initiativePageSchema.ts";
 import {useInitiativesContext} from "../context/InitiativeContext.tsx";
 import { ClipboardListIcon, Table } from "lucide-react";
 import ErrorDisplay from "../components/ErrorDisplay.tsx";
 import Loader from "../components/Loader.tsx";
+import BaseInitiatives from "../components/initiative/BaseInitiatives.tsx";
 
 const Initiatives = () => {
     const {
@@ -19,13 +16,14 @@ const Initiatives = () => {
         error,
         userRole,
         page,
-        setPage
+        setPage,
+        handleFiltersChange
     } = useInitiativesContext();
 
 
     return (
         <div className="flex flex-col gap-6 pr-10 mb-25">
-            <InitiativeHeader/>
+            <InitiativeHeader onFiltersChange={handleFiltersChange} />
 
             {/* View Toggle for Managers */}
             {userRole === "Manager" && (
@@ -48,29 +46,7 @@ const Initiatives = () => {
             )}
 
             {(userRole === "Admin" || userRole === "User" || (userRole === "Manager" && viewMode === "grid")) && (
-                <div>
-                    {isLoading ? (
-                        <Loader className="ml-10" />
-                    ) : error ? (
-                        <ErrorDisplay message="حدث خطأ أثناء تحميل المبادرات" className="ml-10" />
-                    ) : initiatives.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-5 pl-10 md:grid-cols-2 xl:grid-cols-3">
-                            {initiatives.map((initiative: Initiative, index: number) => (
-                                <InitiativeCard
-                                    key={`${initiative.campaignId}-${page}-${index}`}
-                                    initiative={initiative}
-                                />
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="rounded-lg ml-10 border border-dashed border-zinc-300 bg-white px-4 py-6 text-center text-sm font-medium text-zinc-500 font-[Thamanyah2]">
-                            لا يوجد مبادرات حتى الآن...
-                        </p>
-                    )}
-                    {totalPages > 1 && (
-                        <PaginationLinks page={page} setPage={setPage} totalPages={totalPages} />
-                    )}
-                </div>
+                <BaseInitiatives initiatives={initiatives} isLoading={isLoading} error={error} page={page} setPage={setPage} totalPages={totalPages} />
             )}
 
             {userRole === "Manager" && viewMode === "table" && (

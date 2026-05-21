@@ -1,10 +1,12 @@
 import NewInitiativeOverlay from "./NewInitiativeOverlay";
-import Filters from "./Filters.tsx";
+import Filters, { type FiltersType } from "./Filters.tsx";
 import { getUserRole } from "../../lib/utils.ts";
-import {useInitiativesContext} from "../../context/InitiativeContext.tsx";
 
-const InitiativeHeader = () => {
-    const {handleFiltersChange: onFiltersChange} = useInitiativesContext()
+interface InitiativeHeaderProps {
+    onFiltersChange: (filters: FiltersType) => void;
+}
+
+const InitiativeHeader = ({ onFiltersChange }: InitiativeHeaderProps) => {
     const userRole = getUserRole();
 
     return (

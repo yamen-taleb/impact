@@ -16,8 +16,6 @@ const InitiativeCard = ({initiative}: Props) => {
 
     const percentage = initiative.lastProgress?.percentage ?? 0;
 
-    console.log(initiative);
-
   return (
       <Card className="w-full h-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg !py-0 !gap-0">
           <div className="relative h-44 w-full bg-slate-100">

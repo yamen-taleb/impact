@@ -18,6 +18,10 @@ import PrivateRoute from './PrivateRoute.tsx';
 import { CategoryProvider } from "./context/CategoryContext.tsx";
 import {CollegeProvider} from "./context/CollegeContext.tsx";
 import {InitiativesProvider} from "./context/InitiativeContext.tsx";
+import MyInitiatives from "./pages/MyInitiatives.tsx";
+import {StudentInitiativesProvider} from "./context/StudentIniativesContext.tsx";
+import {CollegeInitiativesProvider} from "./context/CollegeInitiativeContext.tsx";
+import CollegeInitiatives from "./pages/CollegeInitiatives.tsx";
 
 const queryClient = new QueryClient()
 
@@ -60,7 +64,7 @@ keycloak.init({
                                         <Route
                                             index
                                             element={
-                                                <InitiativesProvider mode="initiatives">
+                                                <InitiativesProvider>
                                                     <Initiatives />
                                                 </InitiativesProvider>
                                             }
@@ -76,9 +80,9 @@ keycloak.init({
                                         <Route
                                             index
                                             element={
-                                                <InitiativesProvider mode="my-initiatives">
-                                                    <Initiatives />
-                                                </InitiativesProvider>
+                                                <StudentInitiativesProvider>
+                                                    <MyInitiatives />
+                                                </StudentInitiativesProvider>
                                             }
                                         />
 
@@ -92,9 +96,9 @@ keycloak.init({
                                         <Route
                                             index
                                             element={
-                                                <InitiativesProvider mode="our-initiatives">
-                                                    <Initiatives />
-                                                </InitiativesProvider>
+                                                <CollegeInitiativesProvider>
+                                                    <CollegeInitiatives/>
+                                                </CollegeInitiativesProvider>
                                             }
                                         />
 

@@ -117,16 +117,18 @@ const Filters = ({ onFiltersChange }: FiltersProps) => {
                     </div>)}
             </Field>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
-                <Field form={form} name="college">
-                    {(field) => (
-                        <SelectField
-                            field={field}
-                            className={"w-full"}
-                            options={collegeOptions}
-                            onAfterChange={() => form.handleSubmit()}
-                        />
-                    )}
-                </Field>
+                {!location.pathname.includes("/our-initiatives") &&
+                    <Field form={form} name="college">
+                        {(field) => (
+                            <SelectField
+                                field={field}
+                                className={"w-full"}
+                                options={collegeOptions}
+                                onAfterChange={() => form.handleSubmit()}
+                            />
+                        )}
+                    </Field>
+                }
 
                 <Field form={form} name="status">
                     {(field) => (
