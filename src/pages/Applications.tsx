@@ -7,6 +7,8 @@ import ApplicationWithdrawDialog from "../components/application/ApplicationWith
 import PaginationLinks from "../components/initiative/PaginationLinks.tsx";
 import { ApplicationsProvider, useApplicationsContext } from "../context/AppilcationsContext.tsx";
 import { useGetMyUser } from "../hooks/use-user.ts";
+import Loader from "../components/Loader.tsx";
+import ErrorDisplay from "../components/ErrorDisplay.tsx";
 
 const ApplicationsContent = () => {
     const {
@@ -35,8 +37,8 @@ const ApplicationsContent = () => {
         setOpen(false);
     };
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error loading applications.</div>;
+    if (isLoading) return <Loader />;
+    if (error) return <ErrorDisplay message="حدث خطأ أثناء تحميل الطلبات" />;
 
     if (!applications || applications.length === 0) {
         return (
@@ -66,7 +68,7 @@ const ApplicationsContent = () => {
 const Applications = () => {
     const { currentUser, isLoading } = useGetMyUser();
 
-    if (isLoading || !currentUser) return <div>Loading user...</div>;
+    if (isLoading || !currentUser) return <Loader />;
 
     return (
         <ApplicationsProvider userId={currentUser.userId}>

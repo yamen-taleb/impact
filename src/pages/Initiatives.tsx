@@ -6,6 +6,8 @@ import InitiativeTable from "../components/initiative/InitiativeTable.tsx";
 import type {Initiative} from "../schemas/initiativePageSchema.ts";
 import {useInitiativesContext} from "../context/InitiativeContext.tsx";
 import { ClipboardListIcon, Table } from "lucide-react";
+import ErrorDisplay from "../components/ErrorDisplay.tsx";
+import Loader from "../components/Loader.tsx";
 
 const Initiatives = () => {
     const {
@@ -48,13 +50,9 @@ const Initiatives = () => {
             {(userRole === "Admin" || userRole === "User" || (userRole === "Manager" && viewMode === "grid")) && (
                 <div>
                     {isLoading ? (
-                        <p className="ml-10 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-center text-sm font-medium text-zinc-600">
-                            جاري التحميل...
-                        </p>
+                        <Loader className="ml-10" />
                     ) : error ? (
-                        <p className="ml-10 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-600">
-                            حدث خطأ أثناء تحميل المبادرات
-                        </p>
+                        <ErrorDisplay message="حدث خطأ أثناء تحميل المبادرات" className="ml-10" />
                     ) : initiatives.length > 0 ? (
                         <div className="grid grid-cols-1 gap-5 pl-10 md:grid-cols-2 xl:grid-cols-3">
                             {initiatives.map((initiative: Initiative, index: number) => (
@@ -78,13 +76,9 @@ const Initiatives = () => {
             {userRole === "Manager" && viewMode === "table" && (
                 <div>
                     {isLoading ? (
-                        <p className="ml-10 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-center text-sm font-medium text-zinc-600">
-                            جاري التحميل...
-                        </p>
+                        <Loader className="ml-10" />
                     ) : error ? (
-                        <p className="ml-10 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-600">
-                            حدث خطأ أثناء تحميل المبادرات
-                        </p>
+                        <ErrorDisplay message="حدث خطأ أثناء تحميل المبادرات" className="ml-10" />
                     ) : initiatives.length > 0 ? (
                         <InitiativeTable initiatives={initiatives} page={page} setPage={setPage} totalPages={totalPages} />
                     ) : (

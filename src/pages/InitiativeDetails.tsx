@@ -15,6 +15,7 @@ import InitiativeDetailsVolunteersAvatar from "../components/initiative/details/
 import { useParams } from "react-router";
 import { useGetCampaignById } from "../hooks/use-initiative.ts";
 import { getUserRole } from "../lib/utils.ts";
+import Loader from "../components/Loader.tsx";
 
 const InitiativeDetails = () => {
     const userRole = getUserRole();
@@ -29,11 +30,7 @@ const InitiativeDetails = () => {
     } = useGetCampaignById(campaignId);
 
     if (isLoading) {
-        return (
-            <div className="flex h-64 items-center justify-center">
-                جاري التحميل...
-            </div>
-        );
+        return <Loader />;
     }
 
     if (error || !initiative) {
