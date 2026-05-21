@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosClient from "../axiosClient";
-import { statisticsSchema, Statistics } from "../schemas/statisticsSchema";
+import { statisticsSchema, type Statistics } from "../schemas/statisticsSchema";
 
 export const useGetStatistics = () => {
   return useQuery<Statistics>({
