@@ -57,7 +57,7 @@ const Students = () => {
 
   const [openDialog, setOpenDialog] = useState(false);
 
-  const { addRole, removeRole } = useRole();
+  const { updateRole } = useRole();
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
   const [roleTargetStudent, setRoleTargetStudent] = useState<Student | null>(null);
   const [roleAction, setRoleAction] = useState<"add" | "remove">("add");
@@ -102,26 +102,23 @@ const Students = () => {
   const handleRoleConfirm = () => {
     if (!roleTargetStudent) return;
 
-    const payload = {
-      userId: roleTargetStudent.userId,
-      role: "ROLE_ADMIN",
-    };
+    const isAdmin =
+      roleTargetStudent.role === "ROLE_ADMIN";
 
-    if (roleAction === "add") {
-      addRole.mutate(payload, {
+    updateRole.mutate(
+      {
+        userId: roleTargetStudent.userId,
+        role: isAdmin
+          ? "ROLE_USER"
+          : "ROLE_ADMIN",
+      },
+      {
         onSuccess: () => {
           setRoleDialogOpen(false);
           setRoleTargetStudent(null);
         },
-      });
-    } else {
-      removeRole.mutate(payload, {
-        onSuccess: () => {
-          setRoleDialogOpen(false);
-          setRoleTargetStudent(null);
-        },
-      });
-    }
+      }
+    );
   };
 
   return (
@@ -258,18 +255,25 @@ const Students = () => {
                   <TableCell>
                     <Button
                       size="sm"
-                      className="rounded-full font-[Thamanyah2]"
-                      variant={student.roles?.includes("ROLE_ADMIN") ? "destructive" : "default"}
+                      className={`rounded-full font-[Thamanyah2] text-white ${
+                        student.role === "ROLE_ADMIN"
+                          ? "bg-red-500 hover:bg-red-600"
+                          : "bg-emerald-500 hover:bg-emerald-600"
+                      }`}
                       onClick={() => {
                         setRoleTargetStudent(student);
 
-                        const isAdmin = student.roles?.includes("ROLE_ADMIN");
+                        const isAdmin =
+                          student.role === "ROLE_ADMIN";
 
-                        setRoleAction(isAdmin ? "remove" : "add");
+                        setRoleAction(
+                          isAdmin ? "remove" : "add"
+                        );
+
                         setRoleDialogOpen(true);
                       }}
                     >
-                      {student.roles?.includes("ROLE_ADMIN")
+                      {student.role === "ROLE_ADMIN"
                         ? "إزالة عضو هيئة"
                         : "إضافة عضو هيئة"}
                     </Button>

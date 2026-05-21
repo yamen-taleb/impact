@@ -4,49 +4,30 @@ import { toast } from "sonner";
 
 interface RolePayload {
   userId: number;
-  role: "ROLE_ADMIN" | "ROLE_SUPERADMIN";
+  role: "ROLE_USER" | "ROLE_ADMIN" | "ROLE_SUPERADMIN";
 }
 
 export const useRole = () => {
   const queryClient = useQueryClient();
 
-  const addRole = useMutation({
-    mutationFn: async ({ userId, role }) => {
+  const updateRole = useMutation({
+    mutationFn: async ({ userId, role }: RolePayload) => {
       return axiosClient.put(
-        `/v1/users/${userId}/add-role`,
-        {},
-        {
-          params: {
-            newRole: role,
-          },
-        }
-      );
-    },
-
-    onSuccess: () => {
-      toast.success("تم إضافة الدور بنجاح");
-      queryClient.invalidateQueries({ queryKey: ["students"] });
-    },
-  });
-
-  const removeRole = useMutation({
-    mutationFn: async ({ userId, role }) => {
-      return axiosClient.put(
-        `/v1/users/${userId}/remove-role`,
+        `/v1/users/${userId}/role`,
         null,
         {
           params: {
-            newRole: role, // 👈 نفس الاسم هنا
+            role,
           },
         }
       );
     },
 
     onSuccess: () => {
-      toast.success("تم إزالة الدور بنجاح");
+      toast.success("تم تحديث الدور بنجاح");
       queryClient.invalidateQueries({ queryKey: ["students"] });
     },
   });
 
-  return { addRole, removeRole };
+  return { updateRole };
 };
