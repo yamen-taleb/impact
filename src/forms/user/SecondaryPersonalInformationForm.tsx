@@ -10,6 +10,7 @@ import {useGetUserById, useUpdateUser} from "../../hooks/use-user.ts";
 import {useEffect, useMemo} from "react";
 import {toast} from "sonner";
 import {useParams} from "react-router";
+import {getCollegeId} from "../../lib/utils.ts";
 
 const SecondaryPersonalInformationForm = () => {
     const {currentUser, isLoading: isCurrentUserLoading} = useUserContext();
@@ -29,7 +30,7 @@ const SecondaryPersonalInformationForm = () => {
 
     const form = useForm({
         defaultValues: {
-            collegeId: collegeOptions.find((option) => option.label === user?.collegeName)?.value || "",
+            collegeId: getCollegeId(collegeOptions, user?.collegeName) || "",
             location: user?.location || "",
             birthDate: user?.birthdate || "",
             academicYear: user?.academicYear || "",
