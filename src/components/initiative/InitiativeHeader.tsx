@@ -34,7 +34,7 @@ const InitiativeHeader = ({ onFiltersChange }: InitiativeHeaderProps) => {
                 <Filters onFiltersChange={onFiltersChange} />
             </div>
 
-            {isProfileIncomplete && currentUser && (
+            {isProfileIncomplete && currentUser && (userRole !== "Manager") && (
                 <div className="flex h-[4rem] w-full flex-row items-center justify-center gap-5 rounded-xl bg-black text-white">
                     <MessageSquareWarningIcon />
 
