@@ -223,7 +223,7 @@ const Students = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.college}
+                    {student.collegeName}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">

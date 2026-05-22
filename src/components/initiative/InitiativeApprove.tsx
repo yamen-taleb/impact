@@ -17,13 +17,17 @@ import {
 
 import { useUpdateCampaign } from "../../hooks/use-initiative";
 import { useGetMyUser } from "../../hooks/use-user";
+import { useGetCollegeById } from "../../hooks/use-college";
 
 
 interface Props {
   campaignId: number;
 
   initiative: {
-    collegeId: number;
+    college?: {
+      id: number;
+      name: string;
+    };
   };
 }
 
@@ -43,26 +47,20 @@ const InitiativeApprove = ({
   const { mutate: updateCampaign } =
     useUpdateCampaign();
 
-  const currentUser = useGetMyUser();
+  const { currentUser } = useGetMyUser();
 
-  const currentUserId = Number(currentUser?.currentUser?.userId);
+  const currentUserId = Number(currentUser?.userId);
 
-
-  const { data: studentsData } =
-    useGetStudents({
-      page: 0,
-      size: 1000,
-    });
+  const { data: studentsData } = useGetStudents({ page: 0, size: 1000, });
+  const { data: campaignCollege } = useGetCollegeById( Number(initiative.college?.id) );
 
   const students = studentsData?.content || [];
 
   const managerAdmin = students.find(
     (student: any) =>
       student.role === "ROLE_ADMIN" &&
-      Number(student.collegeId) === Number(initiative.collegeId)
+      student.collegeName === campaignCollege?.name
   );
-
-  console.log(students);
 
   const handleReject = () => {
     updateCampaign(
@@ -71,8 +69,7 @@ const InitiativeApprove = ({
 
         approvedById: currentUserId,
 
-        managedById:
-          managerAdmin?.userId,
+        managedById: managerAdmin?.userId,
 
         status: "APPROVED",
       },
@@ -85,15 +82,30 @@ const InitiativeApprove = ({
     );
   };
 
+
+  console.log(currentUserId);
+  console.log(managerAdmin?.userId);
+
   const handleApprove = () => {
+    if (!currentUserId) {
+      return;
+    }
+
+    if (!managerAdmin?.userId) {
+      console.error(
+        "لم يتم العثور على Admin لنفس الكلية"
+      );
+
+      return;
+    }
+
     updateCampaign(
       {
         campaignId,
 
         approvedById: currentUserId,
 
-        managedById:
-          managerAdmin?.userId,
+        managedById: managerAdmin.userId,
 
         status: "APPROVED",
       },

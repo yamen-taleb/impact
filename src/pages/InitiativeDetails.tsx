@@ -29,8 +29,7 @@ const InitiativeDetails = () => {
         error,
     } = useGetCampaignById(campaignId);
 
-    console.log(initiative);
-
+    
     if (isLoading) {
         return <Loader />;
     }
@@ -55,16 +54,15 @@ const InitiativeDetails = () => {
 
             <div className="grid gap-6 md:grid-cols-3">
                 <InitiativeDetailsDescription description={initiative.description} proposedByName={initiative.proposedByName} />
-                <InitiativeDetailsProgress percentage={Number(initiative.lastProgress?.percentage)}/>
+                <InitiativeDetailsProgress percentage={Number(initiative.lastProgress?.percentage)} status={initiative.status}/>
             </div>      
 
+        
             <InitiativeDetailsActions/>
 
-            <InitiativeDetailsVolunteersAvatar
-                campaignId={campaignId}
-            />
+            <InitiativeDetailsVolunteersAvatar campaignId={campaignId}/>
 
-            {(userRole === "Admin" || userRole === "Manager") && (
+            {((userRole === "Admin" && (initiative.status !== "PENDING" && initiative.status !== "REJECTED")) || userRole === "Manager") && (
                 <div className="flex flex-col gap-5">
 
                     {(userRole === "Manager") && (
