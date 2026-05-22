@@ -10,9 +10,11 @@ const CollegeInitiatives = () => {
     error,
     page,
     setPage,
-    handleFiltersChange
+    handleFiltersChange,
+      userRole
   } = useCollegeInitiativesContext();
-  return (
+  const isAdmin = userRole === "Admin";
+  return isAdmin && (
       <div className="flex flex-col gap-6 pr-10 mb-25">
         <InitiativeHeader onFiltersChange={handleFiltersChange} />
         <BaseInitiatives initiatives={initiatives} isLoading={isLoading} error={error} page={page} setPage={setPage}
