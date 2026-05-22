@@ -29,6 +29,8 @@ const InitiativeDetails = () => {
         error,
     } = useGetCampaignById(campaignId);
 
+    console.log(initiative);
+
     if (isLoading) {
         return <Loader />;
     }
@@ -43,7 +45,7 @@ const InitiativeDetails = () => {
             <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
                 <InitiativeDetailsHero initiative={initiative}/>
                 <InitiativeDetailsMetaGrid
-                    college={String(initiative.collegeName)}
+                    college={String(initiative.college.name)}
                     category={initiative.category}
                     address={initiative.location}
                     startDate={initiative.startDate}
@@ -52,7 +54,7 @@ const InitiativeDetails = () => {
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
-                <InitiativeDetailsDescription description={initiative.description}/>
+                <InitiativeDetailsDescription description={initiative.description} proposedByName={initiative.proposedByName} />
                 <InitiativeDetailsProgress percentage={Number(initiative.lastProgress?.percentage)}/>
             </div>      
 
