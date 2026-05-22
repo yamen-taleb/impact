@@ -10,12 +10,13 @@ import {useGetUserById, useUpdateUser} from "../../hooks/use-user.ts";
 import {useEffect, useMemo} from "react";
 import {toast} from "sonner";
 import {useParams} from "react-router";
-import {getCollegeId} from "../../lib/utils.ts";
+import {getCollegeId, getUserRole} from "../../lib/utils.ts";
 
 const SecondaryPersonalInformationForm = () => {
     const {currentUser, isLoading: isCurrentUserLoading} = useUserContext();
     const {id: userId} = useParams()
     const {user} = useGetUserById(userId);
+    const isAdmin = getUserRole() === "Admin";
 
     const {collegeOptions} = useCollegeContext()
     const { mutate: updateUser, isPending } = useUpdateUser();
@@ -30,7 +31,7 @@ const SecondaryPersonalInformationForm = () => {
 
     const form = useForm({
         defaultValues: {
-            collegeId: getCollegeId(collegeOptions, user?.collegeName) || "",
+            collegeId: String(getCollegeId(collegeOptions, user?.collegeName)) || "",
             location: user?.location || "",
             birthDate: user?.birthdate || "",
             academicYear: user?.academicYear || "",
@@ -90,7 +91,7 @@ const SecondaryPersonalInformationForm = () => {
                           return (
                               <SelectField
                                   className="!w-full !border-0 !border-b !border-slate-300 !pb-3 !pt-2 !h-10 !rounded-none"
-                                  disabled={!canEdit}
+                                  disabled={!canEdit || isAdmin}
                                   field={field} options={collegeOptions} label="الكلية" placeholder={placeholder} />
                           )
                   }}

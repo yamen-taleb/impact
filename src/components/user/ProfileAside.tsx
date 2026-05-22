@@ -5,8 +5,9 @@ import CVSection from "./CVSection.tsx";
 import {useUserContext} from "../../context/UserContext.tsx";
 import {useGetUserById, useUpdateUser} from "../../hooks/use-user.ts";
 import {toast} from "sonner";
-import {getImageUrl} from "../../lib/utils.ts";
+import {getCollegeId, getImageUrl} from "../../lib/utils.ts";
 import {useParams} from "react-router";
+import {useCollegeContext} from "../../context/CollegeContext.tsx";
 
 const ProfileAside = () => {
     const {currentUser} = useUserContext();
@@ -35,6 +36,7 @@ const ProfileAside = () => {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
+            collegeId: getCollegeId(useCollegeContext().collegeOptions, user.collegeName),
         });
     };
 

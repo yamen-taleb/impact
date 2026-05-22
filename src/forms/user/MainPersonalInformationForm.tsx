@@ -7,12 +7,15 @@ import {useGetUserById, useUpdateUser} from "../../hooks/use-user.ts";
 import {toast} from "sonner";
 import {useEffect, useMemo} from "react";
 import {useParams} from "react-router";
+import {getCollegeId} from "../../lib/utils.ts";
+import {useCollegeContext} from "../../context/CollegeContext.tsx";
 
 const MainPersonalInformationForm = () => {
     const {currentUser, isLoading: isCurrentUserLoading} = useUserContext();
     const {id: userId} = useParams()
     const {user} = useGetUserById(userId);
     const { mutate: updateUser, isPending } = useUpdateUser();
+    const {collegeOptions} = useCollegeContext();
 
     const sameUser = useMemo(() => {
         if (!userId) return false;
@@ -40,6 +43,7 @@ const MainPersonalInformationForm = () => {
                 firstName: value.firstName,
                 lastName: value.lastName,
                 phone: value.phone,
+                collegeId: getCollegeId(collegeOptions, user.collegeName),
             });
         },
         validators: {

@@ -51,6 +51,7 @@ export const useUpdateUser = () => {
                 firstName: rest.firstName || "",
                 lastName: rest.lastName || "",
                 email: rest.email || "",
+                collegeId: rest.collegeId || "",
                 photo: photoFile,
             };
 
@@ -59,6 +60,7 @@ export const useUpdateUser = () => {
             formData.append("firstName", payload.firstName);
             formData.append("lastName", payload.lastName);
             formData.append("email", payload.email);
+            formData.append("collegeId", payload.collegeId);
 
             const response = await axiosClient.put(`v1/users/${userId}`, formData);
             return response.data;

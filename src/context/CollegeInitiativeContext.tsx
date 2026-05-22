@@ -16,6 +16,7 @@ interface InitiativesContextType {
     totalPages: number;
     isLoading: boolean;
     error: any;
+    userRole: string;
 }
 
 const CollegeInitiativesContext = createContext<InitiativesContextType | undefined>(undefined);
@@ -25,19 +26,15 @@ export const CollegeInitiativesProvider = ({ children }: { children: ReactNode }
     const {collegeOptions} = useCollegeContext();
     const collegeId = getCollegeId(collegeOptions, currentUser?.collegeName);
     const userRole = getUserRole();
-    const isManager = userRole === "Manager";
-    const statusFilter = !isManager
-        ? ["APPROVED", "ONGOING", "COMPLETED"]
-        : undefined;
 
     const paginatedData = usePaginatedInitiatives({
         initialCollegeId: collegeId,
-        initialStatusFilter: statusFilter,
     });
 
     return (
         <CollegeInitiativesContext.Provider
             value={{
+                userRole,
                 ...paginatedData,
             }}
         >

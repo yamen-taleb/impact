@@ -39,7 +39,7 @@ const Filters = ({ onFiltersChange }: FiltersProps) => {
     const location = useLocation();
 
     const filteredStatusOptions = useMemo(() => {
-        if (location.pathname === "/initiatives" && getUserRole() === "User") {
+        if (location.pathname === "/initiatives" && getUserRole() !== "Manager") {
             return statusOptions.filter(option => !["PENDING", "REJECTED", "CANCELED"].includes(option.value));
         }
         return statusOptions;
