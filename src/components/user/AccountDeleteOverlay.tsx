@@ -1,10 +1,20 @@
 import {Delete} from "lucide-react";
 import Dialog from "../Dialog.tsx";
 import {Button} from "../ui/button.tsx";
+import {useUserContext} from "../../context/UserContext.tsx";
+import {useDeleteUser} from "../../hooks/use-user.ts";
+import {toast} from "sonner";
 
 export function AccountDeleteOverlay() {
+    const {currentUser} = useUserContext();
+    const { mutate: deleteUser, isPending } = useDeleteUser();
+
     const handleDeleteAccount = () => {
-        console.log("Account deleted");
+        if (!currentUser?.userId) {
+            toast.error("لا يمكن تحديد هوية المستخدم لحذف الحساب.");
+            return;
+        }
+        deleteUser(currentUser.userId);
     };
 
     return (
@@ -20,9 +30,10 @@ export function AccountDeleteOverlay() {
                 titleClassName="text-lg font-bold"
                 description="هذا الإجراء دائم ولا يمكن التراجع عنه. سيتم فقدان جميع بياناتك."
                 descriptionClassName="text-base"
-                actionButtonName="حذف الحساب"
+                actionButtonName={isPending ? "جاري الحذف..." : "حذف الحساب"}
                 actionButtonClassName="bg-red-600 text-white hover:bg-red-700"
                 onAction={handleDeleteAccount}
+                isActionDisabled={isPending}
             />
         </div>
     )

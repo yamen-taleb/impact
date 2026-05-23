@@ -1,7 +1,7 @@
 import MainPersonalInformationForm from "../../forms/user/MainPersonalInformationForm.tsx";
 import SecondaryPersonalInformationForm from "../../forms/user/SecondaryPersonalInformationForm.tsx";
 import {AccountDeleteOverlay} from "./AccountDeleteOverlay.tsx";
-import {useParams} from "react-router";
+import {Link, useParams} from "react-router";
 import {useUserContext} from "../../context/UserContext.tsx";
 
 const PersonalInfoSection = () => {
@@ -16,13 +16,13 @@ const PersonalInfoSection = () => {
                 </div>
 
                 {currentUser?.userId == userId && (
-                    <button
-                        type="button"
+                    <Link
+                        target="_blank" to="http://localhost:9098/realms/impact-realm/account/account-security/signing-in"
                         className="inline-flex items-center gap-4 rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                     >
                         <span aria-hidden="true">‹</span>
                         تغيير كلمة المرور
-                    </button>
+                    </Link>
                 )}
             </div>
 

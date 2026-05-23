@@ -34,6 +34,7 @@ interface Props {
     onOpenChange?: (open: boolean) => void;
     onAction?: () => void;
     onCancel?: () => void;
+    isActionDisabled?: boolean;
 }
 
 const Dialog = ({
@@ -55,6 +56,7 @@ const Dialog = ({
     onOpenChange,
     onAction,
     onCancel,
+    isActionDisabled,
 }: Props) =>  {
 
     const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
@@ -134,7 +136,8 @@ const Dialog = ({
                         <AlertDialogAction
                             variant="default"
                             size="default"
-                            className={cn("bg-red-600 text-white hover:bg-red-700", actionButtonClassName)}
+                            className={cn("bg-red-600 text-white hover:bg-red-700", actionButtonClassName, isActionDisabled && "cursor-not-allowed opacity-50")}
+                            disabled={isActionDisabled}
                             onClick={handleAction}
                         >
                             {actionButtonName}

@@ -25,7 +25,7 @@ const Statistics = () => {
 
     return (
         <div className="space-y-8">
-            { isStudent || isAdmin &&  <>
+            { (isStudent || isAdmin) &&  <>
                 <div>
                     <h1 className="text-3xl font-bold text-zinc-900">الإحصائيات</h1>
                     <p className="mt-2 text-zinc-600">ملخص نشاطك التطوعي</p>

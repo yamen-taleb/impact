@@ -4,6 +4,7 @@ import axiosClient from "../axiosClient.ts";
 import {useMutation, useQueryClient, useQuery} from "@tanstack/react-query";
 import {userSchema, type UserType} from "../schemas/userSchema.ts";
 import { campaignsSchema } from "../schemas/campaignsSchema";
+import keycloak from "../lib/keycloak.ts";
 
 export const useGetMyUser = () => {
     const getMyUserRequest =
@@ -166,3 +167,38 @@ export const useGetUserCampaigns = ({
   });
 };
 
+export const useDeleteUser = () => {
+    const deleteUserRequest = async (userId: string) => {
+        await axiosClient.delete(`/v1/users/${userId}`);
+    };
+
+    return useMutation({
+        mutationFn: deleteUserRequest,
+        onSuccess: async () => {
+            toast.success("تم حذف الحساب بنجاح");
+
+            try {
+                localStorage.removeItem("token");
+                localStorage.removeItem(
+                    "refreshToken"
+                );
+
+                await keycloak.logout({
+                    redirectUri:
+                    window.location.origin,
+                });
+            } catch (error) {
+                console.error(
+                    "Logout failed:",
+                    error
+                );
+            }
+        },
+        onError: (error: any) => {
+            toast.error(
+                error?.response?.data?.message ||
+                "حدث خطأ أثناء حذف الحساب"
+            );
+        },
+    });
+};

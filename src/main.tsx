@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {BrowserRouter, Route, Routes} from "react-router";
+import { Toaster } from 'sonner';
 import Profile from "./pages/Profile.tsx";
 import Initiatives from "./pages/Initiatives.tsx";
 import AuthenticatedLayout from "./layouts/AuthenticatedLayout.tsx";
@@ -15,8 +16,6 @@ import Students from './pages/Students.tsx';
 import Statistics from "./pages/Statistics.tsx";
 import keycloak from './lib/keycloak.ts';
 import PrivateRoute from './PrivateRoute.tsx';
-import { CategoryProvider } from "./context/CategoryContext.tsx";
-import {CollegeProvider} from "./context/CollegeContext.tsx";
 import {InitiativesProvider} from "./context/InitiativeContext.tsx";
 import MyInitiatives from "./pages/MyInitiatives.tsx";
 import {StudentInitiativesProvider} from "./context/StudentIniativesContext.tsx";
@@ -54,85 +53,82 @@ keycloak.init({
     createRoot(document.getElementById('root')!).render(
         <StrictMode>
             <QueryClientProvider client={queryClient}>
-                <CategoryProvider>
-                    <CollegeProvider>
-                        <BrowserRouter>
-                            <Routes>
-                                <Route path="/" element={<App />} />
-                                <Route element={<PrivateRoute><AuthenticatedLayout /></PrivateRoute>}>
-                                    <Route path="/initiatives">
-                                        <Route
-                                            index
-                                            element={
-                                                <InitiativesProvider>
-                                                    <Initiatives />
-                                                </InitiativesProvider>
-                                            }
-                                        />
+                <Toaster richColors position="bottom-right" />
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<App />} />
+                        <Route element={<PrivateRoute><AuthenticatedLayout /></PrivateRoute>}>
+                            <Route path="/initiatives">
+                                <Route
+                                    index
+                                    element={
+                                        <InitiativesProvider>
+                                            <Initiatives />
+                                        </InitiativesProvider>
+                                    }
+                                />
 
-                                        <Route
-                                            path=":initiativeId"
-                                            element={<InitiativeDetails />}
-                                        />
-                                    </Route>
+                                <Route
+                                    path=":initiativeId"
+                                    element={<InitiativeDetails />}
+                                />
+                            </Route>
 
-                                    <Route path="/my-initiatives">
-                                        <Route
-                                            index
-                                            element={
-                                                <StudentInitiativesProvider>
-                                                    <MyInitiatives />
-                                                </StudentInitiativesProvider>
-                                            }
-                                        />
+                            <Route path="/my-initiatives">
+                                <Route
+                                    index
+                                    element={
+                                        <StudentInitiativesProvider>
+                                            <MyInitiatives />
+                                        </StudentInitiativesProvider>
+                                    }
+                                />
 
-                                        <Route
-                                            path=":initiativeId"
-                                            element={<InitiativeDetails />}
-                                        />
-                                    </Route>
+                                <Route
+                                    path=":initiativeId"
+                                    element={<InitiativeDetails />}
+                                />
+                            </Route>
 
-                                    <Route path="/our-initiatives">
-                                        <Route
-                                            index
-                                            element={
-                                                <CollegeInitiativesProvider>
-                                                    <CollegeInitiatives/>
-                                                </CollegeInitiativesProvider>
-                                            }
-                                        />
+                            <Route path="/our-initiatives">
+                                <Route
+                                    index
+                                    element={
+                                        <CollegeInitiativesProvider>
+                                            <CollegeInitiatives/>
+                                        </CollegeInitiativesProvider>
+                                    }
+                                />
 
-                                        <Route
-                                            path=":initiativeId"
-                                            element={<InitiativeDetails />}
-                                        />
-                                    </Route>
+                                <Route
+                                    path=":initiativeId"
+                                    element={<InitiativeDetails />}
+                                />
+                            </Route>
 
-                                    <Route path="/students-union">
-                                        <Route index element={<StudentsUnion />} />
-                                        {/* <Route path=":initiativeId" element={<InitiativeDetails />} /> */}
-                                    </Route>
-                                    <Route path="/students">
-                                        <Route index element={<Students />} />
-                                        {/* <Route path=":initiativeId" element={<InitiativeDetails />} /> */}
-                                    </Route>
-                                    <Route path="/profile/:id" element={<Profile />} />
-                                    <Route path="/my-applications" element={<Applications />} />
-                                    <Route path="/student-initiatives-participation/:id" element={<StudentInitiativesPage />} />
-                                    <Route path="/statistics" element={<Statistics/>}/>
-                                    <Route
-                                        path="*"
-                                        element={
-                                            <InitiativesProvider mode="initiatives">
-                                                <Initiatives />
-                                            </InitiativesProvider>
-                                        }
-                                    />
-                                </Route>
-                            </Routes>
-                        </BrowserRouter>
-                    </CollegeProvider>
-                </CategoryProvider>
+                            <Route path="/students-union">
+                                <Route index element={<StudentsUnion />} />
+                                {/* <Route path=":initiativeId" element={<InitiativeDetails />} /> */}
+                            </Route>
+                            <Route path="/students">
+                                <Route index element={<Students />} />
+                                {/* <Route path=":initiativeId" element={<InitiativeDetails />} /> */}
+                            </Route>
+                            <Route path="/profile/:id" element={<Profile />} />
+                            <Route path="/my-applications" element={<Applications />} />
+                            <Route path="/student-initiatives-participation/:id" element={<StudentInitiativesPage />} />
+                            <Route path="/statistics" element={<Statistics/>}/>
+                            <Route
+                                path="*"
+                                element={
+                                    <InitiativesProvider>
+                                        <Initiatives />
+                                    </InitiativesProvider>
+                                }
+                            />
+                        </Route>
+                    </Routes>
+                </BrowserRouter>
             </QueryClientProvider>
         </StrictMode>,
     );

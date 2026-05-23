@@ -14,6 +14,7 @@ const ProfileAside = () => {
     const {id: userId} = useParams()
     const {user} = useGetUserById(userId);
     const {mutate: updateUser, isPending} = useUpdateUser();
+    const { collegeOptions } = useCollegeContext()
     const [avatar, setAvatar] = useState(user?.photo || "");
 
     useEffect(() => {
@@ -36,7 +37,7 @@ const ProfileAside = () => {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
-            collegeId: getCollegeId(useCollegeContext().collegeOptions, user.collegeName),
+            collegeId: getCollegeId(collegeOptions, user.collegeName),
         });
     };
 
