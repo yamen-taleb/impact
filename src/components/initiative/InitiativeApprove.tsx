@@ -10,20 +10,19 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 import { Textarea } from "../ui/textarea";
-
-import {
-  useGetStudents,
-} from "../../hooks/use-students";
-
-import { useUpdateCampaign } from "../../hooks/use-initiative";
+import { useGetStudents } from "../../hooks/use-students";
+import { useUpdateCampaign, useUpdateCampaignStatus } from "../../hooks/use-initiative";
 import { useGetMyUser } from "../../hooks/use-user";
 import { useGetCollegeById } from "../../hooks/use-college";
 
 
 interface Props {
   campaignId: number;
-
   initiative: {
+    status?: string;
+    publishedAt?: string | null;
+    rejectedReason?: string | null;
+    lastProgress?: any | null;
     college?: {
       id: number;
       name: string;
@@ -31,24 +30,15 @@ interface Props {
   };
 }
 
-const InitiativeApprove = ({
-  campaignId,
-  initiative,
-}: Props) => {
-  const [openRejectDialog, setOpenRejectDialog] =
-    useState(false);
+const InitiativeApprove = ({ campaignId, initiative }: Props) => {
+  const [openRejectDialog, setOpenRejectDialog] = useState(false);
+  const [openApproveDialog, setOpenApproveDialog] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
 
-  const [openApproveDialog, setOpenApproveDialog] =
-    useState(false);
-
-  const [rejectReason, setRejectReason] =
-    useState("");
-
-  const { mutate: updateCampaign } =
-    useUpdateCampaign();
+  const { mutate: updateCampaign } = useUpdateCampaign();
+  const { mutate: updateCampaignStatus, } = useUpdateCampaignStatus();
 
   const { currentUser } = useGetMyUser();
-
   const currentUserId = Number(currentUser?.userId);
 
   const { data: studentsData } = useGetStudents({ page: 0, size: 1000, });
@@ -62,29 +52,45 @@ const InitiativeApprove = ({
       student.collegeName === campaignCollege?.name
   );
 
+  // CHECK Business logic
+  const isApproved = initiative.status === "APPROVED";
+  const isRejected = initiative.status === "REJECTED";
+  const hasPublishedAt = !!initiative.publishedAt;
+  const hasProgress = !!initiative.lastProgress;
+  // هل يمكن إعادة الرفض؟
+  const canReject = !hasPublishedAt && !hasProgress;
+  // هل يمكن إعادة الموافقة؟
+  const canApprove = !hasPublishedAt && !hasProgress;
+
   const handleReject = () => {
+    if (!currentUserId) {
+      return;
+    }
+
     updateCampaign(
       {
         campaignId,
-
         approvedById: currentUserId,
-
-        managedById: managerAdmin?.userId,
-
-        status: "APPROVED",
       },
       {
         onSuccess: () => {
-          setOpenRejectDialog(false);
-          setRejectReason("");
+          updateCampaignStatus(
+            {
+              campaignId,
+              status: "REJECTED",
+              rejectedReason: rejectReason,
+            },
+            {
+              onSuccess: () => {
+                setOpenRejectDialog(false);
+                setRejectReason("");
+              },
+            }
+          );
         },
       }
     );
   };
-
-
-  console.log(currentUserId);
-  console.log(managerAdmin?.userId);
 
   const handleApprove = () => {
     if (!currentUserId) {
@@ -95,22 +101,26 @@ const InitiativeApprove = ({
       console.error(
         "لم يتم العثور على Admin لنفس الكلية"
       );
-
       return;
     }
 
     updateCampaign(
       {
         campaignId,
-
         approvedById: currentUserId,
-
         managedById: managerAdmin.userId,
-
         status: "APPROVED",
       },
       {
         onSuccess: () => {
+          // تنظيف سبب الرفض عند إعادة الموافقة
+          if (initiative.status === "REJECTED") {
+            updateCampaignStatus({
+              campaignId,
+              status: "APPROVED",
+              rejectedReason: "",
+            });
+          }
           setOpenApproveDialog(false);
         },
       }
@@ -127,23 +137,21 @@ const InitiativeApprove = ({
         <div className="flex w-full flex-row justify-between">
           {/* زر الموافقة */}
           <Button
-            className="w-[47%]"
-            onClick={() =>
-              setOpenApproveDialog(true)
-            }
+            className={`w-[47%] ${ isApproved ? "bg-green-600 hover:bg-green-600 text-white" : "" }`}
+            disabled={ isApproved && !canReject }
+            onClick={() => setOpenApproveDialog(true) }
           >
-            صحيحة
+            {isApproved ? "تمت الموافقة" : "صحيحة"}
           </Button>
 
           {/* زر الرفض */}
           <Button
             variant="destructive"
-            className="w-[47%]"
-            onClick={() =>
-              setOpenRejectDialog(true)
-            }
+            className={`w-[47%] ${ isRejected ? "bg-red-700 hover:bg-red-700" : "" }`}
+            disabled={ isRejected && !canApprove }
+            onClick={() => setOpenRejectDialog(true) }
           >
-            يوجد خطأ ما!
+            {isRejected ? "تم الرفض" : "يوجد خطأ ما!"}
           </Button>
         </div>
       </article>

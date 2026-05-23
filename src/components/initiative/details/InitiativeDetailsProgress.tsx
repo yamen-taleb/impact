@@ -3,9 +3,10 @@ import {Progress} from "../../ui/progress.tsx";
 interface Props {
     percentage: number;
     status: string;
+    rejectedReason: string;
 }
 
-const InitiativeDetailsProgress = ({percentage, status}: Props) => {
+const InitiativeDetailsProgress = ({percentage, status, rejectedReason}: Props) => {
     return (
         <aside className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-bold text-zinc-900">نسبة الإنجاز</h2>
@@ -13,6 +14,12 @@ const InitiativeDetailsProgress = ({percentage, status}: Props) => {
                 <p className="mt-2 text-sm text-red-600 font-[Thamanyah2]">لم يتم الموافقة على المبادرة بعد</p>
             ) : (!percentage && status === "APPROVED") ? (
                 <p className="mt-2 text-sm text-green-600 font-[Thamanyah2]">تم الموافقة على المبادرة ولكن لم يتم البدأ بالعمل بها</p>
+            ) : (!percentage && status === "REJECTED") ? (
+                <div className="flex flex-col">
+                    <p className="mt-2 text-sm text-red-600 font-[Thamanyah2]">تم رفض المبادرة</p>
+                    <p className="mt-2 text-sm text-zinc-900">السبب</p>
+                    <p className="mt-2 text-sm text-red-600 font-[Thamanyah2]">{rejectedReason}</p>
+                </div>
             ) : (
                 <div className="flex flex-col">
                     <p className="mt-2 text-sm text-zinc-600 font-[Thamanyah2]">تم إنجاز {percentage}% من خطوات المبادرة.</p>

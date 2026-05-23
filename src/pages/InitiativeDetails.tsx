@@ -29,6 +29,8 @@ const InitiativeDetails = () => {
         error,
     } = useGetCampaignById(campaignId);
 
+    console.log(initiative);
+
     
     if (isLoading) {
         return <Loader />;
@@ -53,8 +55,8 @@ const InitiativeDetails = () => {
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
-                <InitiativeDetailsDescription description={initiative.description} proposedByName={initiative.proposedByName} />
-                <InitiativeDetailsProgress percentage={Number(initiative.lastProgress?.percentage)} status={initiative.status}/>
+                <InitiativeDetailsDescription description={initiative.description} proposedByName={initiative.proposedByName} managedByName={initiative.managedByName} />
+                <InitiativeDetailsProgress percentage={Number(initiative.lastProgress?.percentage)} status={initiative.status} rejectedReason={initiative.rejectedReason}/>
             </div>      
 
         
