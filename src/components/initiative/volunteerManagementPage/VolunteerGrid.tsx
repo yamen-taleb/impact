@@ -13,7 +13,7 @@ const VolunteerGrid = ({
 }: Props) => {
   if (volunteers.length === 0) {
     return (
-      <div className="flex min-h-[250px] items-center justify-center rounded-3xl border border-dashed bg-zinc-50 text-muted-foreground">
+      <div className="flex min-h-[250px] items-center justify-center rounded-3xl border border-dashed bg-zinc-50 font-[Thamanyah2]">
         لا يوجد متطوعين مطابقين
       </div>
     );

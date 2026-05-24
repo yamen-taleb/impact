@@ -1,15 +1,9 @@
 import { useMemo, useState } from "react";
-
 import Loader from "../../../components/Loader";
 import ErrorDisplay from "../../../components/ErrorDisplay";
-
 import PaginationComp from "../../../components/initiative/PaginationLinks";
-
 import { useVolunteers } from "../../../hooks/use-volunteers";
-
-import VolunteerToolbar, {
-  type VolunteerFiltersType,
-} from "./VolunteerToolbar.tsx";
+import VolunteerToolbar, { type VolunteerFiltersType } from "./VolunteerToolbar.tsx";
 import VolunteerStats from "./VolunteerStats.tsx";
 import VolunteerGrid from "./VolunteerGrid.tsx";
 
@@ -24,21 +18,12 @@ const DEFAULT_FILTERS: VolunteerFiltersType = {
   college: "",
 };
 
-const VolunteerManagementPage = ({
-  campaignId,
-}: Props) => {
+const VolunteerManagementPage = ({ campaignId }: Props) => {
+
   const [page, setPage] = useState(0);
+  const [filters, setFilters] = useState<VolunteerFiltersType>( DEFAULT_FILTERS );
 
-  const [filters, setFilters] =
-    useState<VolunteerFiltersType>(
-      DEFAULT_FILTERS
-    );
-
-  const {
-    data,
-    isLoading,
-    error,
-  } = useVolunteers({
+  const { data, isLoading, error, } = useVolunteers({
     campaignId,
     page,
     size: 4,
@@ -53,36 +38,15 @@ const VolunteerManagementPage = ({
   const stats = useMemo(() => {
     return {
       total: volunteers.length,
-
-      approved: volunteers.filter(
-        (v) =>
-          v.applicationStatus ===
-          "APPROVED"
-      ).length,
-
-      pending: volunteers.filter(
-        (v) =>
-          v.applicationStatus ===
-          "PENDING"
-      ).length,
-
-      rejected: volunteers.filter(
-        (v) =>
-          v.applicationStatus ===
-          "REJECTED"
-      ).length,
+      approved: volunteers.filter( (v) => v.applicationStatus === "APPROVED" ).length,
+      pending: volunteers.filter( (v) => v.applicationStatus === "PENDING" ).length,
+      rejected: volunteers.filter( (v) => v.applicationStatus === "REJECTED" ).length,
     };
   }, [volunteers]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) { return <Loader />; }
 
-  if (error) {
-    return (
-      <ErrorDisplay message="حدث خطأ أثناء تحميل المتطوعين" />
-    );
-  }
+  if (error) { return ( <ErrorDisplay message="حدث خطأ أثناء تحميل المتطوعين" /> ); }
 
   return (
     <div className="space-y-6">
@@ -91,7 +55,7 @@ const VolunteerManagementPage = ({
           إدارة المتطوعين
         </h2>
 
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground font-[Thamanyah2]">
           قبول ورفض الطلبات وإدارة الحضور والساعات التطوعية.
         </p>
       </div>
