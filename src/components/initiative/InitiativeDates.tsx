@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { eachDayOfInterval, format } from "date-fns";
-import type { DateRange } from "react-day-picker";
+import { arSA } from "date-fns/locale";
+import { useParams } from "react-router";
+import {
+  useUpdateCampaign,
+  type UpdateCampaignPayload,
+} from "../../hooks/use-initiative";
 
 import { Calendar } from "../ui/calendar";
 import { Input } from "../ui/input";
@@ -23,9 +28,24 @@ import {
   DialogTitle,
   DialogFooter,
 } from "../ui/dialog";
+import type { Initiative } from "../../schemas/initiativePageSchema";
 
-const InitiativeDates = () => {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>();
+interface InitiativeDatesProps {
+  initiative: Initiative;
+}
+
+const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
+  const { initiativeId } = useParams();
+  const { mutate: updateCampaign, isPending } = useUpdateCampaign();
+  const minSelectableDate = new Date();
+
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    initiative.startDate ? new Date(initiative.startDate) : undefined
+  );
+  const [endDate, setEndDate] = useState<Date | undefined>(
+    initiative.endDate ? new Date(initiative.endDate) : undefined
+  );
+
   const [daysCount, setDaysCount] = useState<number>(0);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -43,117 +63,166 @@ const InitiativeDates = () => {
   };
 
   useEffect(() => {
-    if (dateRange?.from && dateRange?.to) {
-      const totalDays = calculateWorkingDays(
-        dateRange.from,
-        dateRange.to
-      );
+    if (startDate && endDate) {
+      const totalDays = calculateWorkingDays(startDate, endDate);
       setDaysCount(totalDays);
     }
-  }, [dateRange]);
+  }, [startDate, endDate]);
+
+  const handleDaysCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (startDate && endDate) {
+      const maxDays = calculateWorkingDays(startDate, endDate);
+      const newDaysCount = Math.min(Number(e.target.value), maxDays);
+      setDaysCount(newDaysCount);
+    }
+  };
 
   const handleConfirmDates = () => {
-    console.log("تم تأكيد التواريخ", dateRange, daysCount);
-    setOpenDialog(false);
+    if (!startDate || !endDate || !initiativeId) return;
+
+    let payload: Omit<UpdateCampaignPayload, "campaignId"> & {
+      campaignId: number;
+    } = {
+      campaignId: Number(initiativeId),
+      startDate: format(startDate, "yyyy-MM-dd"),
+      endDate: format(endDate, "yyyy-MM-dd"),
+    };
+
+    if (initiative.maxVolunteers) {
+      payload = {
+        ...payload,
+        status: "ONGOING",
+      };
+    }
+
+    updateCampaign(payload, {
+      onSuccess: () => {
+        setOpenDialog(false);
+      },
+    });
   };
 
   return (
     <>
       <article className="ml-auto w-1/2 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-lg font-medium">
-          تحديد مدة المبادرة
-        </h2>
+        <h2 className="mb-5 text-lg font-medium">تحديد مدة المبادرة</h2>
 
-        <div className="space-y-5">
-          {/* اختيار التاريخ */}
-          <div className="space-y-2">
-            <Label>تاريخ البداية والنهاية</Label>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-between text-right font-[Thamanyah2]",
-                    !dateRange && "text-muted-foreground"
-                  )}
-                >
-                  {dateRange?.from ? (
-                    dateRange.to ? (
-                      <>
-                        {format(dateRange.from, "yyyy/MM/dd")} -{" "}
-                        {format(dateRange.to, "yyyy/MM/dd")}
-                      </>
+        <div className="space-y-6">
+          {/* اختيار تاريخ البداية */}
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label>تاريخ البداية</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-between text-right font-[Thamanyah2]",
+                      !startDate && "text-muted-foreground"
+                    )}
+                    disabled={initiative.startDate !== undefined}
+                  >
+                    {startDate ? (
+                      format(startDate, "PPP", { locale: arSA })
                     ) : (
-                      format(dateRange.from, "yyyy/MM/dd")
-                    )
-                  ) : (
-                    "اختر تاريخ البداية والنهاية"
-                  )}
+                      "اختر تاريخ البداية"
+                    )}
+                    <CalendarIcon className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="ring-0 z-50 w-[240px] min-w-[240px] rounded-xl border border-slate-200 bg-white p-2 shadow-xl"
+                  align="start"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    locale={arSA}
+                    startMonth={minSelectableDate}
+                    disabled={(date) => date < minSelectableDate}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
 
-                  <CalendarIcon className="h-4 w-4" />
+            {/* اختيار تاريخ النهاية */}
+            <div className="space-y-2">
+              <Label>تاريخ النهاية</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-between text-right font-[Thamanyah2]",
+                      !endDate && "text-muted-foreground"
+                    )}
+                    disabled={!startDate}
+                  >
+                    {endDate ? (
+                      format(endDate, "PPP", { locale: arSA })
+                    ) : (
+                      "اختر تاريخ النهاية"
+                    )}
+                    <CalendarIcon className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="ring-0 z-50 !w-[240px] !min-w-[240px] rounded-xl border border-slate-200 bg-white p-2 shadow-xl"
+                  align="center"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={setEndDate}
+                    disabled={{ before: startDate as Date }}
+                    locale={arSA}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+          </div>
+            {/* عدد الأيام */}
+            <div className="space-y-2">
+              <Label>عدد أيام المبادرة</Label>
+
+              <Input
+                type="number"
+                value={daysCount}
+                onChange={handleDaysCountChange}
+                className="font-[Thamanyah2]"
+              />
+            </div>
+
+            {/* زر التأكيد */}
+            {startDate && endDate && (
+                <Button
+                    className="w-full"
+                    onClick={() => setOpenDialog(true)}
+                    disabled={isPending}
+                >
+                  {isPending ? "جاري التأكيد..." : "تأكيد مدة المبادرة"}
                 </Button>
-              </PopoverTrigger>
-
-              <PopoverContent
-                className="w-auto bg-white p-0"
-                align="start"
-              >
-                <Calendar
-                  mode="range"
-                  selected={dateRange}
-                  onSelect={setDateRange}
-                  numberOfMonths={2}
-                />
-              </PopoverContent>
-            </Popover>
+            )}
           </div>
-
-          {/* عدد الأيام */}
-          <div className="space-y-2">
-            <Label>عدد أيام المبادرة</Label>
-
-            <Input
-              type="number"
-              value={daysCount}
-              onChange={(e) =>
-                setDaysCount(Number(e.target.value))
-              }
-              className="font-[Thamanyah2]"
-            />
-          </div>
-
-          {/* زر التأكيد */}
-          {dateRange?.from && dateRange?.to && (
-            <Button
-              className="w-full"
-              onClick={() => setOpenDialog(true)}
-            >
-              تأكيد مدة المبادرة
-            </Button>
-          )}
-        </div>
       </article>
 
       {/* Dialog */}
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent className="bg-white sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              هل أنت متأكد من تحديد مدة المبادرة؟
-            </DialogTitle>
+            <DialogTitle>هل أنت متأكد من تحديد مدة المبادرة؟</DialogTitle>
           </DialogHeader>
 
           <p className="text-sm text-gray-600 font-[Thamanyah2]">
             من تاريخ{" "}
             <strong>
-              {dateRange?.from &&
-                format(dateRange.from, "yyyy/MM/dd")}
+              {startDate && format(startDate, "PPP", { locale: arSA })}
             </strong>{" "}
             إلى{" "}
             <strong>
-              {dateRange?.to &&
-                format(dateRange.to, "yyyy/MM/dd")}
+              {endDate && format(endDate, "PPP", { locale: arSA })}
             </strong>
           </p>
 
@@ -169,12 +238,13 @@ const InitiativeDates = () => {
             <Button
               variant="outline"
               onClick={() => setOpenDialog(false)}
+              disabled={isPending}
             >
               إلغاء
             </Button>
 
-            <Button onClick={handleConfirmDates}>
-              تأكيد
+            <Button onClick={handleConfirmDates} disabled={isPending}>
+              {isPending ? "جاري التأكيد..." : "تأكيد"}
             </Button>
           </DialogFooter>
         </DialogContent>

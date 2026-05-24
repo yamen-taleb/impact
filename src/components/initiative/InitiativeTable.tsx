@@ -77,12 +77,11 @@ const InitiativeTable = ({initiatives, page, setPage, totalPages} : Props) => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {user?.firstName}{" "}
-                    {user?.lastName}
+                    {initiative.proposedByName}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {initiative.collegeName}
+                    {initiative?.college?.name}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -110,7 +109,7 @@ const InitiativeTable = ({initiatives, page, setPage, totalPages} : Props) => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2] text-center">
-                    {initiative.maxVolunteers}
+                    {initiative.maxVolunteers ?? "-"}
                   </TableCell>
 
                   <TableCell>

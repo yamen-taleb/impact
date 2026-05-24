@@ -4,6 +4,7 @@ import {Calendar as CalendarIcon} from "lucide-react";
 import {Button} from "./ui/button.tsx";
 import {Calendar} from "./ui/calendar.tsx";
 import {Popover, PopoverContent, PopoverTrigger} from "./ui/popover.tsx";
+import { arSA } from "date-fns/locale";
 import {cn} from "../lib/utils.ts";
 
 interface Props {
@@ -80,6 +81,7 @@ const DatePickerField = ({
                             startMonth={minDate}
                             endMonth={maxSelectableDate}
                             className="w-full"
+                            locale={arSA}
                         />
                     </PopoverContent>
                 </Popover>

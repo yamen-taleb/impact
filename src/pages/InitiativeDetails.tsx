@@ -1,5 +1,3 @@
-import initiativeDetails from "../data/initiativeDetails.json";
-import { initiativeDetailsSchema } from "../schemas/initiativeDetailsSchema.ts";
 import InitiativeDetailsEmptyState from "../components/initiative/details/InitiativeDetailsEmptyState.tsx";
 import InitiativeDetailsHero from "../components/initiative/details/InitiativeDetailsHero.tsx";
 import InitiativeDetailsMetaGrid from "../components/initiative/details/InitiativeDetailsMetaGrid.tsx";
@@ -56,7 +54,7 @@ const InitiativeDetails = () => {
 
             <div className="grid gap-6 md:grid-cols-3">
                 <InitiativeDetailsDescription description={initiative.description} proposedByName={initiative.proposedByName} managedByName={initiative.managedByName} />
-                <InitiativeDetailsProgress percentage={Number(initiative.lastProgress?.percentage)} status={initiative.status} rejectedReason={initiative.rejectedReason}/>
+                <InitiativeDetailsProgress percentage={Number(initiative.lastProgress?.percentage ?? 0)} status={initiative.status} rejectedReason={initiative.rejectedReason}/>
             </div>      
 
         
@@ -75,8 +73,8 @@ const InitiativeDetails = () => {
                     )}
 
                     <div className="flex gap-6">
-                        <InitiativeDates />
-                        <InitiativeMaxVolunteers />
+                        <InitiativeDates initiative={initiative} />
+                        <InitiativeMaxVolunteers initiative={initiative} />
                     </div>
 
                     <Volunteer />

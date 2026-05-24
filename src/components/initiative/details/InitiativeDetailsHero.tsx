@@ -3,6 +3,7 @@ import type {InitiativeDetails} from "../../../schemas/initiativeDetailsSchema.t
 import {Badge} from "../../ui/badge.tsx";
 import AttachmentsPreview from "../../AttachmentsPreview.tsx";
 import {getInitiativeStatus} from "../../../lib/initiativeStatus.ts";
+import {getImageUrl} from "../../../lib/utils.ts";
 
 interface Props {
     initiative: InitiativeDetails;
@@ -10,18 +11,17 @@ interface Props {
 
 const InitiativeDetailsHero = ({initiative}: Props) => {
 
-    // TODO : use actual initiative photo instead of placeholder
-    const primaryPhoto = "https://loremflickr.com/g/320/240/aleppo";
     const status = getInitiativeStatus(initiative.status);
 
-    const validAttachments = initiative.progressPhotos?.filter((v): v is string => !!v) ?? [];
+    const primaryPhoto = initiative.photo
+    const validAttachments = initiative.photos ?? [];
 
 
     return (
             <div className="relative h-72 w-full bg-zinc-100">
                 {primaryPhoto ? (
                     <img
-                        src={primaryPhoto}
+                        src={getImageUrl(primaryPhoto)}
                         alt={initiative.title}
                         className="h-full w-full object-cover"
                     />

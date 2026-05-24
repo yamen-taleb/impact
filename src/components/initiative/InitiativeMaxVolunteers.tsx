@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { useParams } from "react-router";
+import { useUpdateCampaign, type UpdateCampaignPayload } from "../../hooks/use-initiative";
 
 import {
   Dialog,
@@ -12,18 +14,39 @@ import {
   DialogTitle,
   DialogFooter,
 } from "../ui/dialog";
+import type {Initiative} from "../../schemas/initiativePageSchema.ts";
 
-const InitiativeMaxVolunteers = () => {
-  const [maxVolunteers, setMaxVolunteers] = useState<number | string>("");
-  const [confirmedVolunteers, setConfirmedVolunteers] = useState<
-    number | null
-  >(null);
+interface InitiativeMaxVolunteersProps {
+  initiative: Initiative;
+}
 
+const InitiativeMaxVolunteers = ({ initiative }: InitiativeMaxVolunteersProps) => {
+  const { initiativeId } = useParams();
+  const { mutate: updateCampaign, isPending } = useUpdateCampaign();
+
+  const [maxVolunteers, setMaxVolunteers] = useState<number | string>(initiative.maxVolunteers || "");
   const [openDialog, setOpenDialog] = useState(false);
 
   const handleConfirm = () => {
-    setConfirmedVolunteers(Number(maxVolunteers));
-    setOpenDialog(false);
+    if (!maxVolunteers || !initiativeId) return;
+
+    let payload: UpdateCampaignPayload = {
+      campaignId: Number(initiativeId),
+      maxVolunteers: Number(maxVolunteers),
+    };
+
+    if (initiative.startDate && initiative.endDate) {
+      payload = {
+        ...payload,
+        status: "ONGOING",
+      }
+    }
+
+    updateCampaign(payload, {
+      onSuccess: () => {
+        setOpenDialog(false);
+      },
+    });
   };
 
   return (
@@ -51,15 +74,15 @@ const InitiativeMaxVolunteers = () => {
 
           <Button
             className="w-full"
-            disabled={!maxVolunteers}
+            disabled={!maxVolunteers || isPending}
             onClick={() => setOpenDialog(true)}
           >
-            تأكيد العدد
+            {isPending ? "جاري التأكيد..." : "تأكيد العدد"}
           </Button>
 
-          {confirmedVolunteers && (
+          {initiative.maxVolunteers && (
             <div className="rounded-lg bg-green-50 p-3 text-sm text-green-700 font-[Thamanyah2]">
-              العدد المحدد حالياً: {confirmedVolunteers} طالب
+              العدد المحدد حالياً: {initiative.maxVolunteers} طالب
             </div>
           )}
         </div>
@@ -83,12 +106,13 @@ const InitiativeMaxVolunteers = () => {
             <Button
               variant="outline"
               onClick={() => setOpenDialog(false)}
+              disabled={isPending}
             >
               إلغاء
             </Button>
 
-            <Button onClick={handleConfirm}>
-              تأكيد
+            <Button onClick={handleConfirm} disabled={isPending}>
+              {isPending ? "جاري التأكيد..." : "تأكيد"}
             </Button>
           </DialogFooter>
         </DialogContent>

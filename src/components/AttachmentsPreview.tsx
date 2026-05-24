@@ -1,6 +1,7 @@
 import {type ReactElement, useEffect, useMemo, useState} from "react";
 import {ChevronLeft, ChevronRight, ImageIcon} from "lucide-react";
 import Dialog from "./Dialog.tsx";
+import {getImageUrl} from "../lib/utils.ts";
 
 interface Props {
     attachments: string[];
@@ -86,7 +87,7 @@ const AttachmentsPreview = ({
                     <div className="flex h-[50vh] min-h-[280px] w-full items-center justify-center">
                         {hasImages ? (
                             <img
-                                src={currentImage}
+                                src={getImageUrl(currentImage)}
                                 alt={`attachment-${index + 1}`}
                                 className="h-full w-full object-contain"
                             />
@@ -142,7 +143,7 @@ const AttachmentsPreview = ({
                                 }`}
                             >
                                 <img
-                                    src={attachment}
+                                    src={getImageUrl(attachment)}
                                     alt={`thumbnail-${thumbIndex + 1}`}
                                     className="h-14 w-full object-cover"
                                 />

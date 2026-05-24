@@ -20,13 +20,16 @@ interface InitiativeParams {
     proposedByUserId?: string | number | null;
 }
 
-interface UpdateCampaignPayload {
+export interface UpdateCampaignPayload {
     campaignId: number;
 
     approvedById?: number;
     managedById?: number;
 
     status?: "PENDING" | "APPROVED" | "REJECTED" | "ONGOING" | "COMPLETED";
+    startDate?: string;
+    endDate?: string;
+    maxVolunteers?: number;
 }
 
 interface UpdateCampaignStatusPayload {
