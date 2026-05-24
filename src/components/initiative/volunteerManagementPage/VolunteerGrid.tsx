@@ -5,11 +5,15 @@ import VolunteerCard from "./VolunteerCard";
 interface Props {
   volunteers: Volunteer[];
   campaignId: number;
+  campaignStartDate: String;
+  campaignEndDate: String;
 }
 
 const VolunteerGrid = ({
   volunteers,
   campaignId,
+  campaignStartDate,
+  campaignEndDate
 }: Props) => {
   if (volunteers.length === 0) {
     return (
@@ -26,6 +30,8 @@ const VolunteerGrid = ({
           key={volunteer.applicationId}
           volunteer={volunteer}
           campaignId={campaignId}
+          campaignStartDate={campaignStartDate}
+          campaignEndDate={campaignEndDate}
         />
       ))}
     </div>

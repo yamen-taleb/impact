@@ -77,7 +77,7 @@ const InitiativeDetails = () => {
                     </div>
 
                     {/* <Volunteer campaignId={campaignId} /> */}
-                    <VolunteerManagementSection campaignId={campaignId} />
+                    <VolunteerManagementSection campaignId={campaignId} campaignStartDate={initiative.startDate} campaignEndDate={initiative.endDate}  />
                     
                     <ProgressManagement />
                 </div>

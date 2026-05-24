@@ -10,6 +10,8 @@ import VolunteerGrid from "./VolunteerGrid.tsx";
 
 interface Props {
   campaignId: number;
+  campaignStartDate: String;
+  campaignEndDate: String;
 }
 
 const DEFAULT_FILTERS: VolunteerFiltersType = {
@@ -18,7 +20,7 @@ const DEFAULT_FILTERS: VolunteerFiltersType = {
   college: "",
 };
 
-const VolunteerManagementPage = ({ campaignId }: Props) => {
+const VolunteerManagementPage = ({ campaignId, campaignStartDate, campaignEndDate }: Props) => {
 
   const [page, setPage] = useState(0);
   const [filters, setFilters] = useState<VolunteerFiltersType>( DEFAULT_FILTERS );
@@ -73,6 +75,8 @@ const VolunteerManagementPage = ({ campaignId }: Props) => {
       <VolunteerGrid
         volunteers={volunteers}
         campaignId={campaignId}
+        campaignStartDate={campaignStartDate}
+        campaignEndDate={campaignEndDate}
       />
 
       <PaginationComp

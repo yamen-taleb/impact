@@ -8,10 +8,13 @@ import { useUpdateApplication } from "../../../hooks/use-application";
 import { useGetMyUser } from "../../../hooks/use-user";
 import { Button } from "../../../components/ui/button";
 import { toArabicNumbers, getAcademicYearLabel, formatArabicPhoneNumber, formatArabicDate } from "../../../lib/utils";
+import VolunteerAttendanceDialog from "./VolunteerAttendanceDialog";
 
 interface Props {
   volunteer: Volunteer;
   campaignId: number;
+  campaignStartDate: String;
+  campaignEndDate: String;
 }
 
 type DialogType =
@@ -21,11 +24,13 @@ type DialogType =
   | "restore"
   | null;
 
-const VolunteerCard = ({ volunteer, campaignId }: Props) => {
+const VolunteerCard = ({ volunteer, campaignId, campaignStartDate, campaignEndDate }: Props) => {
 
   const [dialog, setDialog] = useState<DialogType>(null);
 
   const [reason, setReason] = useState("");
+
+  const [attendanceOpen, setAttendanceOpen] = useState(false);
 
   const { mutate, isPending } = useUpdateApplication();
 
@@ -180,7 +185,12 @@ const VolunteerCard = ({ volunteer, campaignId }: Props) => {
             <h3 className="text-xl font-[Thamanyah2]">24 ساعة</h3>
           </div>
 
-          <Button variant="outline">
+          <Button
+            variant="outline"
+            onClick={() =>
+              setAttendanceOpen(true)
+            }
+          >
             إدارة الحضور
           </Button>
         </div>
@@ -208,6 +218,17 @@ const VolunteerCard = ({ volunteer, campaignId }: Props) => {
         }
         onClose={closeDialog}
         onConfirm={submitAction}
+      />
+
+      <VolunteerAttendanceDialog
+        open={attendanceOpen}
+        onClose={() =>
+          setAttendanceOpen(false)
+        }
+        campaignId={campaignId}
+        studentId={volunteer.userId}
+        startDate={campaignStartDate}
+        endDate={campaignEndDate}
       />
     </>
   );
