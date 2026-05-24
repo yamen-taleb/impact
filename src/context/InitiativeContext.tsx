@@ -27,7 +27,7 @@ export const InitiativesProvider = ({ children }: { children: ReactNode }) => {
     const userRole = getUserRole();
     const isManager = userRole === "Manager";
     const statusFilter = !isManager
-        ? ["APPROVED", "ONGOING", "COMPLETED"]
+        ?  ["ONGOING", "COMPLETED"]
         : undefined;
 
     const paginatedData = usePaginatedInitiatives({initialStatusFilter: statusFilter});

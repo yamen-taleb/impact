@@ -88,10 +88,11 @@ const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
       endDate: format(endDate, "yyyy-MM-dd"),
     };
 
-    if (initiative.maxVolunteers) {
+    if (initiative.maxVolunteers && !!initiative.publishedAt) {
       payload = {
         ...payload,
         status: "ONGOING",
+        publishedAt: new Date()
       };
     }
 
@@ -120,7 +121,7 @@ const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
                       "w-full justify-between text-right font-[Thamanyah2]",
                       !startDate && "text-muted-foreground"
                     )}
-                    disabled={initiative.startDate !== undefined}
+                    disabled={!!initiative.startDate}
                   >
                     {startDate ? (
                       format(startDate, "PPP", { locale: arSA })
@@ -157,7 +158,6 @@ const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
                       "w-full justify-between text-right font-[Thamanyah2]",
                       !endDate && "text-muted-foreground"
                     )}
-                    disabled={!startDate}
                   >
                     {endDate ? (
                       format(endDate, "PPP", { locale: arSA })

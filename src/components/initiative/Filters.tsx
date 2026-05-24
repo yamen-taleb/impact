@@ -40,7 +40,7 @@ const Filters = ({ onFiltersChange }: FiltersProps) => {
 
     const filteredStatusOptions = useMemo(() => {
         if (location.pathname === "/initiatives" && getUserRole() !== "Manager") {
-            return statusOptions.filter(option => !["PENDING", "REJECTED", "CANCELED"].includes(option.value));
+            return statusOptions.filter(option => !["PENDING", "REJECTED", "CANCELED", "APPROVED"].includes(option.value));
         }
         return statusOptions;
     }, [location.pathname]);

@@ -30,6 +30,7 @@ export interface UpdateCampaignPayload {
     startDate?: string;
     endDate?: string;
     maxVolunteers?: number;
+    publishedAt?: Date | null;
 }
 
 interface UpdateCampaignStatusPayload {
