@@ -16,26 +16,46 @@ import {
 
 import { Button } from "../../ui/button";
 import { Textarea } from "../../ui/textarea";
+import { getUserRole } from "../../../lib/utils";
+import { useGetMyUser } from "../../../hooks/use-user";
+import { useApplyToCampaign } from "../../../hooks/use-application";
 
 interface Props {
   backHref?: string;
+  campaignId: number;
 }
 
 const InitiativeDetailsActions = ({
   backHref = "/initiatives",
+  campaignId,
 }: Props) => {
-  const userRole = userData.additionalInfo.role;
-
+  const userRole = getUserRole();
+  
   const [openDialog, setOpenDialog] = useState(false);
   const [motivation, setMotivation] = useState("");
+  
+  const { currentUser } = useGetMyUser();
+  const currentUserId = Number( currentUser?.userId );
+  const { mutate: applyToCampaign } = useApplyToCampaign();
 
   const handleApply = () => {
-    console.log("سبب التطوع:", motivation);
+    if (!currentUserId) {
+      return;
+    }
 
-    // API Request Here
-
-    setOpenDialog(false);
-    setMotivation("");
+    applyToCampaign(
+      {
+        campaignId,
+        studentId: currentUserId,
+        motivationLetter: motivation,
+      },
+      {
+        onSuccess: () => {
+          setOpenDialog(false);
+          setMotivation("");
+        },
+      }
+    );
   };
 
   return (

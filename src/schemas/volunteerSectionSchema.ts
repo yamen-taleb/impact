@@ -1,41 +1,50 @@
 import { z } from "zod";
 
-export const volunteerSectionSchema = z.object({
-    id: z.union([z.string(), z.number()]),
-    sutdentNumber: z.string(),
-    firstName: z.string(),
-    lastName: z.string(),
-    email: z.string(),
-    phoneNumber: z.string(),
-    photo: z.string(),
-    birthDate: z.coerce.date(),
-    college: z.string(),
-    academicYear: z.string(),
-    motivationLetter: z.string(),
-    status: z.string()
-})
-
-export const volunteersSchema = z.array(volunteerSectionSchema);
-
-export type Volunteer = z.infer<typeof volunteerSectionSchema>;
-export type Volunteers = z.infer<typeof volunteersSchema>;
-
-
 export const volunteerSchema = z.object({
   userId: z.number(),
   studentNumber: z.string(),
   fullName: z.string(),
   firstName: z.string(),
   lastName: z.string(),
-  email: z.string().email(),
+  email: z.string(),
   phone: z.string().nullable().optional(),
   academicYear: z.number().nullable().optional(),
   photo: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
+  birthdate: z.string().nullable().optional(),
+  location: z.string().nullable().optional(),
+  collegeName: z.string().nullable().optional(),
   applicationId: z.number(),
   applicationStatus: z.string(),
+  motivationLetter: z.string().nullable().optional(),
+  rejectionReason: z.string().nullable().optional(),
+  adminNotes: z.string().nullable().optional(),
+  appliedAt: z.string().nullable().optional(),
+  reviewedAt: z.string().nullable().optional(),
+  withdrawnAt: z.string().nullable().optional(),
+  removedAt: z.string().nullable().optional(),
+  removalReason: z.string().nullable().optional(),
+  reviewedByName: z.string().nullable().optional(),
 });
 
-export const paginatedVolunteersSchema = z.object({
-  content: z.array(volunteerSchema),
-  totalElements: z.number(),
-});
+export const paginatedVolunteersSchema =
+  z.object({
+    content: z.array(volunteerSchema),
+    totalElements: z.number(),
+    totalPages: z.number(),
+    size: z.number(),
+    number: z.number(),
+    first: z.boolean(),
+    last: z.boolean(),
+    numberOfElements: z.number(),
+    empty: z.boolean(),
+  });
+
+export type Volunteer = z.infer<
+  typeof volunteerSchema
+>;
+
+export type PaginatedVolunteers =
+  z.infer<
+    typeof paginatedVolunteersSchema
+  >;

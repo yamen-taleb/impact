@@ -8,7 +8,11 @@ import {
 } from "../../../components/ui/accordion"
 
 
-const Volnteer = () => {
+interface Props {
+  campaignId: number;
+}
+
+const Volnteer = ({campaignId}: Props) => {
   return (
       <div>
         <Accordion
@@ -20,7 +24,7 @@ const Volnteer = () => {
           <AccordionItem value="cards">
             <AccordionTrigger className="text-lg">عرض تفاصيل الطلاب المتطوعين</AccordionTrigger>
             <AccordionContent className="pt-10">
-              <VolunteerDetails />
+              <VolunteerDetails campaignId={campaignId} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>

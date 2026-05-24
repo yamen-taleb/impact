@@ -1,4 +1,4 @@
-import { Trash2, Image as ImageIcon } from "lucide-react";
+import { Trash2, Image as ImageIcon, LucideMailWarning } from "lucide-react";
 import { Badge } from "../ui/badge.tsx"
 import type {Application} from "../../schemas/applicationsSchema.ts";
 import { applicationStatusConfig } from "../../lib/applicationStatus.ts";
@@ -99,9 +99,23 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                             <button
                                 onClick={() => onDelete(application.id)}
                                 className="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs font-medium text-red-700 transition hover:bg-red-100"
+                                disabled={application.status !== "PENDING"}
                             >
-                                <Trash2 size={14} />
-                                سحب الطلب
+                                {
+                                application.status === "PENDING"
+                                    ? (
+                                        <div className="flex flex-row gap-2">
+                                            <Trash2 size={14} />
+                                            <h1> سحب الطلب </h1>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-row gap-2">
+                                            <LucideMailWarning size={14} />
+                                            <h1> لا يمكن سحب الطلب </h1>
+                                        </div>
+                                    )
+                                }
+                                
                             </button>
                         )}
                     </div>

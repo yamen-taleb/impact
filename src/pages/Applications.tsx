@@ -9,6 +9,7 @@ import { ApplicationsProvider, useApplicationsContext } from "../context/Appilca
 import { useGetMyUser } from "../hooks/use-user.ts";
 import Loader from "../components/Loader.tsx";
 import ErrorDisplay from "../components/ErrorDisplay.tsx";
+import { useWithdrawApplication } from "../hooks/use-application.ts";
 
 const ApplicationsContent = () => {
     const {
@@ -26,15 +27,40 @@ const ApplicationsContent = () => {
     const [open, setOpen] = useState(false);
     const [deleteApplicationId, setDeleteApplicationId] = useState<string | number | null>(null);
 
+    const { mutate: withdrawApplication } = useWithdrawApplication();
+
     const handleOpenDialogDeleteApplication = (id: string | number) => {
         setOpen(true);
         setDeleteApplicationId(id);
     };
 
     const handleDeleteApplication = () => {
-        // This should be a mutation
-        console.log("Deleting", deleteApplicationId);
-        setOpen(false);
+        if (!deleteApplicationId) { return; }
+
+        // ابحث عن الطلب الحالي
+        const application =
+            applications.find(
+            (app: any) =>
+                app.id === deleteApplicationId
+            );
+
+        // يسمح بالسحب فقط إذا كانت الحالة PENDING
+        if ( application?.status !== "PENDING" ) {
+            return;
+        }
+
+        withdrawApplication(
+            {
+            applicationId:
+                deleteApplicationId,
+            },
+            {
+            onSuccess: () => {
+                setOpen(false);
+                setDeleteApplicationId(null);
+            },
+            }
+        );
     };
 
     if (isLoading) return <Loader />;

@@ -14,6 +14,7 @@ import { useParams } from "react-router";
 import { useGetCampaignById } from "../hooks/use-initiative.ts";
 import { getUserRole } from "../lib/utils.ts";
 import Loader from "../components/Loader.tsx";
+import VolunteerManagementSection from "../components/initiative/volunteerManagementPage/VolunteerManagementSection.tsx";
 
 const InitiativeDetails = () => {
     const userRole = getUserRole();
@@ -26,8 +27,6 @@ const InitiativeDetails = () => {
         isLoading,
         error,
     } = useGetCampaignById(campaignId);
-
-    console.log(initiative);
 
     
     if (isLoading) {
@@ -58,7 +57,7 @@ const InitiativeDetails = () => {
             </div>      
 
         
-            <InitiativeDetailsActions/>
+            <InitiativeDetailsActions campaignId={campaignId}/>
 
             <InitiativeDetailsVolunteersAvatar campaignId={campaignId}/>
 
@@ -77,7 +76,8 @@ const InitiativeDetails = () => {
                         <InitiativeMaxVolunteers initiative={initiative} />
                     </div>
 
-                    <Volunteer />
+                    {/* <Volunteer campaignId={campaignId} /> */}
+                    <VolunteerManagementSection campaignId={campaignId} />
                     
                     <ProgressManagement />
                 </div>

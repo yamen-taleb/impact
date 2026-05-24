@@ -35,7 +35,7 @@ const InitiativeMaxVolunteers = ({ initiative }: InitiativeMaxVolunteersProps) =
       maxVolunteers: Number(maxVolunteers),
     };
 
-    if (initiative.startDate && initiative.endDate && !!initiative.publishedAt) {
+    if (initiative.startDate && initiative.endDate && !initiative.publishedAt) {
       payload = {
         ...payload,
         status: "ONGOING",

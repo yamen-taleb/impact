@@ -14,9 +14,12 @@ import "./userCard.css";
 import { useState } from 'react';
 import { Button } from '../../ui/button';
 import { Textarea } from '../../ui/textarea';
+import { useUpdateApplication } from '../../../hooks/use-application';
+import { useGetMyUser } from '../../../hooks/use-user';
 
 interface Props {
     volunteer: Volunteer;
+    campaignId: number;
 }
 
 type DialogType =
@@ -27,18 +30,22 @@ type DialogType =
   | null;
 
 
-const UserCard = ({volunteer}: Props) => {
+const UserCard = ({volunteer, campaignId}: Props) => {
 
   const [openDialog, setOpenDialog] = useState<DialogType>(null);
   const [reason, setReason] = useState("");
+
+  const currentUser = useGetMyUser();
 
   const closeDialog = () => {
     setOpenDialog(null);
     setReason("");
   };
 
-  const requiresReason =
-    openDialog === "reject" || openDialog === "dismiss";
+  const { mutate: updateApplication, isPending } = useUpdateApplication();
+
+
+const requiresReason = openDialog === "reject" || openDialog === "dismiss";
 
   const getDialogTitle = () => {
     switch (openDialog) {
@@ -60,11 +67,72 @@ const UserCard = ({volunteer}: Props) => {
   };
 
   const handleConfirm = () => {
-    console.log({
-      action: openDialog,
-      volunteerId: volunteer.id,
-      reason,
-    });
+
+    if (openDialog === "accept" || openDialog === "review") {
+      updateApplication({
+        id: volunteer.applicationId,
+        motivationLetter: volunteer.motivationLetter,
+        status: "APPROVED",
+        rejectionReason: null,
+        adminNotes: null,
+        appliedAt: volunteer.appliedAt,
+        withdrawnAt: volunteer.withdrawnAt,
+        createdAt: volunteer.createdAt,
+        updatedAt: new Date().toISOString(),
+        reviewedAt: new Date().toISOString(),
+        removalReason: null,
+        removedAt: null,
+        student: volunteer.userId,
+        campaign: campaignId,
+        reviewedBy: currentUser.currentUser?.userId,
+        removedBy: null,
+      });
+    }
+
+    if (openDialog === "reject") {
+      updateApplication({
+        id: volunteer.applicationId,
+        motivationLetter: volunteer.motivationLetter,
+        status: "REJECTED",
+        rejectionReason: reason,
+        adminNotes: null,
+        appliedAt: volunteer.appliedAt,
+        withdrawnAt: volunteer.withdrawnAt,
+        createdAt: volunteer.createdAt,
+        updatedAt: new Date().toISOString(),
+        reviewedAt: new Date().toISOString(),
+        reviewedBy: currentUser.currentUser?.userId,
+        removalReason: null,
+        removedAt: null,
+        removedBy: null,
+        student: volunteer.userId,
+        campaign: campaignId,
+      });
+    }
+
+    if (openDialog === "dismiss") {
+      updateApplication({
+        id: volunteer.applicationId,
+        motivationLetter: volunteer.motivationLetter,
+        status: "REJECTED",
+        rejectionReason: null,
+        adminNotes: null,
+        appliedAt: volunteer.appliedAt,
+        withdrawnAt: volunteer.withdrawnAt,
+        createdAt: volunteer.createdAt,
+        updatedAt: new Date().toISOString(),
+        reviewedAt: new Date().toISOString(),
+        reviewedBy: currentUser.currentUser?.userId,
+
+        // 👇 بيانات الفصل
+        removalReason: reason,
+        removedAt: new Date().toISOString(),
+        removedBy: currentUser.currentUser?.userId,
+
+        student: volunteer.userId,
+        campaign: campaignId,
+      });
+    }
 
     closeDialog();
   };
@@ -84,7 +152,7 @@ const UserCard = ({volunteer}: Props) => {
           <img className='w-[30%] rounded-full' src={volunteer.photo} alt="" />
           <span>{volunteer.firstName + " " + volunteer.lastName}</span>
         </div>
-        <span className="card-tag font-[Thamanyah2]">{volunteer.sutdentNumber}</span>
+        <span className="card-tag font-[Thamanyah2]">{volunteer.studentNumber}</span>
       </div>
 
       <div className="card-body">
@@ -96,12 +164,12 @@ const UserCard = ({volunteer}: Props) => {
 
           <div className="feature-item">
             <Phone className='feature-icon p-[1px] text-white w-[1.4em] h-[1.4em] flex items-center justify-center bg-[--secondary] border-[0.12em] border-[--text] rounded-[0.3em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.2)]' />
-            <span className="feature-text font-[Thamanyah2]"><h4>{volunteer.phoneNumber}</h4></span>
+            <span className="feature-text font-[Thamanyah2]"><h4>{volunteer.phone}</h4></span>
           </div>
 
           <div className="feature-item">
             <BackpackIcon className='feature-icon p-[1px] text-white w-[1.4em] h-[1.4em] flex items-center justify-center bg-[--secondary] border-[0.12em] border-[--text] rounded-[0.3em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.2)]' />
-            <span className="feature-text font-[Thamanyah2]">{volunteer.college}</span>
+            <span className="feature-text font-[Thamanyah2]">{volunteer.collegeName}</span>
           </div>
 
           <div className="feature-item">
@@ -114,7 +182,7 @@ const UserCard = ({volunteer}: Props) => {
           {volunteer.motivationLetter}
         </div>
 
-        <AttendanceCalendar disabled={volunteer.status !== "ACCEPTED"} />
+        <AttendanceCalendar disabled={volunteer.applicationStatus !== "APPROVED"} />
 
         <div className='flex flex-col gap-5'>
           <div className="card-actions flex flex-row justify-between items-center">
@@ -122,11 +190,11 @@ const UserCard = ({volunteer}: Props) => {
               <button className="card-button bg-[--secondary] hover:bg-[--secondary-hover]">المزيد من التفاصيل</button>
 
               <div className="stamp">
-                  {(volunteer.status === "PENDING_APPROVAL") ? (
+                  {(volunteer.applicationStatus === "PENDING") ? (
                     <h3 className="text-orange-500 w-[150.8%] absolute">قيد - المراجعة</h3>
-                  ) : (volunteer.status === "ACCEPTED") ? (
+                  ) : (volunteer.applicationStatus === "APPROVED") ? (
                     <h3 className="text-green-500">مقبول</h3>
-                  ) : (volunteer.status === "REMOVED") ? (
+                  ) : (volunteer.applicationStatus === "REJECTED" && volunteer.removalReason) ? (
                     <h3 className="text-red-500">مفصول</h3>
                   ) : (
                     <h3 className="text-red-500">مرفوض</h3>
@@ -134,7 +202,7 @@ const UserCard = ({volunteer}: Props) => {
               </div>
           </div>
 
-          {(volunteer.status === "PENDING_APPROVAL") ? (
+          {(volunteer.applicationStatus === "PENDING") ? (
             <div className='flex flex-row gap-2'>
               <button 
                 className="card-button w-1/2 bg-[--secondary] hover:bg-[--secondary-hover]"
@@ -151,14 +219,14 @@ const UserCard = ({volunteer}: Props) => {
               </button>
             </div>
             // Add Dialoge to confirm student absence
-          ) : (volunteer.status === "ACCEPTED") ? (
+          ) : (volunteer.applicationStatus === "APPROVED") ? (
             <button
               className="card-button w-full bg-red-700 hover:bg-red-800"
               onClick={() => setOpenDialog("dismiss")}
             >
               فصل الطالب
             </button>
-          ) : (volunteer.status === "REMOVED") ? (
+          ) : (volunteer.applicationStatus === "REMOVED") ? (
             <button
               className="card-button w-full bg-orange-500 hover:bg-orange-600"
               onClick={() => setOpenDialog("review")}
@@ -234,10 +302,11 @@ const UserCard = ({volunteer}: Props) => {
             <Button
               onClick={handleConfirm}
               disabled={
-                requiresReason && !reason.trim()
+                (requiresReason && !reason.trim()) ||
+                isPending
               }
             >
-              تأكيد
+              {isPending ? "جارٍ التنفيذ..." : "تأكيد"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -88,7 +88,7 @@ const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
       endDate: format(endDate, "yyyy-MM-dd"),
     };
 
-    if (initiative.maxVolunteers && !!initiative.publishedAt) {
+    if (initiative.maxVolunteers && !initiative.publishedAt) {
       payload = {
         ...payload,
         status: "ONGOING",

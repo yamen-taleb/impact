@@ -4,80 +4,72 @@ import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import TextField from "../TextField";
 import SelectField from "../SelectField";
+import { useCollegeContext } from "../../context/CollegeContext";
 
-const VolunteerFilters = () => {
 
-  type Filters = {
-    search: string;
-    status: string;
-    college: string;
-  };
+export type VolunteerFiltersType = {
+        search: string;
+        status: string;
+        college: string;
+    };
+
+interface VolunteerFiltersProps {
+    onFiltersChange?: (
+        filters: VolunteerFiltersType
+    ) => void;
+}
+
+
+const VolunteerFilters = ({ onFiltersChange }: VolunteerFiltersProps) => {
+
+    
 
   const ALL_STATUSES = "all_statuses";
   const ALL_COLLEGIES = "all_collegies";
 
   const statusOptions = [
     { value: ALL_STATUSES, label: "كل الحالات" },
-    { value: "approved", label: "مقبول" },
-    { value: "pending", label: "قيد المراجعة" },
-    { value: "removed", label: "مفصول" },
-    { value: "rejected", label: "مرفوض" },
+    { value: "APPROVED", label: "مقبول" },
+    { value: "PENDING", label: "قيد المراجعة" },
+    { value: "REJECTED", label: "مرفوض" },
 ];
 
-  const collegeOptions = [
-    { value: ALL_COLLEGIES, label: "كل الكليات" },
-    { value: "informaticsEn", label: "كلية الهندسة المعلوماتية" },
-    { value: "civilEn", label: "كلية الهندسة المدنية" },
-    { value: "architecturalEn", label: "كلية الهندسة المعمارية" },
-    { value: "agriculturalEn", label: "كلية الهندسة الزراعية" },
-    { value: "electricalAndElectronicsEn", label: "كلية الهندسة الكهربائية والإلكترونية" },
-    { value: "mechanicalEn", label: "كلية الهندسة الميكانيكية" },
-    { value: "technicalEn", label: "كلية الهندسة التقنية" },
-    { value: "medicine", label: "كلية الطب البشري" },
-    { value: "dentistry", label: "كلية طب الأسنان" },
-    { value: "pharmacy", label: "كلية الصيدلة" },
-    { value: "nursing", label: "كلية التمريض" },
-    { value: "sciences", label: "كلية العلوم" },
-    { value: "economics", label: "كلية الاقتصاد" },
-    { value: "appliedFineArts", label: "كلية الفنون الجميلة التطبيقية" },
-    { value: "appliedScience", label: "الكلية التطبيقية" },
-    { value: "law", label: "كلية الحقوق" },
-    { value: "artsOfHumanity", label: "كلية الآداب والعلوم الإنسانية" },
-    { value: "education", label: "كلية التربية" },
-    { value: "sharia", label: "كلية الشريعة" },
-    { value: "medicineInst", label: "المعهد التقاني الطبي" },
-    { value: "dentistryInst", label: "المعهد التقاني لطب الأسنان" },
-    { value: "agriculturalInst", label: "المعهد التقاني الزراعي" },
-    { value: "marketingAndBusinessInst", label: "المعهد التقاني لإدارة الأعمال والتسويق" },
-    { value: "bankingAndFinanceInst", label: "المعهد التقاني للعلوم المالية والمصرفية" },
-    { value: "computerInst", label: "المعهد التقاني للحاسوب" },
-    { value: "mechanicalAndElectronicsInst", label: "المعهد التقاني للهندسة الميكانيكية والكهربائية" },
-    { value: "engineeringInst", label: "المعهد التقاني الهندسي" },
-  ];
+    const { collegeOptions: rawCollegeOptions } =
+        useCollegeContext();
 
-  const [appliedFilters, setAppliedFilters] = useState<Filters>({
+        const collegeOptions = useMemo(() => {
+        return [
+            {
+            value: ALL_COLLEGIES,
+            label: "كل الكليات",
+            },
+
+            ...rawCollegeOptions,
+        ];
+    }, [rawCollegeOptions]);
+
+    const defaultValues: VolunteerFiltersType = {
     search: "",
     status: ALL_STATUSES,
     college: ALL_COLLEGIES,
-  });
+    };
 
-  const form = useForm({
-    defaultValues: appliedFilters,
-    onSubmit: ({ value }) => {
-        const normalizedFilters: Filters = {
-            search: value.search,
-            status: value.status === ALL_STATUSES ? "" : value.status,
-            college: value.college === ALL_COLLEGIES ? "" : value.college,
-        };
+    const form = useForm({
+        defaultValues,
+        onSubmit: ({ value }) => {
+            const normalizedFilters: VolunteerFiltersType = {
+                search: value.search,
+                status: value.status === ALL_STATUSES ? "" : value.status,
+                college: value.college === ALL_COLLEGIES ? "" : value.college,
+            };
 
-        setAppliedFilters(value);
-        console.log("Applying filters:", normalizedFilters);
-    },
-  });
-  const debouncedSubmit = useMemo(
-      () => debounce(() => form.handleSubmit(), 400),
-      [form]
-  );
+            onFiltersChange?.(normalizedFilters);
+        },
+    });
+    const debouncedSubmit = useMemo(
+        () => debounce(() => form.handleSubmit(), 400),
+        [form]
+    );
 
   useEffect(() => {
     return () => debouncedSubmit.cancel();
