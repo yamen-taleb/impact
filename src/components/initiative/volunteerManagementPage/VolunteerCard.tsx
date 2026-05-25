@@ -9,6 +9,7 @@ import { useGetMyUser } from "../../../hooks/use-user";
 import { Button } from "../../../components/ui/button";
 import { toArabicNumbers, getAcademicYearLabel, formatArabicPhoneNumber, formatArabicDate } from "../../../lib/utils";
 import VolunteerAttendanceDialog from "./VolunteerAttendanceDialog";
+import { useAttendance } from "../../../hooks/use-attendance";
 
 interface Props {
   volunteer: Volunteer;
@@ -60,6 +61,8 @@ const VolunteerCard = ({ volunteer, campaignId, campaignStartDate, campaignEndDa
     }
   }, [dialog]);
 
+  console.log(volunteer);
+
   const submitAction = () => {
     mutate(
       {
@@ -102,7 +105,25 @@ const VolunteerCard = ({ volunteer, campaignId, campaignStartDate, campaignEndDa
     );
   };
 
-  console.log(volunteer);
+
+  const { data: attendanceData } =
+    useAttendance({
+      campaignId,
+      studentId: volunteer.userId,
+    });
+
+  const totalVolunteerHours =
+    attendanceData?.attendances ?.filter((item: any) =>
+      item.studentId === volunteer.userId &&
+      item.status === "PRESENT"
+    ) ?.reduce(
+      (
+        total: number,
+        item: any
+      ) =>
+        total + (item.hoursThatDay || 0),
+        0
+    ) || 0;
 
   return (
     <>
@@ -182,7 +203,11 @@ const VolunteerCard = ({ volunteer, campaignId, campaignStartDate, campaignEndDa
         <div className="mt-5 flex items-center justify-between rounded-2xl border bg-zinc-50 p-4">
           <div>
             <p className="text-sm">ساعات التطوع</p> 
-            <h3 className="text-xl font-[Thamanyah2]">24 ساعة</h3>
+            <h3 className="text-xl font-[Thamanyah2]">
+              {toArabicNumbers(
+                totalVolunteerHours
+              )} ساعة
+            </h3>
           </div>
 
           <Button

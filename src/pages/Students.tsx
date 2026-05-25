@@ -336,7 +336,7 @@ const Students = () => {
         <Dialog
           open={openDialog}
           onOpenChange={setOpenDialog}
-        >s
+        >
           <DialogContent className="bg-white">
             <DialogHeader>
               <DialogTitle>

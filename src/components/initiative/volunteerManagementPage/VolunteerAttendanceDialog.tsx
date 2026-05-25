@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-
 import {
   isSameDay,
   format,
@@ -24,11 +23,8 @@ import {
 } from "../../../components/ui/dialog";
 
 import { Button } from "../../../components/ui/button";
-
 import { Label } from "../../../components/ui/label";
-
 import { Textarea } from "../../../components/ui/textarea";
-
 import { Input } from "../../../components/ui/input";
 
 import {
@@ -39,23 +35,20 @@ import {
 import {
   useAttendance,
   useCreateAttendance,
+  useDeleteAttendance,
   useUpdateAttendance,
   type AttendanceStatus,
 } from "../../../hooks/use-attendance";
 
 import { useGetMyUser } from "../../../hooks/use-user";
 
+
 interface Props {
   open: boolean;
-
   onClose: () => void;
-
   campaignId: number;
-
   studentId: number;
-
   startDate: string;
-
   endDate: string;
 }
 
@@ -67,52 +60,27 @@ export default function VolunteerAttendanceDialog({
   startDate,
   endDate
 }: Props) {
-  const [selectedDay, setSelectedDay] =
-    React.useState<Date | null>(null);
-
-  const [status, setStatus] =
-    React.useState<AttendanceStatus>(
-      "PRESENT"
-    );
-
-  const [notes, setNotes] =
-    React.useState("");
-
-  const [hours, setHours] =
-    React.useState("0");
-
-  const [popupOpen, setPopupOpen] =
-    React.useState(false);
+  const [selectedDay, setSelectedDay] = React.useState<Date | null>(null);
+  const [status, setStatus] = React.useState<AttendanceStatus>( "PRESENT" );
+  const [notes, setNotes] = React.useState("");
+  const [hours, setHours] = React.useState("0");
+  const [popupOpen, setPopupOpen] = React.useState(false);
 
   const currentUser = useGetMyUser();
-
-  const campaignStartDate =
-  startOfDay(parseISO(startDate));
-
-  const campaignEndDate =
-    startOfDay(parseISO(endDate));
+  const campaignStartDate = startOfDay(parseISO(startDate));
+  const campaignEndDate = startOfDay(parseISO(endDate));
 
   const isDateDisabled = (
     date: Date
   ) => {
-    const normalizedDate =
-      startOfDay(date);
+    const normalizedDate = startOfDay(date);
+    const isOutsideCampaign = !isWithinInterval( normalizedDate,{
+      start: campaignStartDate,
+      end: campaignEndDate,
+    });
+    const isFriday = normalizedDate.getDay() === 5;
 
-    const isOutsideCampaign =
-      !isWithinInterval(
-        normalizedDate,
-        {
-          start: campaignStartDate,
-          end: campaignEndDate,
-        }
-      );
-
-    const isFriday =
-      normalizedDate.getDay() === 5;
-
-    return (
-      isOutsideCampaign || isFriday
-    );
+    return ( isOutsideCampaign || isFriday );
   };
 
 
@@ -120,42 +88,39 @@ export default function VolunteerAttendanceDialog({
     campaignId,
     studentId,
   });
-
-  const { mutate, isPending } =
-    useCreateAttendance();
-
-  const {
-    mutate: updateAttendance,
-  } = useUpdateAttendance();
-
-  const records = data?.content ?? [];
+  const { mutate, isPending } = useCreateAttendance();
+  const { mutate: updateAttendance } = useUpdateAttendance();
+  const { mutate: deleteAttendance } = useDeleteAttendance();
 
 
-  const getRecord = (date: Date) =>
-    records.find((item) =>
-      isSameDay(
-        parseISO(item.attendanceDate),
-        date
-      )
+  const records = data?.attendances ?? [];
+
+
+
+  const getRecord = (date: Date) => {
+    const formattedDate = format(
+      date,
+      "yyyy-MM-dd"
     );
 
-  const openAttendancePopup = (
-    date: Date
-  ) => {
+    return records.find(
+      (item) =>
+        item.attendanceDate === formattedDate &&
+        item.studentId === studentId
+    );
+  };
+
+  const openAttendancePopup = ( date: Date ) => {
     setSelectedDay(date);
 
     const existing = getRecord(date);
 
+    console.log(date);
+
     if (existing) {
       setStatus(existing.status);
-
       setNotes(existing.notes || "");
-
-      setHours(
-        String(
-          existing.hoursThatDay || 0
-        )
-      );
+      setHours( String( existing.hoursThatDay || 0 ) );
     } else {
       setStatus("PRESENT");
       setNotes("");
@@ -166,162 +131,53 @@ export default function VolunteerAttendanceDialog({
   };
 
   const saveAttendance = () => {
-  if (!selectedDay) return;
+    if (!selectedDay) return;
+    const existing = getRecord(selectedDay);
+    const now = new Date().toISOString();
+    const payload = {
+      attendanceDate: format(
+        selectedDay,
+        "yyyy-MM-dd"
+      ),
+      student: studentId,
+      campaign: campaignId,
+      recordedBy: currentUser.currentUser ?.userId as number,
+      recordedAt: now,
+      createdAt: now,
+      updatedAt: now,
+      status,
+      hoursThatDay: status === "PRESENT"
+        ? Number(hours)
+        : 0,
+      notes: status === "EXCUSED"
+        ? notes
+        : "",
+    };
 
-  const attendanceDate = format(
-    selectedDay,
-    "yyyy-MM-dd"
-  );
+    /*** UPDATE */
+    if (existing) {
+      updateAttendance(
+        {
+          attendanceId: existing.attendanceId,
+          ...payload,
+        },
+        {
+          onSuccess: () => {
+            setPopupOpen(false);
+          },
+        }
+      );
 
-  const existing =
-    getRecord(selectedDay);
+      return;
+    }
 
-  /**
-   * تجهيز البيانات الأساسية
-   */
-  const basePayload = {
-    attendanceDate,
-
-    student: studentId,
-
-    campaign: campaignId,
-
-    recordedBy:
-      currentUser.currentUser
-        ?.userId,
-
-    recordedAt:
-      new Date().toISOString(),
-
-    updatedAt:
-      new Date().toISOString(),
+    /*** CREATE */
+    mutate(payload, {
+      onSuccess: () => {
+        setPopupOpen(false);
+      },
+    });
   };
-
-  /**
-   * حاضر
-   */
-  if (status === "PRESENT") {
-    const payload = {
-      ...basePayload,
-
-      status: "PRESENT",
-
-      hoursThatDay:
-        Number(hours),
-
-      notes: "",
-    };
-
-    if (existing) {
-      updateAttendance(
-        {
-          attendanceId:
-            existing.attendanceId,
-
-          ...payload,
-        },
-
-        {
-          onSuccess: () => {
-            setPopupOpen(false);
-          },
-        }
-      );
-
-      return;
-    }
-
-    mutate(payload, {
-      onSuccess: () => {
-        setPopupOpen(false);
-      },
-    });
-
-    return;
-  }
-
-  /**
-   * غياب بعذر
-   */
-  if (status === "EXCUSED") {
-    const payload = {
-      ...basePayload,
-
-      status: "EXCUSED",
-
-      hoursThatDay: 0,
-
-      notes,
-    };
-
-    if (existing) {
-      updateAttendance(
-        {
-          attendanceId:
-            existing.attendanceId,
-
-          ...payload,
-        },
-
-        {
-          onSuccess: () => {
-            setPopupOpen(false);
-          },
-        }
-      );
-
-      return;
-    }
-
-    mutate(payload, {
-      onSuccess: () => {
-        setPopupOpen(false);
-      },
-    });
-
-    return;
-  }
-
-  /**
-   * غياب بلا عذر
-   */
-  if (status === "ABSENT") {
-    const payload = {
-      ...basePayload,
-
-      status: "ABSENT",
-
-      hoursThatDay: 0,
-
-      notes: "",
-    };
-
-    if (existing) {
-      updateAttendance(
-        {
-          attendanceId:
-            existing.attendanceId,
-
-          ...payload,
-        },
-
-        {
-          onSuccess: () => {
-            setPopupOpen(false);
-          },
-        }
-      );
-
-      return;
-    }
-
-    mutate(payload, {
-      onSuccess: () => {
-        setPopupOpen(false);
-      },
-    });
-  }
-};
 
   return (
     <>
@@ -362,50 +218,34 @@ export default function VolunteerAttendanceDialog({
                     day,
                     ...props
                   }) => {
-                    const record =
-                      getRecord(day.date);
 
-                    let dot = "";
+                    const record = getRecord(day.date);
 
-                    if (
-                      record?.status ===
-                      "PRESENT"
-                    ) {
-                      dot = "bg-green-500";
+                    let bgColor = "";
+
+                    if (record?.status === "PRESENT") {
+                      bgColor = "bg-green-200 hover:bg-green-300";
                     }
 
-                    if (
-                      record?.status ===
-                      "EXCUSED"
-                    ) {
-                      dot = "bg-yellow-500";
+                    if (record?.status === "EXCUSED") {
+                      bgColor = "bg-yellow-200 hover:bg-yellow-300";
                     }
 
-                    if (
-                      record?.status ===
-                      "ABSENT"
-                    ) {
-                      dot = "bg-red-500";
+                    if (record?.status === "ABSENT") {
+                      bgColor = "bg-red-200 hover:bg-red-300";
                     }
 
                     return (
                       <CalendarDayButton
                         day={day}
-                        modifiers={
-                          modifiers
-                        }
+                        modifiers={modifiers}
                         {...props}
                       >
-                        <div className="flex flex-col items-center gap-1">
+                        <div className={`relative flex size-full items-center justify-center ${record && bgColor}`}>
+
                           <span>
                             {children}
                           </span>
-
-                          {record && (
-                            <span
-                              className={`size-2 rounded-full ${dot}`}
-                            />
-                          )}
                         </div>
                       </CalendarDayButton>
                     );
@@ -530,6 +370,32 @@ export default function VolunteerAttendanceDialog({
           </div>
 
           <DialogFooter>
+            {selectedDay && getRecord(selectedDay) && (
+              <Button
+                variant="destructive"
+                onClick={() => {
+
+                  if (!selectedDay) return;
+
+                  const record =
+                    getRecord(selectedDay);
+
+                  if (!record) return;
+
+                  deleteAttendance(
+                    record.attendanceId,
+                    {
+                      onSuccess: () => {
+                        setPopupOpen(false);
+                      },
+                    }
+                  );
+                }}
+              >
+                حذف السجل
+              </Button>
+            )}
+
             <Button
               variant="outline"
               onClick={() =>
@@ -538,6 +404,7 @@ export default function VolunteerAttendanceDialog({
             >
               إلغاء
             </Button>
+            
 
             <Button
               disabled={isPending}
