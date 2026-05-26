@@ -1,4 +1,6 @@
 import {Clock3, GraduationCap, MapPin, Tag} from "lucide-react";
+import { toArabicNumbers } from "../../../lib/utils";
+
 
 interface Props {
     college: string;
@@ -63,7 +65,11 @@ const InitiativeDetailsMetaGrid = ({
                     <p className="mb-2 flex items-center gap-2 text-xs font-medium text-zinc-500">
                         <Clock3 size={15} /> الوقت التقديري للإنتهاء
                     </p>    
-                    <p className="text-sm font-semibold text-zinc-900 font-[Thamanyah2]">{estimatedTimeToComplete || "غير محدد"}</p>
+                    <p className="text-sm font-semibold text-zinc-900 font-[Thamanyah2]">{toArabicNumbers(estimatedTimeToComplete) + " " + (
+                        estimatedTimeToComplete === 2 ? "يومين" 
+                        : estimatedTimeToComplete <= 10 && estimatedTimeToComplete > 2 ? "أيام" 
+                        : "يوم") || "غير محدد"
+                    }</p>
                     {estimatedTimeToComplete && (
                         <span className="mt-2 block text-xs text-zinc-500 font-[Thamanyah2]">
                             من {new Date(startDate).toLocaleDateString("ar-SY")} إلى {new Date(endDate).toLocaleDateString("ar-SY")}

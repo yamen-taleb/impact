@@ -1,4 +1,7 @@
+import { Hourglass } from "lucide-react";
 import {Progress} from "../../ui/progress.tsx";
+import { toArabicNumbers } from "../../../lib/utils.ts";
+
 
 interface Props {
     percentage: number;
@@ -9,7 +12,10 @@ interface Props {
 const InitiativeDetailsProgress = ({percentage, status, rejectedReason}: Props) => {
     return (
         <aside className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-bold text-zinc-900">نسبة الإنجاز</h2>
+            <div className="flex flex-row gap-2">
+                <Hourglass />
+                <h2 className="text-lg font-bold text-zinc-900">نسبة الإنجاز</h2>
+            </div>
             {(!percentage && status === "PENDING") ? (
                 <p className="mt-2 text-sm text-red-600 font-[Thamanyah2]">لم يتم الموافقة على المبادرة بعد</p>
             ) : (!percentage && status === "APPROVED") ? (
@@ -22,10 +28,10 @@ const InitiativeDetailsProgress = ({percentage, status, rejectedReason}: Props) 
                 </div>
             ) : (
                 <div className="flex flex-col">
-                    <p className="mt-2 text-sm text-zinc-600 font-[Thamanyah2]">تم إنجاز {percentage}% من خطوات المبادرة.</p>
+                    <p className="mt-2 text-sm text-zinc-600 font-[Thamanyah2]">تم إنجاز {toArabicNumbers(percentage)}% من خطوات المبادرة.</p>
                     <Progress value={percentage} className="mt-5 h-2 bg-zinc-200" />
-                    <div className="mt-4 rounded-xl bg-zinc-100 p-3 text-center text-2xl font-black text-zinc-900">
-                        {percentage}%
+                    <div className="mt-4 rounded-xl bg-zinc-100 p-3 text-center text-3xl font-black text-zinc-900">
+                        {toArabicNumbers(percentage)}%
                     </div>
                 </div>
             )}

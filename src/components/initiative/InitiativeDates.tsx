@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
 } from "../ui/popover";
 import { Button } from "../ui/button";
-import { CalendarIcon } from "lucide-react";
+import { CalendarClock, CalendarIcon } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 import {
@@ -106,7 +106,10 @@ const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
   return (
     <>
       <article className="ml-auto w-1/2 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-lg font-medium">تحديد مدة المبادرة</h2>
+        <div className="flex flex-row gap-2">
+          <CalendarClock />
+          <h2 className="mb-5 text-lg font-medium">تحديد مدة المبادرة</h2>
+        </div>
 
         <div className="space-y-6">
           {/* اختيار تاريخ البداية */}
@@ -198,7 +201,7 @@ const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
             {/* زر التأكيد */}
             {startDate && endDate && (
                 <Button
-                    className="w-full"
+                    className="w-full h-10 hover:curspo border shadow-sm border-zinc-300 hover:bg-zinc-200"
                     onClick={() => setOpenDialog(true)}
                     disabled={isPending}
                 >

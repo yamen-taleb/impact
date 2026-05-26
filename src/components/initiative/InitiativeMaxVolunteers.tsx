@@ -15,6 +15,7 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 import type {Initiative} from "../../schemas/initiativePageSchema.ts";
+import { Users } from "lucide-react";
 
 interface InitiativeMaxVolunteersProps {
   initiative: Initiative;
@@ -53,9 +54,12 @@ const InitiativeMaxVolunteers = ({ initiative }: InitiativeMaxVolunteersProps) =
   return (
     <>
       <article className="flex flex-col mr-auto w-1/2 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-lg font-medium">
-          العدد الأعظمي للطلاب المتطوعين
-        </h2>
+        <div className="flex flex-row gap-2">
+          <Users />
+          <h2 className="mb-5 text-lg font-medium">
+            العدد الأعظمي للطلاب المتطوعين
+          </h2>
+        </div>
 
         <div className="space-y-4">
           <div className="space-y-2">
@@ -74,7 +78,7 @@ const InitiativeMaxVolunteers = ({ initiative }: InitiativeMaxVolunteersProps) =
           </div>
 
           <Button
-            className="w-full"
+            className="w-full h-10 hover:cursor-pointer border shadow-sm border-zinc-300 hover:bg-zinc-200"
             disabled={!maxVolunteers || isPending}
             onClick={() => setOpenDialog(true)}
           >

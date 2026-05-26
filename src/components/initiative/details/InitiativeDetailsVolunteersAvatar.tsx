@@ -1,3 +1,4 @@
+import { UsersIcon } from "lucide-react";
 import {
   Avatar,
   AvatarFallback,
@@ -5,8 +6,9 @@ import {
   AvatarGroupCount,
   AvatarImage,
 } from "../../../components/ui/avatar";
-
 import { useVolunteers } from "../../../hooks/use-volunteers";
+import { toArabicNumbers } from "../../../lib/utils";
+
 
 interface Props {
   campaignId: number;
@@ -20,10 +22,17 @@ const InitiativeDetailsVolunteersAvatar = ({ campaignId }: Props) => {
   return (
     <div>
       <div className="w-full flex flex-row gap-10">
-        <h1>
-          عدد الطلاب المتطوعين في هذه المبادرة هو{" "}
-          {volunteers.length} طالب
-        </h1>
+        <div className="flex flex-row gap-2">
+          <UsersIcon />
+          <h1>
+            عدد الطلاب المتطوعين في هذه المبادرة هو{" "}
+            {toArabicNumbers(volunteers.length) + " " + (
+              volunteers.length === 2 ? "طالبين" 
+              : volunteers.length <= 10 && volunteers.length > 2 ? "طلاب" 
+              : "طالب" 
+            )}
+          </h1>
+        </div>
 
         <AvatarGroup className="grayscale">
           {volunteers.slice(0, 3).map((v) => (

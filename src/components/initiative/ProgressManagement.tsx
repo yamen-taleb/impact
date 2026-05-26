@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import { Trash2, Upload, User } from "lucide-react";
+import { Bookmark, BookMarked, Trash2, Upload, User } from "lucide-react";
 import {
   useCreateProgress,
   useDeleteProgress,
@@ -197,7 +197,10 @@ const ProgressManagement = ({campaignId}: Props) => {
   return (
     <>
       <section className="w-full rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-6 text-lg font-semibold">توثيق تقدم المبادرة</h2>
+        <div className="flex flex-row gap-2">
+          <Bookmark />
+          <h2 className="mb-6 text-lg font-semibold">توثيق تقدم المبادرة</h2>
+        </div>
 
         {/* FORM */}
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
@@ -287,7 +290,10 @@ const ProgressManagement = ({campaignId}: Props) => {
 
         {/* HISTORY */}
         <div className="mt-10">
-          <h3 className="mb-4 text-lg font-semibold">سجل التوثيق</h3>
+          <div className="flex flex-row gap-2">
+            <BookMarked />
+            <h3 className="mb-4 text-lg font-semibold">سجل التوثيق</h3>
+          </div>
 
           {isLoading && (
             <div className="rounded-xl border p-6 text-center text-sm text-muted-foreground">
