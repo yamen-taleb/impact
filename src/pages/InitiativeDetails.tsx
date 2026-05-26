@@ -4,7 +4,6 @@ import InitiativeDetailsMetaGrid from "../components/initiative/details/Initiati
 import InitiativeDetailsDescription from "../components/initiative/details/InitiativeDetailsDescription.tsx";
 import InitiativeDetailsProgress from "../components/initiative/details/InitiativeDetailsProgress.tsx";
 import InitiativeDetailsActions from "../components/initiative/details/InitiativeDetailsActions.tsx";
-import Volunteer from "../components/initiative/volunteerManagement/Volunteer.tsx";
 import InitiativeApprove from "../components/initiative/InitiativeApprove.tsx";
 import InitiativeDates from "../components/initiative/InitiativeDates.tsx";
 import InitiativeMaxVolunteers from "../components/initiative/InitiativeMaxVolunteers.tsx";
@@ -79,7 +78,7 @@ const InitiativeDetails = () => {
                     {/* <Volunteer campaignId={campaignId} /> */}
                     <VolunteerManagementSection campaignId={campaignId} campaignStartDate={initiative.startDate} campaignEndDate={initiative.endDate}  />
                     
-                    <ProgressManagement />
+                    <ProgressManagement campaignId={campaignId} />
                 </div>
             )}
         </section>
