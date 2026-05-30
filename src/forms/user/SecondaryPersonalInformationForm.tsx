@@ -31,11 +31,11 @@ const SecondaryPersonalInformationForm = () => {
 
     const form = useForm({
         defaultValues: {
-            collegeId: String(getCollegeId(collegeOptions, user?.collegeName)) || "",
-            location: user?.location || "",
-            birthDate: user?.birthdate || "",
-            academicYear: user?.academicYear || "",
-            description: user?.description || "",
+            collegeId: "",
+            location: "",
+            birthDate: "",
+            academicYear: "",
+            description: "",
         },
         onSubmit: ({value}) => {
             if (!canEdit) {
@@ -65,6 +65,16 @@ const SecondaryPersonalInformationForm = () => {
             onBlur: secondaryPersonalInfoSchema
         }
     })
+
+    useEffect(() => {
+        if (user && collegeOptions.length > 0) {
+            form.setFieldValue("collegeId", String(getCollegeId(collegeOptions, user.collegeName)) || "");
+            form.setFieldValue("location", user.location || "");
+            form.setFieldValue("birthDate", user.birthdate || "");
+            form.setFieldValue("academicYear", String(user.academicYear) || "");
+            form.setFieldValue("description", user.description || "");
+        }
+    }, [user, collegeOptions, form]);
     const {handleSubmit} = form;
   return (
       <form
@@ -87,10 +97,10 @@ const SecondaryPersonalInformationForm = () => {
               <Field form={form} name="collegeId">
                   {
                       (field) => {
-                          const placeholder = !canEdit && field.state.value == "" ? "الكلية غير محددة" : "اختر الكلية"
+                          const placeholder = !canEdit && !field.state.value ? "الكلية غير محددة" : "اختر الكلية"
                           return (
                               <SelectField
-                                  className="!w-full !border-0 !border-b !border-slate-300 !pb-3 !pt-2 !h-10 !rounded-none"
+                                  className="!w-full !border-0 !border-b !border-slate-300 !pb-3 !pt-2 !h-10 !rounded-none flex-1"
                                   disabled={!canEdit || isAdmin}
                                   field={field} options={collegeOptions} label="الكلية" placeholder={placeholder} />
                           )
@@ -109,7 +119,7 @@ const SecondaryPersonalInformationForm = () => {
           <div className="grid gap-7 md:grid-cols-2">
               <Field form={form} name="birthDate">
                   {(field) => {
-                      const placeholder = !canEdit && field.state.value == "" ? "تاريخ غير محدد" : "اختر التاريخ"
+                      const placeholder = !canEdit && !field.state.value ? "تاريخ غير محدد" : "اختر التاريخ"
                       return (
                           <DatePickerField
                               field={field}
@@ -137,7 +147,7 @@ const SecondaryPersonalInformationForm = () => {
                                  label="وصف عنك"
                                  className={"fieldClasses min-h-10 font-[Thamanyah2]"}
                                  readOnly={!canEdit}
-                                 placeholder={"قم بكتابة وصف عنك"}
+                                 placeholder={!canEdit ? "لا يوجد وصف" : "قم بكتابة وصف عنك"}
                   />
               )}
           </Field>

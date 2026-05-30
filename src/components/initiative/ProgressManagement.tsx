@@ -204,7 +204,7 @@ const ProgressManagement = ({campaignId}: Props) => {
 
         {/* FORM */}
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-          <div className="space-y-2">
+          <div className="space-y-2 flex flex-col">
             <Label>النسبة المئوية</Label>
 
             <Input
@@ -213,10 +213,12 @@ const ProgressManagement = ({campaignId}: Props) => {
               max={100}
               placeholder={`من ${latestPercentage} إلى 100`}
               className="font-[Thamanyah2] placeholder:text-zinc-500
-                [&::-webkit-inner-spin-button]:h-10
-                [&::-webkit-inner-spin-button]:w-10
-                [&::-webkit-outer-spin-button]:h-10
-                [&::-webkit-outer-spin-button]:w-10
+                [&::-webkit-inner-spin-button]:h-5
+                [&::-webkit-inner-spin-button]:w-5
+                [&::-webkit-outer-spin-button]:h-5
+                [&::-webkit-outer-spin-button]:w-5
+                flex-1
+                placeholder:text-sm
                 [&::-webkit-inner-spin-button]:opacity-100
               "
               value={percentage}
@@ -239,7 +241,7 @@ const ProgressManagement = ({campaignId}: Props) => {
             <label className="flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition hover:bg-gray-50">
               <Upload className="size-4 text-zinc-500" />
 
-              <span className="font-[Thamanyah2] text-zinc-500">اختر الصور</span>
+              <span className="font-[Thamanyah2] text-sm text-zinc-500">اختر الصور</span>
 
               <input
                 type="file"
