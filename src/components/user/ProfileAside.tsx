@@ -2,12 +2,13 @@ import {useEffect, useState} from "react";
 import ImageChangeButton from "../ImageChangeButton.tsx";
 import UserAvatar from "./UserAvatar.tsx";
 import {useUserContext} from "../../context/UserContext.tsx";
-import {useGetUserById, useUpdateUser} from "../../hooks/use-user.ts";
+import {useGetCVUrl, useGetUserById, useUpdateUser} from "../../hooks/use-user.ts";
 import {toast} from "sonner";
 import {getCollegeId, getImageUrl} from "../../lib/utils.ts";
 import {useParams} from "react-router";
 import {useCollegeContext} from "../../context/CollegeContext.tsx";
 import {Copy} from "lucide-react";
+import CVSection from "./CVSection.tsx";
 
 const ProfileAside = () => {
     const {currentUser} = useUserContext();
@@ -16,6 +17,9 @@ const ProfileAside = () => {
     const {mutate: updateUser, isPending} = useUpdateUser();
     const { collegeOptions } = useCollegeContext()
     const [avatar, setAvatar] = useState(user?.photo || "");
+    const {data: cvUrl} = useGetCVUrl(user?.userId.toString() ?? "");
+    const canEdit = currentUser?.userId === user?.userId;
+    console.log("CV URL in ProfileAside:", cvUrl);
 
     useEffect(() => {
         if (!user?.photo) return;
@@ -70,6 +74,7 @@ const ProfileAside = () => {
               {currentUser?.userId === user?.userId && (
                   <ImageChangeButton label={isPending ? "جاري الرفع..." : "تغيير الصورة"} setImage={setAvatar} onUpload={handleUploadPhoto} disabled={isPending}/>
               )}
+              <CVSection cvUrl={cvUrl} canEdit={canEdit}/>
           </div>
       </aside>
   );

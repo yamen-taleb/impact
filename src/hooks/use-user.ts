@@ -5,6 +5,7 @@ import {useMutation, useQueryClient, useQuery} from "@tanstack/react-query";
 import {userSchema, type UserType} from "../schemas/userSchema.ts";
 import { campaignsSchema } from "../schemas/campaignsSchema";
 import keycloak from "../lib/keycloak.ts";
+import axios from "axios";
 
 export const useGetMyUser = () => {
     const getMyUserRequest =
@@ -112,7 +113,7 @@ export const useGetUserById = (id: string|undefined) => {
         error,
         refetch,
     } = useQuery({
-        queryKey: ["fetchUserById"],
+        queryKey: ["fetchUserById", id],
         queryFn: getUserByIdRequest,
     });
 
@@ -198,6 +199,57 @@ export const useDeleteUser = () => {
             toast.error(
                 error?.response?.data?.message ||
                 "حدث خطأ أثناء حذف الحساب"
+            );
+        },
+    });
+};
+
+export const useGetCVUrl = (id : string) => {
+   const getCVUrl = async () => {
+       const response = await axios.get(`http://localhost:8000/api/users/${id}/src`)
+
+       return response.data;
+   }
+
+   const {data, isLoading, error} = useQuery({
+       queryKey: ["fetchCVUrl"],
+       queryFn: getCVUrl,
+   })
+    if (error && error?.response?.status !== 404) {
+        toast.error("حدث خطأ أثناء جلب ال cv")
+    }
+
+    return {data, isLoading};
+}
+
+export const useUploadCV = () => {
+    const queryClient = useQueryClient();
+
+    const uploadCVRequest = async ({ userId, cvFile }: { userId: string; cvFile: File }) => {
+        const formData = new FormData();
+        formData.append("id", userId);
+        formData.append("pdf", cvFile);
+
+        const response = await axios.post(`http://localhost:8000/api/users`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data;
+    };
+
+    return useMutation({
+        mutationFn: uploadCVRequest,
+        onSuccess: () => {
+            toast.success("تم تحميل ال CV بنجاح");
+            queryClient.invalidateQueries({
+                queryKey: ["fetchCVUrl"],
+            });
+        },
+        onError: (error: any) => {
+            toast.error(
+                error?.response?.data?.message ||
+                "حدث خطأ أثناء تحميل ال CV"
             );
         },
     });
