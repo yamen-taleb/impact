@@ -87,9 +87,11 @@ const SecondaryPersonalInformationForm = () => {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                   <h2 className="text-xl font-bold text-slate-900">المعلومات الإضافية</h2>
-                  <p className="mt-2 text-sm text-slate-500 font-[Thamanyah2]">
-                      هذه البيانات تساعد على إكمال الملف الشخصي والمشاركة في الأنشطة الخاصة بالمنصة.
-                  </p>
+                  {(canEdit) && (
+                    <p className="mt-2 text-sm text-slate-500 font-[Thamanyah2]">
+                        هذه البيانات تساعد على إكمال الملف الشخصي والمشاركة في الأنشطة الخاصة بالمنصة.
+                    </p>
+                  ) }
               </div>
           </div>
 

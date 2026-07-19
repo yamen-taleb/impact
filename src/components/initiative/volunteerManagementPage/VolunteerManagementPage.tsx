@@ -35,16 +35,24 @@ const VolunteerManagementPage = ({ campaignId, campaignStartDate, campaignEndDat
     collegeId: filters.college,
   });
 
+  const { data: statsData } = useVolunteers({
+    campaignId,
+    page: 0,
+    size: 1000, // أو Endpoint مخصص للإحصائيات
+  });
+
   const volunteers = data?.content ?? [];
 
   const stats = useMemo(() => {
+    const volunteers = statsData?.content ?? [];
+
     return {
       total: volunteers.length,
-      approved: volunteers.filter( (v) => v.applicationStatus === "APPROVED" ).length,
-      pending: volunteers.filter( (v) => v.applicationStatus === "PENDING" ).length,
-      rejected: volunteers.filter( (v) => v.applicationStatus === "REJECTED" ).length,
+      approved: volunteers.filter(v => v.applicationStatus === "APPROVED").length,
+      pending: volunteers.filter(v => v.applicationStatus === "PENDING").length,
+      rejected: volunteers.filter(v => v.applicationStatus === "REJECTED").length,
     };
-  }, [volunteers]);
+  }, [statsData]);
 
   if (isLoading) { return <Loader />; }
 

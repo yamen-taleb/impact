@@ -53,7 +53,7 @@ const InitiativeApprove = ({ campaignId, initiative }: Props) => {
   );
 
   // CHECK Business logic
-  const isApproved = initiative.status === "APPROVED";
+  const isApproved = initiative.status === "APPROVED" || initiative.status === "ONGOING";
   const isRejected = initiative.status === "REJECTED";
   const hasPublishedAt = !!initiative.publishedAt;
   const hasProgress = !!initiative.lastProgress;
@@ -138,7 +138,8 @@ const InitiativeApprove = ({ campaignId, initiative }: Props) => {
           {/* زر الموافقة */}
           <Button
             className={`w-[47%] ${ isApproved ? "bg-green-600 hover:bg-green-600 text-white" : "" }`}
-            disabled={ isApproved && !canReject }
+            // disabled={ isApproved && !canReject }
+            disabled={ isApproved }
             onClick={() => setOpenApproveDialog(true) }
           >
             {isApproved ? "تمت الموافقة" : "صحيحة"}
@@ -148,7 +149,8 @@ const InitiativeApprove = ({ campaignId, initiative }: Props) => {
           <Button
             variant="destructive"
             className={`w-[47%] ${ isRejected ? "bg-red-700 hover:bg-red-700" : "" }`}
-            disabled={ isRejected && !canApprove }
+            // disabled={ isRejected && !canApprove }
+            disabled={ isRejected }
             onClick={() => setOpenRejectDialog(true) }
           >
             {isRejected ? "تم الرفض" : "يوجد خطأ ما!"}

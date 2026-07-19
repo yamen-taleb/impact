@@ -102,7 +102,7 @@ export const useToggleStudentBan = () => {
     }) => {
       const response =
         await axiosClient.patch(
-          'v1/users/${userId}/ban',
+          `v1/users/${userId}/ban`,
           {
             isBanned,
           },

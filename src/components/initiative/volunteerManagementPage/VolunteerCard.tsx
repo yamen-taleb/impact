@@ -7,9 +7,11 @@ import ConfirmActionDialog from "./ConfirmActionDialog";
 import { useUpdateApplication } from "../../../hooks/use-application";
 import { useGetMyUser } from "../../../hooks/use-user";
 import { Button } from "../../../components/ui/button";
-import { toArabicNumbers, getAcademicYearLabel, formatArabicPhoneNumber, formatArabicDate } from "../../../lib/utils";
+import { toArabicNumbers, getAcademicYearLabel, formatArabicPhoneNumber, formatArabicDate, getImageUrl } from "../../../lib/utils";
 import VolunteerAttendanceDialog from "./VolunteerAttendanceDialog";
 import { useAttendance } from "../../../hooks/use-attendance";
+import { Link } from "react-router";
+import { useProgress } from "../../../hooks/use-progress";
 
 interface Props {
   volunteer: Volunteer;
@@ -41,6 +43,23 @@ const VolunteerCard = ({ volunteer, campaignId, campaignStartDate, campaignEndDa
     setDialog(null);
     setReason("");
   };
+
+  const { data, isLoading } = useProgress(campaignId);
+  const records = useMemo(() => {
+    const progressList =
+      data?.progress ||
+      data?.content ||
+      data?.records ||
+      data ||
+      [];
+
+    if (!Array.isArray(progressList)) return [];
+
+    return [...progressList].sort(
+      (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }, [data]);
+  const latestProgress = records?.[0];
 
   const dialogTitle = useMemo(() => {
     switch (dialog) {
@@ -131,14 +150,19 @@ const VolunteerCard = ({ volunteer, campaignId, campaignStartDate, campaignEndDa
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-4">
             <img
-              src={volunteer.photo}
+              src={volunteer?.photo ? getImageUrl(volunteer.photo) : ""}
               alt={volunteer.firstName}
               className="size-16 rounded-full object-cover"
             />
 
             <div className="w-full flex flex-col">
               <div>
-                <h3 className="font-bold">{volunteer.firstName}{" "}{volunteer.lastName}</h3>
+                <Link
+                    to={`/profile/${volunteer.userId}`}
+                    className="text-blue-600 hover:underline flex flex-row gap-2 items-center"
+                >
+                  <h3 className="font-bold">{volunteer.firstName}{" "}{volunteer.lastName}</h3>
+                </Link>
                 <p className="text-sm text-muted-foreground font-[Thamanyah2]">
                   {toArabicNumbers(volunteer.studentNumber)}
                 </p>
@@ -215,6 +239,11 @@ const VolunteerCard = ({ volunteer, campaignId, campaignStartDate, campaignEndDa
             onClick={() =>
               setAttendanceOpen(true)
             }
+            disabled={
+              (volunteer.applicationStatus !== "APPROVED" || latestProgress?.percentage == 100) 
+              ? true 
+              : false
+            }
           >
             إدارة الحضور
           </Button>
@@ -227,6 +256,7 @@ const VolunteerCard = ({ volunteer, campaignId, campaignStartDate, campaignEndDa
             onReject={() => setDialog("reject")}
             onDismiss={() => setDialog("dismiss")}
             onRestore={() => setDialog("restore")}
+            percentage={latestProgress}
           />
         </div>
       </div>

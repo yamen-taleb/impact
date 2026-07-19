@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { Button } from "../components/ui/button";
 
 import {
@@ -18,46 +17,44 @@ import {
   Eye,
 } from "lucide-react";
 
-import studentsData from "../../src/data/studentsUnion.json";
 import StudentsUnionFilters from "../components/initiative/StudentsUnionFilter";
+import { useNavigate } from "react-router";
+
+import { useMemo, useState } from "react";
+import { useGetStudents } from "../hooks/use-students";
+import UserAvatar from "../components/user/UserAvatar";
+import { getImageUrl, toArabicNumbers } from "../lib/utils";
 
 const ITEMS_PER_PAGE = 10;
 
-interface StudentUnionMember {
-  id: string;
-  sutdentNumber: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  photo: string;
-  birthDate: string;
-  college: string;
-  academicYear: string;
-  role: string;
-}
 
 const StudentsUnion = () => {
-  const students = useMemo(
-    () =>
-      studentsData as StudentUnionMember[],
-    []
-  );
+
+  const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] =
     useState(1);
 
-  const totalPages = Math.ceil(
-    students.length / ITEMS_PER_PAGE
-  );
+  const {
+    data,
+    isLoading,
+  } = useGetStudents({
+    page: currentPage - 1,
+    size: ITEMS_PER_PAGE,
+  });
 
-  const paginatedStudents = useMemo(() => {
-    const start =
-      (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
+  const students = useMemo(() => {
+    return (data?.content || []).filter(
+      (student: any) => student.role === "ROLE_ADMIN"
+    );
+  }, [data]);
 
-    return students.slice(start, end);
-  }, [currentPage, students]);
+
+
+  const totalPages = data?.totalPages || 1;
+
+
+  console.log(data);
 
   return (
     <div className="flex flex-col gap-5">
@@ -114,20 +111,45 @@ const StudentsUnion = () => {
           </TableHeader>
 
           <TableBody>
-            {paginatedStudents.map(
-              (student, index) => (
+            {isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={9}
+                  className="text-center py-8 font-[Thamanyah2]"
+                >
+                  جاري تحميل البيانات...
+                </TableCell>
+              </TableRow>
+            ) : students.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={9}
+                  className="text-center py-8 text-zinc-500 font-[Thamanyah2]"
+                >
+                  لا يوجد أي طالب هيئة حالياً
+                </TableCell>
+              </TableRow>
+            ) : (
+            students.map((student: any, index: any) => (
                 <TableRow
-                  key={`${student.id}-${currentPage}-${index}`}
+                  key={`${student.userId}-${currentPage}-${index}`}
                 >
                   <TableCell className="text-center font-[Thamanyah2]">
-                    {student.id}
+                    {toArabicNumbers(student.userId)}
                   </TableCell>
 
                   <TableCell>
-                    <img
+                    {/* <img
                       src={student.photo}
                       alt={student.firstName}
                       className="h-12 w-12 rounded-full object-cover"
+                    /> */}
+                    <UserAvatar 
+                      url={student?.photo ? getImageUrl(student.photo) : ""} 
+                      width="w-12" 
+                      height="h-12" 
+                      firstName={student?.firstName} 
+                      lastName={student?.lastName}
                     />
                   </TableCell>
 
@@ -137,7 +159,7 @@ const StudentsUnion = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.sutdentNumber}
+                    {student.studentNumber}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -145,11 +167,11 @@ const StudentsUnion = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.phoneNumber}
+                    {student.phone}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.college}
+                    {student.collegeName}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -161,6 +183,7 @@ const StudentsUnion = () => {
                       variant="outline"
                       size="sm"
                       className="rounded-full font-[Thamanyah2] hover:bg-zinc-200"
+                      onClick={() => navigate(`/profile/${student.userId}`)}
                     >
                       <Eye size={16} />
                       التفاصيل
@@ -168,7 +191,7 @@ const StudentsUnion = () => {
                   </TableCell>
                 </TableRow>
               )
-            )}
+            ))}
           </TableBody>
         </Table>
 

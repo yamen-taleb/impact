@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -16,6 +16,7 @@ import {
 } from "../ui/dialog";
 import type {Initiative} from "../../schemas/initiativePageSchema.ts";
 import { Users } from "lucide-react";
+import { useProgress } from "../../hooks/use-progress.ts";
 
 interface InitiativeMaxVolunteersProps {
   initiative: Initiative;
@@ -27,6 +28,23 @@ const InitiativeMaxVolunteers = ({ initiative }: InitiativeMaxVolunteersProps) =
 
   const [maxVolunteers, setMaxVolunteers] = useState<number | string>(initiative.maxVolunteers || "");
   const [openDialog, setOpenDialog] = useState(false);
+
+  const { data, isLoading } = useProgress(initiative.campaignId);
+    const records = useMemo(() => {
+      const progressList =
+        data?.progress ||
+        data?.content ||
+        data?.records ||
+        data ||
+        [];
+  
+      if (!Array.isArray(progressList)) return [];
+  
+      return [...progressList].sort(
+        (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+    }, [data]);
+    const latestProgress = records?.[0];
 
   const handleConfirm = () => {
     if (!maxVolunteers || !initiativeId) return;
@@ -71,6 +89,7 @@ const InitiativeMaxVolunteers = ({ initiative }: InitiativeMaxVolunteersProps) =
               placeholder="أدخل العدد الأعظمي"
               value={maxVolunteers}
               className="font-[Thamanyah2]"
+              disabled={latestProgress?.percentage === 100 ? true : false}
               onChange={(e) =>
                 setMaxVolunteers(e.target.value)
               }
@@ -79,7 +98,7 @@ const InitiativeMaxVolunteers = ({ initiative }: InitiativeMaxVolunteersProps) =
 
           <Button
             className="w-full h-10 hover:cursor-pointer border shadow-sm border-zinc-300 hover:bg-zinc-200"
-            disabled={!maxVolunteers || isPending}
+            disabled={!maxVolunteers || isPending || latestProgress?.percentage === 100 }
             onClick={() => setOpenDialog(true)}
           >
             {isPending ? "جاري التأكيد..." : "تأكيد العدد"}

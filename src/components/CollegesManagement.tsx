@@ -64,7 +64,6 @@ const CollegesManagement = () => {
 
 
 
-
   const handleDeleteCollege = () => {
     if (!selectedCollege) return;
 
@@ -117,7 +116,7 @@ const CollegesManagement = () => {
         <div className="flex flex-wrap gap-3">
           {colleges.map((college: any) => (
             <div
-              key={college.collegeId}
+              key={college.id}
               className="flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-2"
             >
               <span className="font-[Thamanyah2]">
@@ -127,7 +126,7 @@ const CollegesManagement = () => {
               <button
                 onClick={() => {
                   setSelectedCollege({
-                    id: college.collegeId,
+                    id: college.id,
                     name: college.name,
                   });
 

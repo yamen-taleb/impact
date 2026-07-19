@@ -4,7 +4,7 @@ import {cn} from "../../lib/utils.ts";
 interface Props {
     url?: string,
     width: string,
-    height: string,
+    height?: string,
     letterSize?: string,
     firstName?: string,
     lastName?: string,

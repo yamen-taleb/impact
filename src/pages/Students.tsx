@@ -29,8 +29,9 @@ import {
 import VolunteerFilters from "../components/initiative/VolunteerFilters";
 import { useGetStudents, useToggleStudentBan } from "../hooks/use-students";
 import UserAvatar from "../components/user/UserAvatar";
-import { toArabicNumbers } from "../lib/utils";
+import { getImageUrl, toArabicNumbers } from "../lib/utils";
 import { useRole } from "../hooks/use-role";
+import { useNavigate } from "react-router";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -61,6 +62,9 @@ const Students = () => {
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
   const [roleTargetStudent, setRoleTargetStudent] = useState<Student | null>(null);
   const [roleAction, setRoleAction] = useState<"add" | "remove">("add");
+  
+
+  const navigate = useNavigate();
 
 
   const {
@@ -76,6 +80,7 @@ const Students = () => {
   const totalPages = data?.totalPages || 1;
 
   const { mutate: toggleStudentBan } = useToggleStudentBan();
+
 
 
   const handleToggleStudentStatus = () => {
@@ -191,19 +196,13 @@ const Students = () => {
                   </TableCell>
 
                   <TableCell>
-                    {/* <img
-                      src={student.photo}
-                      alt=""
-                      className="h-12 w-12 rounded-full object-cover"
-                    /> */}
-                    <UserAvatar
-                      url={student?.photo}
-                      width="w-10"
-                      height="h-10"
-                      letterSize={"text-lg"}
-                      firstName={student?.firstName}
+                    <UserAvatar 
+                      url={student?.photo ? getImageUrl(student.photo) : ""} 
+                      width="w-12" 
+                      height="h-12" 
+                      firstName={student?.firstName} 
                       lastName={student?.lastName}
-                  />
+                    />
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -285,6 +284,7 @@ const Students = () => {
                         variant="outline"
                         size="sm"
                         className="rounded-full font-[Thamanyah2] hover:bg-zinc-200"
+                        onClick={() => navigate(`/profile/${student.userId}`)}
                       >
                         <Eye size={16} />
                         التفاصيل

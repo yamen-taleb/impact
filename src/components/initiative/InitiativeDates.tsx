@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { eachDayOfInterval, format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import { useParams } from "react-router";
@@ -29,6 +29,7 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 import type { Initiative } from "../../schemas/initiativePageSchema";
+import { useProgress } from "../../hooks/use-progress";
 
 interface InitiativeDatesProps {
   initiative: Initiative;
@@ -61,6 +62,23 @@ const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
 
     return workingDays.length;
   };
+
+  const { data, isLoading } = useProgress(initiative.campaignId);
+    const records = useMemo(() => {
+      const progressList =
+        data?.progress ||
+        data?.content ||
+        data?.records ||
+        data ||
+        [];
+  
+      if (!Array.isArray(progressList)) return [];
+  
+      return [...progressList].sort(
+        (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+    }, [data]);
+  const latestProgress = records?.[0];
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -124,7 +142,7 @@ const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
                       "w-full justify-between text-right font-[Thamanyah2]",
                       !startDate && "text-muted-foreground"
                     )}
-                    disabled={!!initiative.startDate}
+                    disabled={!!initiative.startDate || latestProgress?.percentage === 100 }
                   >
                     {startDate ? (
                       format(startDate, "PPP", { locale: arSA })
@@ -157,6 +175,7 @@ const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
+                    disabled={latestProgress?.percentage === 100}
                     className={cn(
                       "w-full justify-between text-right font-[Thamanyah2]",
                       !endDate && "text-muted-foreground"
@@ -203,7 +222,7 @@ const InitiativeDates = ({ initiative }: InitiativeDatesProps) => {
                 <Button
                     className="w-full h-10 hover:curspo border shadow-sm border-zinc-300 hover:bg-zinc-200"
                     onClick={() => setOpenDialog(true)}
-                    disabled={isPending}
+                    disabled={isPending || latestProgress?.percentage === 100 }
                 >
                   {isPending ? "جاري التأكيد..." : "تأكيد مدة المبادرة"}
                 </Button>

@@ -14,9 +14,13 @@ import { useGetCampaignById } from "../hooks/use-initiative.ts";
 import { getUserRole } from "../lib/utils.ts";
 import Loader from "../components/Loader.tsx";
 import VolunteerManagementSection from "../components/initiative/volunteerManagementPage/VolunteerManagementSection.tsx";
+import InitiativeProgressHistory from "../components/initiative/details/InitiativeProgressHistory.tsx";
+import { useGetMyUser } from "../hooks/use-user.ts";
 
 const InitiativeDetails = () => {
     const userRole = getUserRole();
+    const { currentUser } = useGetMyUser();
+
 
 	const { initiativeId } = useParams();
     const campaignId = Number(initiativeId);
@@ -27,6 +31,7 @@ const InitiativeDetails = () => {
         error,
     } = useGetCampaignById(campaignId);
 
+    console.log(initiative);
     
     if (isLoading) {
         return <Loader />;
@@ -35,6 +40,8 @@ const InitiativeDetails = () => {
     if (error || !initiative) {
         return <InitiativeDetailsEmptyState />;
     }
+
+    
 
 	return (
         <section className="mx-auto max-w-6xl space-y-6">
@@ -51,16 +58,28 @@ const InitiativeDetails = () => {
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
-                <InitiativeDetailsDescription description={initiative.description} proposedByName={initiative.proposedByName} managedByName={initiative.managedByName} />
+                <InitiativeDetailsDescription 
+                    description={initiative.description} 
+                    proposedByName={initiative.proposedByName} 
+                    managedByName={initiative.managedByName} 
+                    currentUserRole={userRole}
+                />
                 <InitiativeDetailsProgress percentage={Number(initiative.lastProgress?.percentage ?? 0)} status={initiative.status} rejectedReason={initiative.rejectedReason}/>
             </div>      
 
         
-            <InitiativeDetailsActions campaignId={campaignId}/>
+            <InitiativeDetailsActions 
+                campaignId={campaignId}
+                initiativeStatus={initiative.status}
+            />
 
             <InitiativeDetailsVolunteersAvatar campaignId={campaignId}/>
 
-            {((userRole === "Admin" && (initiative.status !== "PENDING" && initiative.status !== "REJECTED")) || userRole === "Manager") && (
+            {(userRole === "User" && (initiative.status === "ONGOING" || initiative.status === "COMPLETED")) && (
+                <InitiativeProgressHistory campaignId={campaignId} />
+            )}
+
+            {((userRole === "Admin"  && (currentUser?.collegeName === initiative?.college?.name) && (initiative.status !== "PENDING" && initiative.status !== "REJECTED")) || userRole === "Manager") && (
                 <div className="flex flex-col gap-5">
 
                     {(userRole === "Manager") && (
@@ -70,15 +89,22 @@ const InitiativeDetails = () => {
                         />
                     )}
 
-                    <div className="flex gap-6">
-                        <InitiativeDates initiative={initiative} />
-                        <InitiativeMaxVolunteers initiative={initiative} />
-                    </div>
+                    {(initiative.status === "APPROVED" || initiative.status === "ONGOING" || initiative.status === "COMPLETED") && (
+                        <div className="flex flex-col gap-5">
+                            <div className="flex gap-6">
+                                <InitiativeDates initiative={initiative} />
+                                <InitiativeMaxVolunteers initiative={initiative} />
+                            </div>
+        
+                            {/* <Volunteer campaignId={campaignId} /> */}
+                            {(initiative.status === "ONGOING" || initiative.status === "COMPLETED") && (
+                                <VolunteerManagementSection campaignId={campaignId} campaignStartDate={initiative.startDate} campaignEndDate={initiative.endDate}  />
+                            )}
+                            
+                            <ProgressManagement campaignId={campaignId} />
 
-                    {/* <Volunteer campaignId={campaignId} /> */}
-                    <VolunteerManagementSection campaignId={campaignId} campaignStartDate={initiative.startDate} campaignEndDate={initiative.endDate}  />
-                    
-                    <ProgressManagement campaignId={campaignId} />
+                        </div>
+                    )}
                 </div>
             )}
         </section>

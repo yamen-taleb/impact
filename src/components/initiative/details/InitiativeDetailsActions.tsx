@@ -4,8 +4,6 @@ import { useState } from "react";
 import { ArrowRight, UserPlusIcon } from "lucide-react";
 import { Link } from "react-router";
 
-import userData from "../../../data/userData.json";
-
 import {
   Dialog,
   DialogContent,
@@ -18,16 +16,18 @@ import { Button } from "../../ui/button";
 import { Textarea } from "../../ui/textarea";
 import { getUserRole } from "../../../lib/utils";
 import { useGetMyUser } from "../../../hooks/use-user";
-import { useApplyToCampaign } from "../../../hooks/use-application";
+import { useApplyToCampaign, useGetUserApplications } from "../../../hooks/use-application";
 
 interface Props {
   backHref?: string;
   campaignId: number;
+  initiativeStatus: string;
 }
 
 const InitiativeDetailsActions = ({
   backHref = "/initiatives",
   campaignId,
+  initiativeStatus
 }: Props) => {
   const userRole = getUserRole();
   
@@ -37,6 +37,26 @@ const InitiativeDetailsActions = ({
   const { currentUser } = useGetMyUser();
   const currentUserId = Number( currentUser?.userId );
   const { mutate: applyToCampaign } = useApplyToCampaign();
+
+  const isProfileIncomplete =
+        !currentUser?.academicYear ||
+        !currentUser?.birthdate ||
+        !currentUser?.collegeName ||
+        !currentUser?.description ||
+        !currentUser?.location ||
+        !currentUser?.phone ||
+        !currentUser?.studentNumber;
+        
+
+        // console.log(currentUser);
+    const { data, isLoading, error } = useGetUserApplications({
+      userId: currentUser?.userId,
+      // status: filterStatus === "ALL" ? undefined : filterStatus,
+    });
+    console.log(data?.applications.content);
+    const currentApplication = data?.applications?.content?.find(
+      (a: any) => a.campaignId === campaignId
+    );
 
   const handleApply = () => {
     if (!currentUserId) {
@@ -69,15 +89,21 @@ const InitiativeDetailsActions = ({
           العودة للمبادرات
         </Link>
 
-        {userRole === "User" && (
-          <button
-            type="button"
-            onClick={() => setOpenDialog(true)}
-            className="inline-flex gap-2 items-center rounded-lg bg-black px-4 py-[0.35rem] text-sm font-medium text-white transition hover:bg-zinc-800"
-          >
-            التطوع في المبادرة
-            <UserPlusIcon />
-          </button>
+        {((userRole === "User" || userRole === "Admin") && !isProfileIncomplete && (initiativeStatus === "ONGOING")) && (
+          currentApplication ? (
+              <Link to="/my-applications">
+                  لقد قمت بالتقدم لهذه المبادرة!
+              </Link>
+          ) : (
+              <button
+                type="button"
+                onClick={() => setOpenDialog(true)}
+                className="inline-flex gap-2 items-center rounded-lg bg-black px-4 py-[0.35rem] text-sm font-medium text-white transition hover:bg-zinc-800"
+              >
+                التطوع في المبادرة
+                <UserPlusIcon />
+              </button>
+          )
         )}
       </div>
 

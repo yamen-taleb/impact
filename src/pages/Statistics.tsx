@@ -7,12 +7,16 @@ import { getUserRole } from "../lib/utils";
 import { useGetStatistics } from "../hooks/use-statistics";
 import Loader from "../components/Loader.tsx";
 import ErrorDisplay from "../components/ErrorDisplay.tsx";
+import { useGetMyUser } from "../hooks/use-user.ts";
 
 const Statistics = () => {
     const { data: stats, isLoading, isError } = useGetStatistics();
     const userRole = getUserRole();
     const isStudent = userRole === "User";
     const isAdmin = userRole === "Admin";
+
+    const { currentUser } = useGetMyUser();
+    const currentUserId = Number( currentUser?.userId );
 
     if (isLoading) {
         return <Loader/>;
@@ -37,7 +41,7 @@ const Statistics = () => {
                         label="ساعات التطوع"
                         value={stats.totalHours}
                         description="اضغط لعرض السجل الكامل →"
-                        href="/student-initiatives-participation/1"
+                        href={`/student-initiatives-participation/${currentUserId}`}
                         bgColor="bg-blue-100"
                         iconColor="text-blue-600"
                         hoverTextColor="text-blue-600"

@@ -3,6 +3,7 @@ import { Badge } from "../ui/badge.tsx"
 import type {Application} from "../../schemas/applicationsSchema.ts";
 import { applicationStatusConfig } from "../../lib/applicationStatus.ts";
 import {getImageUrl} from "../../lib/utils.ts";
+import { Link } from "react-router";
 
 interface Props {
     application: Application;
@@ -14,7 +15,9 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
     const status = applicationStatusConfig[statusKey];
     const StatusIcon = status.icon;
 
+
     return (
+        <Link to={`/initiatives/${application.campaignId}`}>
         <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:shadow-md">
             <div className="grid h-full grid-cols-1 md:flex md:items-stretch">
                 {/* Image Section */}
@@ -90,11 +93,20 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                         </div>
                     )}
 
+                    {application.rejectionReason && (
+                        <div className="rounded-lg bg-zinc-50 p-3 border border-zinc-200">
+                            <p className="text-xs font-semibold text-zinc-600 mb-1">سبب الرفض:</p>
+                            <p className="text-sm text-zinc-700 font-[Thamanyah2]">{application.rejectionReason ?? application.removalReason ?? application.rejectionReason}</p>
+                        </div>
+                    )}
+
                     {/* Meta and Actions */}
                     <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 pt-3">
-                        <Badge variant="outline" className="text-xs rounded-full font-[Thamanyah2]">
-                            {application.campaignCategory}
-                        </Badge>
+                            <Badge
+                                className="text-xs rounded-full font-[Thamanyah2] cursor-pointer hover:bg-slate-100"
+                            >
+                                {application.campaignCategory}
+                            </Badge>
                         {onDelete && application.status === "PENDING" && (
                             <button
                                 onClick={() => onDelete(application.id)}
@@ -122,6 +134,7 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                 </div>
             </div>
         </div>
+        </Link>
     );
 };
 

@@ -7,7 +7,7 @@ import {
   AvatarImage,
 } from "../../../components/ui/avatar";
 import { useVolunteers } from "../../../hooks/use-volunteers";
-import { toArabicNumbers } from "../../../lib/utils";
+import { getImageUrl, toArabicNumbers } from "../../../lib/utils";
 
 
 interface Props {
@@ -18,6 +18,8 @@ const InitiativeDetailsVolunteersAvatar = ({ campaignId }: Props) => {
   const { data } = useVolunteers({ campaignId });
 
   const volunteers = data?.content ?? [];
+
+  if(volunteers.length === 0) return;
 
   return (
     <div>
@@ -37,7 +39,7 @@ const InitiativeDetailsVolunteersAvatar = ({ campaignId }: Props) => {
         <AvatarGroup className="grayscale">
           {volunteers.slice(0, 3).map((v) => (
             <Avatar key={v.applicationId}>
-              <AvatarImage src={v.photo || ""} />
+              <AvatarImage src={(v?.photo ? getImageUrl(v.photo) : "") || ""} />
               <AvatarFallback>
                 {v.firstName?.[0]}
                 {v.lastName?.[0]}

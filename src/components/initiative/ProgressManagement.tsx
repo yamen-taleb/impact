@@ -211,6 +211,7 @@ const ProgressManagement = ({campaignId}: Props) => {
               type="number"
               min={latestPercentage}
               max={100}
+              disabled={latestPercentage === 100 ? true : false}
               placeholder={`من ${latestPercentage} إلى 100`}
               className="font-[Thamanyah2] placeholder:text-zinc-500
                 [&::-webkit-inner-spin-button]:h-5
@@ -238,7 +239,7 @@ const ProgressManagement = ({campaignId}: Props) => {
           <div className="space-y-2">
             <Label>رفع صور التقدم</Label>
 
-            <label className="flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition hover:bg-gray-50">
+            <label className="flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition">
               <Upload className="size-4 text-zinc-500" />
 
               <span className="font-[Thamanyah2] text-sm text-zinc-500">اختر الصور</span>
@@ -248,6 +249,7 @@ const ProgressManagement = ({campaignId}: Props) => {
                 multiple
                 className="hidden"
                 accept="image/*"
+                disabled={latestPercentage === 100 ? true : false}
                 onChange={
                   handleImageUpload
                 }
@@ -274,6 +276,7 @@ const ProgressManagement = ({campaignId}: Props) => {
             placeholder="اكتب تفاصيل التقدم..."
             className="font-[Thamanyah2] placeholder:text-zinc-500"
             value={comment}
+            disabled={latestPercentage === 100 ? true : false}
             onChange={(e) =>
               setComment(e.target.value)
             }
