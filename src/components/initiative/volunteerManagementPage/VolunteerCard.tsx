@@ -80,7 +80,6 @@ const VolunteerCard = ({ volunteer, campaignId, campaignStartDate, campaignEndDa
     }
   }, [dialog]);
 
-  console.log(volunteer);
 
   const submitAction = () => {
     mutate(

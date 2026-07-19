@@ -31,7 +31,6 @@ const InitiativeDetails = () => {
         error,
     } = useGetCampaignById(campaignId);
 
-    console.log(initiative);
     
     if (isLoading) {
         return <Loader />;
@@ -41,7 +40,6 @@ const InitiativeDetails = () => {
         return <InitiativeDetailsEmptyState />;
     }
 
-    
 
 	return (
         <section className="mx-auto max-w-6xl space-y-6">
@@ -75,7 +73,7 @@ const InitiativeDetails = () => {
 
             <InitiativeDetailsVolunteersAvatar campaignId={campaignId}/>
 
-            {(userRole === "User" && (initiative.status === "ONGOING" || initiative.status === "COMPLETED")) && (
+            {((userRole === "User" || (userRole === "Admin" && (currentUser?.collegeName !== initiative?.college?.name))) && (initiative.status === "ONGOING" || initiative.status === "COMPLETED")) && (
                 <InitiativeProgressHistory campaignId={campaignId} />
             )}
 

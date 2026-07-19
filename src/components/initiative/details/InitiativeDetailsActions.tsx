@@ -53,7 +53,6 @@ const InitiativeDetailsActions = ({
       userId: currentUser?.userId,
       // status: filterStatus === "ALL" ? undefined : filterStatus,
     });
-    console.log(data?.applications.content);
     const currentApplication = data?.applications?.content?.find(
       (a: any) => a.campaignId === campaignId
     );
