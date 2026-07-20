@@ -204,7 +204,7 @@ export const useDeleteUser = () => {
     });
 };
 
-export const useGetCVUrl = (id : string) => {
+export const useGetCVUrl = (id? : string) => {
    const getCVUrl = async () => {
        const response = await axios.get(`http://localhost:8000/api/users/${id}/src`)
 
