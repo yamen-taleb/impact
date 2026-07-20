@@ -21,7 +21,7 @@ const SelectField = ({field, options, placeholder, label, className, disabled = 
             <Select
                 dir="rtl"
                 name={field.name}
-                value={field.state.value as string}
+                value={field.state.value ? String(field.state.value) : ""}
                 onValueChange={(value) => {
                     field.handleChange(value);
                     onAfterChange?.(value);
@@ -31,7 +31,7 @@ const SelectField = ({field, options, placeholder, label, className, disabled = 
                 <SelectTrigger
                     className={`${className}`}
                 >
-                    <SelectValue placeholder={placeholder || "اختر محافظة"} />
+                    <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
                 <SelectContent className="ring-0 z-50 bg-white border border-gray-200  shadow-lg">
                     <SelectGroup>

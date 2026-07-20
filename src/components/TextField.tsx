@@ -6,11 +6,12 @@ interface Props {
     placeholder?: string,
     label?: string,
     className?: string,
+    dir?: "ltr" | "rtl" | "auto",
     onAfterChange?: (value: string) => void
     disabled: boolean,
 }
 
-const TextField = ({field, type, placeholder, label, className, onAfterChange, disabled}: Props) => {
+const TextField = ({field, type, placeholder, label, className, dir, onAfterChange, disabled}: Props) => {
     const {errors, isTouched} = field.state.meta;
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         field.handleChange(
@@ -27,6 +28,7 @@ const TextField = ({field, type, placeholder, label, className, onAfterChange, d
                 </span>}
                 <input
                     className={className}
+                    dir={dir}
                     type={type}
                     name={field.name}
                     placeholder={placeholder}

@@ -19,6 +19,7 @@ const SecondaryPersonalInformationForm = () => {
     const isAdmin = getUserRole() === "Admin";
 
     const {collegeOptions} = useCollegeContext()
+    const collegeId = user?.collegeName ? String(getCollegeId(collegeOptions, user.collegeName)) : ""
     const { mutate: updateUser, isPending } = useUpdateUser();
 
     const sameUser = useMemo(() => {
@@ -31,7 +32,7 @@ const SecondaryPersonalInformationForm = () => {
 
     const form = useForm({
         defaultValues: {
-            collegeId: "",
+            collegeId: collegeId,
             location: "",
             birthDate: "",
             academicYear: "",
@@ -68,13 +69,13 @@ const SecondaryPersonalInformationForm = () => {
 
     useEffect(() => {
         if (user && collegeOptions.length > 0) {
-            form.setFieldValue("collegeId", String(getCollegeId(collegeOptions, user.collegeName)) || "");
+            form.setFieldValue("collegeId", collegeId);
             form.setFieldValue("location", user.location || "");
             form.setFieldValue("birthDate", user.birthdate || "");
-            form.setFieldValue("academicYear", String(user.academicYear) || "");
+            form.setFieldValue("academicYear", user.academicYear ? String(user.academicYear) : "");
             form.setFieldValue("description", user.description || "");
         }
-    }, [user, collegeOptions, form]);
+    }, [user, collegeOptions, form, collegeId]);
     const {handleSubmit} = form;
   return (
       <form
@@ -111,9 +112,13 @@ const SecondaryPersonalInformationForm = () => {
 
               <Field form={form} name="location">
                   {
-                      (field) => (
-                          <TextField className="fieldClasses font-[Thamanyah2]" field={field} type="text" label="العنوان" disabled={!canEdit}/>
-                      )
+                      (field) => {
+                          const placeholder = !canEdit && !field.state.value ? "العنوان غير محدد" : "أدخل العنوان"
+                          return (
+                              <TextField className="fieldClasses font-[Thamanyah2]" field={field} type="text"
+                                      label="العنوان" disabled={!canEdit} placeholder={placeholder}/>
+                          )
+                      }
                   }
               </Field>
           </div>
@@ -136,9 +141,12 @@ const SecondaryPersonalInformationForm = () => {
 
               <Field form={form} name="academicYear">
                   {
-                      (field) => (
-                          <TextField className="fieldClasses font-[Thamanyah2]" field={field} type="text" label="السنة الدراسية" disabled={!canEdit}/>
-                      )
+                      (field) => {
+                          const placeholder = !canEdit && !field.state.value ? "السنة الدراسية غير محددة" : "اختر السنة الدراسية"
+                          return (
+                              <TextField className="fieldClasses font-[Thamanyah2]" field={field} type="text" label="السنة الدراسية" disabled={!canEdit} placeholder={placeholder}/>
+                          )
+                      }
                   }
               </Field>
           </div>

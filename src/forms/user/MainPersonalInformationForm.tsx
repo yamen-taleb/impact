@@ -5,7 +5,7 @@ import TextField from "../../components/TextField.tsx";
 import {useUserContext} from "../../context/UserContext.tsx";
 import {useGetUserById, useUpdateUser} from "../../hooks/use-user.ts";
 import {toast} from "sonner";
-import {useEffect, useMemo} from "react";
+import {useMemo} from "react";
 import {useParams} from "react-router";
 import {getCollegeId} from "../../lib/utils.ts";
 import {useCollegeContext} from "../../context/CollegeContext.tsx";
@@ -72,11 +72,23 @@ const MainPersonalInformationForm = () => {
                   </Field>
               </div>
 
+
               <div className="grid gap-7 md:grid-cols-2" dir="ltr">
                   <Field form={form} name="phone">
-                      {(field) => (
-                          <TextField field={field} type="text" label="رقم الهاتف" className="fieldClasses font-[Thamanyah2]" disabled={!canEdit} />
-                      )}
+                      {(field) => {
+                          const placeholder = !canEdit && !field.state.value ? "رقم الهاتف غير محدد" : "أدخل رقم الهاتف";
+                          return (
+                              <TextField
+                                  field={field}
+                                  type="text"
+                                  label="رقم الهاتف"
+                                  className="fieldClasses font-[Thamanyah2]"
+                                  dir={field.state.value ? "ltr" : "rtl"}
+                                  disabled={!canEdit}
+                                  placeholder={placeholder}
+                              />
+                          )
+                      }}
                   </Field>
 
                   <label className="block">
