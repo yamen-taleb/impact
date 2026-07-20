@@ -21,6 +21,7 @@ import MyInitiatives from "./pages/MyInitiatives.tsx";
 import {StudentInitiativesProvider} from "./context/StudentIniativesContext.tsx";
 import {CollegeInitiativesProvider} from "./context/CollegeInitiativeContext.tsx";
 import CollegeInitiatives from "./pages/CollegeInitiatives.tsx";
+import Expelled from "./pages/Expelled.tsx";
 
 const queryClient = new QueryClient()
 
@@ -118,6 +119,7 @@ keycloak.init({
                             <Route path="/my-applications" element={<Applications />} />
                             <Route path="/student-initiatives-participation/:id" element={<StudentInitiativesPage />} />
                             <Route path="/statistics" element={<Statistics/>}/>
+                            <Route path="/expelled" element={<Expelled />} />
                             <Route
                                 path="*"
                                 element={
