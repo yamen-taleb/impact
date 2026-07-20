@@ -14,10 +14,14 @@ export const userSchema = z.object({
     collegeName: z.string().nullable().optional(),
     studentNumber: z.string().nullable().optional(),
     academicYear: z.string().nullable().optional().or(z.number().nullable().optional()),
-    isBanned: z.boolean(),
+    isBanned: z.boolean().optional(),
+    isbanned: z.boolean().optional(),
     createdAt: z.string(),
     updatedAt: z.string().nullable().optional(),
     description: z.string().nullable().optional(),
-});
+}).transform((user) => ({
+    ...user,
+    isBanned: user.isBanned ?? user.isbanned ?? false,
+}));
 
 export type UserType = z.infer<typeof userSchema>;

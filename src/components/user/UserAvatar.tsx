@@ -1,8 +1,8 @@
 import {Avatar, AvatarFallback, AvatarImage} from "../ui/avatar.tsx";
-import {cn} from "../../lib/utils.ts";
+import {cn, getImageUrl} from "../../lib/utils.ts";
 
 interface Props {
-    url?: string,
+    url?: string|null,
     width: string,
     height?: string,
     letterSize?: string,
@@ -19,7 +19,7 @@ const UserAvatar = ({url, width, height, letterSize = "text-3xl", firstName, las
 
     return (
         <Avatar className={cn(width, height, "rounded-none")}>
-            <AvatarImage src={url} className="w-full object-cover object-center"/>
+            <AvatarImage src={getImageUrl(url)} className="w-full object-cover object-center"/>
             <AvatarFallback
                 className={cn(
                     "w-full flex items-center justify-center rounded-full bg-slate-200 font-semibold text-slate-500",

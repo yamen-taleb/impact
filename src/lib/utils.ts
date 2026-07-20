@@ -90,9 +90,11 @@ export const getUserRole = () => {
 }
 
 export const getImageUrl = (url: string|null) => {
-  return url?.startsWith("https")
-      ? url
-      : import.meta.env.VITE_API_BASE_URL + url;
+    return url?.startsWith("http")
+        ? url
+        : url?.startsWith("blob:")
+            ? url
+            : import.meta.env.VITE_API_BASE_URL + url;
 }
 
 export const getCollegeId = (collegeOptions, collegeName) => {

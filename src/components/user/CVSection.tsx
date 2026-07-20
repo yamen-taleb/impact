@@ -7,7 +7,6 @@ interface Props {
 }
 
 const CVSection = ({ cvUrl, canEdit }: Props) => {
-    console.log("CV URL:", cvUrl);
     return (
         <div className="flex flex-col gap-1 mt-1 items-center w-full">
             {cvUrl && (

@@ -17,7 +17,6 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button.tsx";
 import {useUserContext} from "../context/UserContext.tsx";
-import {getImageUrl} from "../lib/utils.ts";
 
 const HeaderAvatar = () => {
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
@@ -49,7 +48,7 @@ const HeaderAvatar = () => {
 				<PopoverTrigger asChild>
 					<button className="relative flex items-center gap-2 rounded-lg p-1.5 transition hover:bg-zinc-100">
 						<UserAvatar
-								url={getImageUrl(currentUser?.photo)}
+								url={currentUser?.photo}
 								width="w-10"
 								height="h-10"
 								letterSize={"text-lg"}

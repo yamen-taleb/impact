@@ -4,7 +4,7 @@ import UserAvatar from "./UserAvatar.tsx";
 import {useUserContext} from "../../context/UserContext.tsx";
 import {useGetCVUrl, useGetUserById, useUpdateUser} from "../../hooks/use-user.ts";
 import {toast} from "sonner";
-import {getCollegeId, getImageUrl} from "../../lib/utils.ts";
+import {getCollegeId} from "../../lib/utils.ts";
 import {useParams} from "react-router";
 import {useCollegeContext} from "../../context/CollegeContext.tsx";
 import {Copy} from "lucide-react";
@@ -17,14 +17,13 @@ const ProfileAside = () => {
     const {mutate: updateUser, isPending} = useUpdateUser();
     const { collegeOptions } = useCollegeContext()
     const [avatar, setAvatar] = useState(user?.photo || "");
-    const {data: cvUrl} = useGetCVUrl(user?.userId.toString() ?? "");
+    const {data: cvUrl} = useGetCVUrl(userId);
     const canEdit = currentUser?.userId === user?.userId;
-    console.log("CV URL in ProfileAside:", cvUrl);
 
     useEffect(() => {
         if (!user?.photo) return;
 
-        const fullUrl = getImageUrl(user.photo);
+        const fullUrl = user.photo;
 
         setAvatar(fullUrl);
     }, [user?.photo]);
