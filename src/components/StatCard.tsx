@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { ComponentType } from "react";
-import {cn} from "../lib/utils.ts";
+import {cn, toArabicNumbers} from "../lib/utils.ts";
 
 interface StatCardProps {
     icon: ComponentType<{ className?: string }>;
@@ -35,7 +35,7 @@ const StatCard = ({
             </div>
             <div className="mt-12">
                 <p className="text-sm text-zinc-600 font-medium">{label}</p>
-                <p className="mt-1 text-4xl font-bold text-zinc-900">{value}</p>
+                <p className="mt-1 text-4xl font-bold text-zinc-900">{toArabicNumbers(value)}</p>
                 <p className={`mt-2 text-xs ${hoverTextColor} group-hover:opacity-80`}>
                     {description}
                 </p>
