@@ -1,7 +1,7 @@
 import { Image as ImageIcon } from "lucide-react";
 import { Badge } from "../../ui/badge.tsx";
 import type {AttendedCampaign} from "../../../schemas/campaignsSchema.ts";
-import {getImageUrl} from "../../../lib/utils.ts";
+import {getImageUrl, toArabicNumbers} from "../../../lib/utils.ts";
 import { Link } from "react-router";
 
 interface Props {
@@ -41,7 +41,7 @@ const StudentInitiativeCard = ({ initiative, hours }: Props) => {
                             </p>
                         </div>
                         <Badge className="shrink-0 rounded-full bg-zinc-100 px-3 py-1 text-zinc-800 font-[Thamanyah2]">
-                            {hours} ساعة تطوع
+                            <span className="text-lg">{toArabicNumbers(hours)}</span> ساعة تطوع
                         </Badge>
                     </div>
 
