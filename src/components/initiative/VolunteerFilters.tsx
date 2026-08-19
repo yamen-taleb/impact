@@ -11,6 +11,7 @@ export type VolunteerFiltersType = {
   search: string;
   status: string;
   college: string;
+  profileStatus: string;
 };
 
 export const ALL_STATUSES = "all_statuses";
@@ -18,6 +19,10 @@ export const ACTIVE_STATUS = "active";
 export const BANNED_STATUS = "banned";
 
 export const ALL_COLLEGIES = "all_collegies";
+
+export const ALL_PROFILE_STATUSES = "all_profile_statuses";
+export const COMPLETE_PROFILE_STATUS = "complete";
+export const INCOMPLETE_PROFILE_STATUS = "incomplete";
 
 interface VolunteerFiltersProps {
   filters: VolunteerFiltersType;
@@ -79,6 +84,21 @@ const VolunteerFilters = ({
     },
   ];
 
+  const profileStatusOptions = [
+    {
+        value: ALL_PROFILE_STATUSES,
+        label: "كل الحسابات",
+    },
+    {
+        value: COMPLETE_PROFILE_STATUS,
+        label: "الحساب مكتمل",
+    },
+    {
+        value: INCOMPLETE_PROFILE_STATUS,
+        label: "الحساب غير مكتمل",
+    },
+  ];
+
   const form = useForm({
     defaultValues: filters,
 
@@ -135,7 +155,7 @@ const VolunteerFilters = ({
         )}
       </Field>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
 
         {/* الكلية */}
         <Field
@@ -170,6 +190,23 @@ const VolunteerFilters = ({
               }
             />
           )}
+        </Field>
+
+        {/* حالة الحساب */}
+        <Field
+        form={form}
+        name="profileStatus"
+        >
+        {(field) => (
+            <SelectField
+            field={field}
+            options={profileStatusOptions}
+            className="w-full"
+            onAfterChange={() =>
+                form.handleSubmit()
+            }
+            />
+        )}
         </Field>
 
       </div>

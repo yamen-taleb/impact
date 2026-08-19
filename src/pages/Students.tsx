@@ -38,6 +38,9 @@ import {
   ALL_COLLEGIES,
   ACTIVE_STATUS,
   BANNED_STATUS,
+  ALL_PROFILE_STATUSES,
+  COMPLETE_PROFILE_STATUS,
+  INCOMPLETE_PROFILE_STATUS,
 } from "../components/initiative/VolunteerFilters";
 
 import type { VolunteerFiltersType } from "../components/initiative/VolunteerFilters";
@@ -59,6 +62,33 @@ interface Student {
   isBanned: boolean;
 }
 
+
+const isStudentProfileComplete = (student: any) => {
+  const requiredFields = [
+    student.firstName,
+    student.lastName,
+    student.email,
+    student.phone,
+    student.collegeName,
+    student.location,
+    student.birthdate,
+    student.academicYear,
+    student.description,
+  ];
+
+  return requiredFields.every((value) => {
+    if (value === null || value === undefined) {
+      return false;
+    }
+
+    if (typeof value === "string") {
+      return value.trim().length > 0;
+    }
+
+    return true;
+  });
+};
+
 const Students = () => {
   const [currentPage, setCurrentPage] =
     useState(1);
@@ -77,6 +107,7 @@ const Students = () => {
       search: "",
       status: ALL_STATUSES,
       college: ALL_COLLEGIES,
+      profileStatus: ALL_PROFILE_STATUSES,
     });
   
 
@@ -96,60 +127,68 @@ const Students = () => {
     isError,
   } = useGetAllStudents();
 
-  const students = useMemo(() => {
-    const search = filters.search
-      .trim()
-      .toLowerCase();
+const students = useMemo(() => {
+  const search = filters.search
+    .trim()
+    .toLowerCase();
 
-    return allStudents.filter(
-      (student: any) => {
-
-        // البحث
-        const matchesSearch =
-          !search ||
-          [
-            student.firstName,
-            student.lastName,
-            student.studentNumber,
-            student.email,
-            student.phone,
-            student.collegeName,
-            student.academicYear,
-            student.userId,
-          ]
-            .filter(Boolean)
-            .some((value) =>
-              String(value)
-                .toLowerCase()
-                .includes(search)
-            );
-
-        // فلترة الكلية
-        const matchesCollege =
-          filters.college ===
-            ALL_COLLEGIES ||
-          student.collegeName ===
-            filters.college;
-
-        // فلترة الحالة
-        const matchesStatus =
-          filters.status ===
-            ALL_STATUSES ||
-          (filters.status ===
-            ACTIVE_STATUS &&
-            student.isBanned === false) ||
-          (filters.status ===
-            BANNED_STATUS &&
-            student.isBanned === true);
-
-        return (
-          matchesSearch &&
-          matchesCollege &&
-          matchesStatus
+  return allStudents.filter((student: any) => {
+    // البحث
+    const matchesSearch =
+      !search ||
+      [
+        student.firstName,
+        student.lastName,
+        student.studentNumber,
+        student.email,
+        student.phone,
+        student.collegeName,
+        student.academicYear,
+        student.userId,
+      ]
+        .filter(Boolean)
+        .some((value) =>
+          String(value)
+            .toLowerCase()
+            .includes(search)
         );
-      }
+
+    // فلترة الكلية
+    const matchesCollege =
+      filters.college === ALL_COLLEGIES ||
+      student.collegeName === filters.college;
+
+    // فلترة حالة الطالب
+    const matchesStatus =
+      filters.status === ALL_STATUSES ||
+      (filters.status === ACTIVE_STATUS &&
+        student.isBanned === false) ||
+      (filters.status === BANNED_STATUS &&
+        student.isBanned === true);
+
+    // فلترة اكتمال الحساب
+    const isComplete =
+      isStudentProfileComplete(student);
+
+    const matchesProfileStatus =
+      filters.profileStatus ===
+        ALL_PROFILE_STATUSES ||
+      (filters.profileStatus ===
+        COMPLETE_PROFILE_STATUS &&
+        isComplete) ||
+      (filters.profileStatus ===
+        INCOMPLETE_PROFILE_STATUS &&
+        !isComplete);
+
+    return (
+      matchesSearch &&
+      matchesCollege &&
+      matchesStatus &&
+      matchesProfileStatus
     );
-  }, [allStudents, filters]);
+  });
+}, [allStudents, filters]);
+
 
   const totalPages = Math.max(
     1,
@@ -177,6 +216,7 @@ const Students = () => {
     students,
     safeCurrentPage,
   ]);
+
 
   const { mutate: toggleStudentBan } = useToggleStudentBan();
 
@@ -264,7 +304,7 @@ const Students = () => {
               </TableHead>
 
               <TableHead>
-                البريد
+                البريد الإلكتروني
               </TableHead>
 
               <TableHead>
@@ -280,13 +320,18 @@ const Students = () => {
               </TableHead>
 
               <TableHead>
-                الحالة
+                الطالب
+              </TableHead>
+
+              <TableHead>
+                الحساب
               </TableHead>
 
               <TableHead>الدور</TableHead>
 
               <TableHead>
-                الإجراء
+                {/* الإجراء */}
+                التفاصيل
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -323,7 +368,7 @@ const Students = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.phone}
+                    {toArabicNumbers(student.phone)}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -335,7 +380,7 @@ const Students = () => {
                   </TableCell>
 
 
-                  {/* الحالة */}
+                  {/* الطالب */}
                   <TableCell>
                     <Button
                       variant={
@@ -354,6 +399,19 @@ const Students = () => {
                         ? "إعادة الطالب"
                         : "فصل الطالب"}
                     </Button>
+                  </TableCell>
+
+                  {/* الحساب */}
+                  <TableCell>
+                    {isStudentProfileComplete(student) ? (
+                      <span className="inline-flex items-center px-3 py-1 text-sm font-[Thamanyah2] text-emerald-500">
+                        مكتمل
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-3 py-1 text-sm font-[Thamanyah2] text-red-500">
+                        غير مكتمل
+                      </span>
+                    )}
                   </TableCell>
 
                   <TableCell>
@@ -392,7 +450,7 @@ const Students = () => {
                         onClick={() => navigate(`/profile/${student.userId}`)}
                       >
                         <Eye size={16} />
-                        التفاصيل
+                        {/* التفاصيل */}
                       </Button>
                     </TableCell>
                 </TableRow>

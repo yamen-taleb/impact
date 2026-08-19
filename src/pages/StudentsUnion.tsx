@@ -172,7 +172,7 @@ const StudentsUnion = () => {
               </TableHead>
 
               <TableHead>
-                الاسم الكامل
+                الاسم
               </TableHead>
 
               <TableHead>
@@ -184,7 +184,7 @@ const StudentsUnion = () => {
               </TableHead>
 
               <TableHead>
-                رقم الهاتف
+                الهاتف
               </TableHead>
 
               <TableHead>
@@ -196,7 +196,7 @@ const StudentsUnion = () => {
               </TableHead>
 
               <TableHead>
-                الإجراءات
+                الإجراء
               </TableHead>
 
             </TableRow>
@@ -278,7 +278,7 @@ const StudentsUnion = () => {
                     </TableCell>
 
                     <TableCell className="font-[Thamanyah2]">
-                      {student.phone}
+                      {toArabicNumbers(student.phone)}
                     </TableCell>
 
                     <TableCell className="font-[Thamanyah2]">
