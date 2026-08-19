@@ -1,126 +1,176 @@
 import { Field, useForm } from "@tanstack/react-form";
 import debounce from "lodash.debounce";
 import { Search } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
+
 import TextField from "../TextField";
 import SelectField from "../SelectField";
-import { useCollegeContext } from "../../context/CollegeContext";
-
+import { useGetCollegesFilter } from "../../hooks/use-college";
 
 export type VolunteerFiltersType = {
-        search: string;
-        status: string;
-        college: string;
-    };
+  search: string;
+  status: string;
+  college: string;
+};
+
+export const ALL_STATUSES = "all_statuses";
+export const ACTIVE_STATUS = "active";
+export const BANNED_STATUS = "banned";
+
+export const ALL_COLLEGIES = "all_collegies";
 
 interface VolunteerFiltersProps {
-    onFiltersChange?: (
-        filters: VolunteerFiltersType
-    ) => void;
+  filters: VolunteerFiltersType;
+
+  onFiltersChange: (
+    filters: VolunteerFiltersType
+  ) => void;
 }
 
+const VolunteerFilters = ({
+  filters,
+  onFiltersChange,
+}: VolunteerFiltersProps) => {
+  const {
+    data,
+    isLoading,
+  } = useGetCollegesFilter();
 
-const VolunteerFilters = ({ onFiltersChange }: VolunteerFiltersProps) => {
+  /*
+   * الكليات القادمة من backend
+   *
+   * مهم جداً:
+   * value = college.name
+   *
+   * لأن الطالب يحتوي على:
+   *
+   * student.collegeName
+   *
+   * وليس collegeId
+   */
+  const collegeOptions = useMemo(() => {
+    return [
+      {
+        value: ALL_COLLEGIES,
+        label: "كل الكليات",
+      },
 
-    
-
-  const ALL_STATUSES = "all_statuses";
-  const ALL_COLLEGIES = "all_collegies";
+      ...(data?.content ?? []).map(
+        (college: any) => ({
+          value: college.name,
+          label: college.name,
+        })
+      ),
+    ];
+  }, [data]);
 
   const statusOptions = [
-    { value: ALL_STATUSES, label: "كل الحالات" },
-    { value: "APPROVED", label: "مقبول" },
-    { value: "PENDING", label: "قيد المراجعة" },
-    { value: "REJECTED", label: "مرفوض" },
-];
+    {
+      value: ALL_STATUSES,
+      label: "كل الحالات",
+    },
+    {
+      value: ACTIVE_STATUS,
+      label: "غير مفصول",
+    },
+    {
+      value: BANNED_STATUS,
+      label: "مفصول",
+    },
+  ];
 
-    const { collegeOptions: rawCollegeOptions } =
-        useCollegeContext();
+  const form = useForm({
+    defaultValues: filters,
 
-        const collegeOptions = useMemo(() => {
-        return [
-            {
-            value: ALL_COLLEGIES,
-            label: "كل الكليات",
-            },
+    onSubmit: ({ value }) => {
+      onFiltersChange(value);
+    },
+  });
 
-            ...rawCollegeOptions,
-        ];
-    }, [rawCollegeOptions]);
-
-    const defaultValues: VolunteerFiltersType = {
-    search: "",
-    status: ALL_STATUSES,
-    college: ALL_COLLEGIES,
-    };
-
-    const form = useForm({
-        defaultValues,
-        onSubmit: ({ value }) => {
-            const normalizedFilters: VolunteerFiltersType = {
-                search: value.search,
-                status: value.status === ALL_STATUSES ? "" : value.status,
-                college: value.college === ALL_COLLEGIES ? "" : value.college,
-            };
-
-            onFiltersChange?.(normalizedFilters);
-        },
-    });
-    const debouncedSubmit = useMemo(
-        () => debounce(() => form.handleSubmit(), 400),
-        [form]
-    );
+  const debouncedSubmit = useMemo(
+    () =>
+      debounce(() => {
+        form.handleSubmit();
+      }, 400),
+    [form]
+  );
 
   useEffect(() => {
-    return () => debouncedSubmit.cancel();
+    return () => {
+      debouncedSubmit.cancel();
+    };
   }, [debouncedSubmit]);
-
 
   return (
     <form
       onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          form.handleSubmit();
+        e.preventDefault();
+        e.stopPropagation();
+
+        form.handleSubmit();
       }}
-      className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1"
+      className="grid grid-cols-1 gap-4 md:grid-cols-2"
     >
-      <Field form={form} name="search">
-          {(field) => (
-              <div className="relative">
-                  <Search
-                      className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"/>
-                  <TextField
-                      className="w-full h-8 rounded-lg border border-input bg-transparent pr-10 pl-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 font-[Thamanyah2]"
-                      field={field}
-                      type="text"
-                      placeholder="تبحث عن مستخدم معين..."
-                      onAfterChange={() => debouncedSubmit()}
-                  />
-              </div>)}
+      {/* البحث */}
+      <Field
+        form={form}
+        name="search"
+      >
+        {(field) => (
+          <div className="relative">
+            <Search
+              className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+            />
+
+            <TextField
+              className="h-8 w-full rounded-lg border border-input bg-transparent pr-10 pl-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 font-[Thamanyah2]"
+              field={field}
+              type="text"
+              placeholder="تبحث عن مستخدم معين..."
+              onAfterChange={() =>
+                debouncedSubmit()
+              }
+            />
+          </div>
+        )}
       </Field>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-          <Field form={form} name="college">
-              {(field) => (
-                  <SelectField
-                      field={field}
-                      options={collegeOptions}
-                      className={"w-full"}
-                      onAfterChange={() => form.handleSubmit()}
-                  />
-              )}
-          </Field>
-          
-          <Field form={form} name="status">
-              {(field) => (
-                  <SelectField
-                      field={field}
-                      options={statusOptions}
-                      className={"w-full"}
-                      onAfterChange={() => form.handleSubmit()}
-                  />
-              )}
-          </Field>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+        {/* الكلية */}
+        <Field
+          form={form}
+          name="college"
+        >
+          {(field) => (
+            <SelectField
+              field={field}
+              options={collegeOptions}
+              className="w-full"
+              disabled={isLoading}
+              onAfterChange={() =>
+                form.handleSubmit()
+              }
+            />
+          )}
+        </Field>
+
+        {/* الحالة */}
+        <Field
+          form={form}
+          name="status"
+        >
+          {(field) => (
+            <SelectField
+              field={field}
+              options={statusOptions}
+              className="w-full"
+              onAfterChange={() =>
+                form.handleSubmit()
+              }
+            />
+          )}
+        </Field>
 
       </div>
     </form>

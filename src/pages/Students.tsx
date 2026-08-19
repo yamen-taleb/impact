@@ -27,11 +27,20 @@ import {
   DialogFooter,
 } from "../components/ui/dialog";
 import VolunteerFilters from "../components/initiative/VolunteerFilters";
-import { useGetStudents, useToggleStudentBan } from "../hooks/use-students";
+import { useGetAllStudents, useGetStudents, useToggleStudentBan } from "../hooks/use-students";
 import UserAvatar from "../components/user/UserAvatar";
 import { getImageUrl, toArabicNumbers } from "../lib/utils";
 import { useRole } from "../hooks/use-role";
 import { useNavigate } from "react-router";
+
+import {
+  ALL_STATUSES,
+  ALL_COLLEGIES,
+  ACTIVE_STATUS,
+  BANNED_STATUS,
+} from "../components/initiative/VolunteerFilters";
+
+import type { VolunteerFiltersType } from "../components/initiative/VolunteerFilters";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -62,22 +71,112 @@ const Students = () => {
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
   const [roleTargetStudent, setRoleTargetStudent] = useState<Student | null>(null);
   const [roleAction, setRoleAction] = useState<"add" | "remove">("add");
+
+  const [filters, setFilters] =
+    useState<VolunteerFiltersType>({
+      search: "",
+      status: ALL_STATUSES,
+      college: ALL_COLLEGIES,
+    });
   
+
+  const handleFiltersChange = (
+    newFilters: VolunteerFiltersType
+  ) => {
+    setFilters(newFilters);
+    setCurrentPage(1);
+  };
 
   const navigate = useNavigate();
 
 
   const {
-    data,
+    students: allStudents,
     isLoading,
-  } = useGetStudents({
-    page: currentPage - 1,
-    size: ITEMS_PER_PAGE,
-  });
+    isError,
+  } = useGetAllStudents();
 
-  const students = data?.content || [];
+  const students = useMemo(() => {
+    const search = filters.search
+      .trim()
+      .toLowerCase();
 
-  const totalPages = data?.totalPages || 1;
+    return allStudents.filter(
+      (student: any) => {
+
+        // البحث
+        const matchesSearch =
+          !search ||
+          [
+            student.firstName,
+            student.lastName,
+            student.studentNumber,
+            student.email,
+            student.phone,
+            student.collegeName,
+            student.academicYear,
+            student.userId,
+          ]
+            .filter(Boolean)
+            .some((value) =>
+              String(value)
+                .toLowerCase()
+                .includes(search)
+            );
+
+        // فلترة الكلية
+        const matchesCollege =
+          filters.college ===
+            ALL_COLLEGIES ||
+          student.collegeName ===
+            filters.college;
+
+        // فلترة الحالة
+        const matchesStatus =
+          filters.status ===
+            ALL_STATUSES ||
+          (filters.status ===
+            ACTIVE_STATUS &&
+            student.isBanned === false) ||
+          (filters.status ===
+            BANNED_STATUS &&
+            student.isBanned === true);
+
+        return (
+          matchesSearch &&
+          matchesCollege &&
+          matchesStatus
+        );
+      }
+    );
+  }, [allStudents, filters]);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(
+      students.length /
+        ITEMS_PER_PAGE
+    )
+  );
+
+  const safeCurrentPage = Math.min(
+    currentPage,
+    totalPages
+  );
+
+  const paginatedStudents = useMemo(() => {
+    const start =
+      (safeCurrentPage - 1) *
+      ITEMS_PER_PAGE;
+
+    return students.slice(
+      start,
+      start + ITEMS_PER_PAGE
+    );
+  }, [
+    students,
+    safeCurrentPage,
+  ]);
 
   const { mutate: toggleStudentBan } = useToggleStudentBan();
 
@@ -128,7 +227,13 @@ const Students = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <VolunteerFilters />
+      {/* <VolunteerFilters /> */}
+      <VolunteerFilters
+        filters={filters}
+        onFiltersChange={
+          handleFiltersChange
+        }
+      />
 
       <div className="w-full rounded-2xl border border-zinc-200 bg-white shadow-sm">
         {/* Header */}
@@ -187,7 +292,7 @@ const Students = () => {
           </TableHeader>
 
           <TableBody>
-            {students.map((student: any, index: number) => (
+            {paginatedStudents.map((student: any, index: number) => (
                 <TableRow
                   key={`${student.userId}-${currentPage}-${index}`}
                 >
@@ -210,7 +315,7 @@ const Students = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.studentNumber}
+                    {toArabicNumbers(student.studentNumber)}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -300,10 +405,13 @@ const Students = () => {
         <div className="flex items-center justify-between border-t p-4">
           <Button
             variant="outline"
-            disabled={currentPage === 1}
+            disabled={
+              safeCurrentPage === 1 ||
+              isLoading
+            }
             onClick={() =>
-              setCurrentPage(
-                currentPage - 1
+              setCurrentPage((page) =>
+                Math.max(page - 1, 1)
               )
             }
           >
@@ -312,18 +420,22 @@ const Students = () => {
           </Button>
 
           <span className="text-sm text-zinc-600 font-[Thamanyah2]">
-            صفحة {currentPage} من{" "}
-            {totalPages}
+            صفحة {safeCurrentPage} من{" "}
+            {totalPages} ({students.length} طالب)
           </span>
 
           <Button
             variant="outline"
             disabled={
-              currentPage === totalPages
+              safeCurrentPage === totalPages ||
+              isLoading
             }
             onClick={() =>
-              setCurrentPage(
-                currentPage + 1
+              setCurrentPage((page) =>
+                Math.min(
+                  page + 1,
+                  totalPages
+                )
               )
             }
           >

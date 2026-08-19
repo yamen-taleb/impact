@@ -1,5 +1,6 @@
 import {
   useMutation,
+  useQueries,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -63,6 +64,72 @@ export const useGetStudents = ({
       return response.data;
     },
   });
+};
+
+
+
+// ***
+const STUDENTS_PAGE_SIZE = 100;
+
+export const useGetAllStudents = () => {
+  const firstPageQuery = useQuery({
+    queryKey: ["students", "first-page", STUDENTS_PAGE_SIZE],
+    queryFn: async () => {
+      const response = await axiosClient.get("v1/users", {
+        params: {
+          page: 0,
+          size: STUDENTS_PAGE_SIZE,
+          sort: "createdAt,desc",
+        },
+      });
+
+      return response.data;
+    },
+  });
+
+  const totalPages = firstPageQuery.data?.totalPages ?? 0;
+
+  const remainingQueries = useQueries({
+    queries: Array.from(
+      { length: Math.max(totalPages - 1, 0) },
+      (_, index) => ({
+        queryKey: ["students", index + 1, STUDENTS_PAGE_SIZE],
+        queryFn: async () => {
+          const response = await axiosClient.get("v1/users", {
+            params: {
+              page: index + 1,
+              size: STUDENTS_PAGE_SIZE,
+              sort: "createdAt,desc",
+            },
+          });
+
+          return response.data;
+        },
+        enabled: !!firstPageQuery.data,
+      }))
+  })
+
+  const isLoading =
+    firstPageQuery.isLoading ||
+    remainingQueries.some((query) => query.isLoading);
+
+  const isError =
+    firstPageQuery.isError ||
+    remainingQueries.some((query) => query.isError);
+
+  const students = [
+    ...(firstPageQuery.data?.content ?? []),
+    ...remainingQueries.flatMap(
+      (query) => query.data?.content ?? []
+    ),
+  ];
+
+  return {
+    students,
+    isLoading,
+    isError,
+    totalStudents: students.length,
+  };
 };
 
 
