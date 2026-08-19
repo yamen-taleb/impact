@@ -418,24 +418,22 @@ const students = useMemo(() => {
                     <Button
                       size="sm"
                       className={`rounded-full font-[Thamanyah2] text-white ${
-                        student.role === "ROLE_ADMIN"
+                        student.role === "ROLE_SUPERADMIN"
+                        ? "bg-yellow-400 disabled"
+                        : student.role === "ROLE_ADMIN"
                           ? "bg-red-500 hover:bg-red-600"
                           : "bg-emerald-500 hover:bg-emerald-600"
                       }`}
                       onClick={() => {
                         setRoleTargetStudent(student);
-
-                        const isAdmin =
-                          student.role === "ROLE_ADMIN";
-
-                        setRoleAction(
-                          isAdmin ? "remove" : "add"
-                        );
-
+                        const isAdmin = student.role === "ROLE_ADMIN";
+                        setRoleAction(isAdmin ? "remove" : "add");
                         setRoleDialogOpen(true);
                       }}
                     >
-                      {student.role === "ROLE_ADMIN"
+                      {student.role === "ROLE_SUPERADMIN" 
+                      ? "مدير المنصة"
+                      : student.role === "ROLE_ADMIN"
                         ? "إزالة عضو هيئة"
                         : "إضافة عضو هيئة"}
                     </Button>
