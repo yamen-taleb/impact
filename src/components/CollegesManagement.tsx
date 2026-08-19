@@ -18,6 +18,7 @@ import {
   useDeleteCollege,
   useGetColleges,
 } from "../hooks/use-college";
+import { toArabicNumbers } from "../lib/utils";
 
 const CollegesManagement = () => {
   const [newCollege, setNewCollege] = useState("");
@@ -83,7 +84,7 @@ const CollegesManagement = () => {
         </h2>
 
         <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-[Thamanyah2]">
-          {colleges.length} كلية
+          {toArabicNumbers(colleges.length)} كلية
         </span>
       </div>
 

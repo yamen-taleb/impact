@@ -21,6 +21,7 @@ import {
   ChevronRight,
   Eye,
 } from "lucide-react";
+import { toArabicNumbers } from "../../lib/utils";
 
 interface Props {
   initiatives: Initiative[];
@@ -69,7 +70,7 @@ const InitiativeTable = ({initiatives, page, setPage, totalPages} : Props) => {
                   key={initiative.campaignId}
                 >
                   <TableCell className="font-medium font-[Thamanyah2] text-center">
-                    {initiative.campaignId}
+                    {toArabicNumbers(initiative.campaignId)}
                   </TableCell>
 
                   <TableCell className="font-medium font-[Thamanyah2]">
@@ -89,7 +90,7 @@ const InitiativeTable = ({initiatives, page, setPage, totalPages} : Props) => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {initiative.lastProgress?.percentage ?? 0}%
+                    {toArabicNumbers(initiative.lastProgress?.percentage ?? 0)}%
                   </TableCell>
 
                   <TableCell>
@@ -109,7 +110,7 @@ const InitiativeTable = ({initiatives, page, setPage, totalPages} : Props) => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2] text-center">
-                    {initiative.maxVolunteers ?? "-"}
+                    {toArabicNumbers(initiative.maxVolunteers) ?? "-"}
                   </TableCell>
 
                   <TableCell>
