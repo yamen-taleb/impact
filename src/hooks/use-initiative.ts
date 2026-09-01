@@ -1,7 +1,8 @@
-import {initiativeStatusEnum, paginatedInitiativesSchema, type InitiativeStatus} from "../schemas/initiativePageSchema.ts";
+import type { Initiative } from "../schemas/initiativePageSchema.ts";
+import {paginatedInitiativesSchema} from "../schemas/initiativePageSchema.ts";
 import axiosClient from "../axiosClient.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import { initiativeDetailsSchema } from "../schemas/initiativeDetailsSchema.ts";
+import type { AxiosError } from "axios";
 import {z} from "zod";
 import {initiativeSchema} from "../schemas/initiativeSchema.ts";
 import {toast} from "sonner";
@@ -13,7 +14,7 @@ interface InitiativeParams {
     sort?: string;
     searchText?: string;
 
-    status?: InitiativeStatus | InitiativeStatus[];
+    status?: Initiative["status"] | Initiative["status"][];
 
     collegeId?: string | number | null;
     categoryId?: string | number | null;
@@ -148,6 +149,60 @@ export const useCreateInitiative = () => {
 };
 
 
+export const useUpdateInitiative = () => {
+  const queryClient = useQueryClient();
+
+  const updateInitiativeRequest = async (
+    data: z.infer<typeof initiativeSchema> & {
+      campaignId: number;
+      photos: File[];
+      proposedById: string | number;
+      status: string;
+    }) => {
+    const { campaignId, title, description, location, categoryId, collegeId, photos, proposedById, status } = data;
+
+    const formData = new FormData();
+
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("location", location);
+    formData.append("categoryId", categoryId.toString());
+    formData.append("collegeId", collegeId.toString());
+    formData.append("proposedById", proposedById.toString());
+    formData.append("status", status);
+
+    photos.forEach((file) => {
+      formData.append("photoFiles", file);
+    });
+
+    const response = await axiosClient.put(`/v1/campaigns/${campaignId}`, formData);
+
+    return response.data;
+  };
+
+  return useMutation({
+    mutationFn: updateInitiativeRequest,
+    onSuccess: (_, variables) => {
+      toast.success("تم تعديل المبادرة بنجاح");
+
+      queryClient.invalidateQueries({
+        queryKey: ["initiatives"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["campaign-details", variables.campaignId],
+      });
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      toast.error(
+        error?.response?.data?.message ||
+        "حدث خطأ أثناء تعديل المبادرة"
+      );
+    },
+  });
+};
+
+
 export const useGetCampaignById = (campaignId?: number) => {
   const fetchCampaignById = async () => {
     const response = await axiosClient.get(
@@ -200,7 +255,7 @@ export const useUpdateCampaign = () => {
       });
     },
 
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message?: string }>) => {
       toast.error(
         error?.response?.data?.message ||
           "حدث خطأ أثناء تحديث المبادرة"
@@ -250,7 +305,7 @@ export const useUpdateCampaignStatus =
         });
       },
 
-      onError: (error: any) => {
+      onError: (error: AxiosError<{ message?: string }>) => {
         toast.error(
           error?.response?.data?.message ||
             "حدث خطأ أثناء تحديث الحالة"
@@ -258,3 +313,40 @@ export const useUpdateCampaignStatus =
       },
     });
   };
+
+export const useDeleteInitiative = () => {
+    const queryClient = useQueryClient();
+
+    const deleteRequest = async ({campaignId}: { campaignId: number }) => {
+
+        const response =
+            await axiosClient.delete(
+                `/v1/campaigns/${campaignId}`
+            );
+
+        return response.data;
+    };
+
+    return useMutation({
+        mutationFn: deleteRequest,
+
+        onSuccess: () => {
+            toast.success(
+                "تم حذف الحملة بنجاح"
+            );
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "initiatives",
+                ],
+            });
+        },
+
+        onError: (error: AxiosError<{ message?: string }>) => {
+            toast.error(
+                error?.response?.data?.message ||
+                "حدث خطأ أثناء حذف الحملة"
+            );
+        },
+    });
+};

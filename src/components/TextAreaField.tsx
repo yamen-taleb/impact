@@ -1,4 +1,4 @@
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import type {AnyFieldApi} from "@tanstack/react-form";
 
 interface Props {
@@ -14,6 +14,7 @@ interface Props {
 const TextAreaField = ({field, placeholder, label, className, rows = 4, readOnly = false, height = '30px'}: Props) => {
     const {errors, isTouched} = field.state.meta;
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const [isFocused, setIsFocused] = useState(false);
 
     const resizeTextarea = () => {
         const textarea = textareaRef.current;
@@ -43,12 +44,13 @@ const TextAreaField = ({field, placeholder, label, className, rows = 4, readOnly
                         field.handleChange(e.target.value);
                         resizeTextarea();
                     }}
-                    onBlur={field.handleBlur}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => { setIsFocused(false); field.handleBlur(); }}
                     rows={rows}
                     readOnly={readOnly}
                 />
             </label>
-            {errors.length > 0 && isTouched && (
+            {errors.length > 0 && (isTouched || isFocused) && (
                 <span className="text-red-500 text-xs">{errors[0]?.message}</span>
             )}
         </div>

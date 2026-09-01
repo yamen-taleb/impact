@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type {AnyFieldApi} from "@tanstack/react-form";
 
 interface Props {
@@ -8,11 +9,13 @@ interface Props {
     className?: string,
     dir?: "ltr" | "rtl" | "auto",
     onAfterChange?: (value: string) => void
-    disabled: boolean,
+    disabled?: boolean,
 }
 
-const TextField = ({field, type, placeholder, label, className, dir, onAfterChange, disabled}: Props) => {
+const TextField = ({field, type, placeholder, label, className, dir, onAfterChange, disabled = false}: Props) => {
     const {errors, isTouched} = field.state.meta;
+    const [isFocused, setIsFocused] = useState(false);
+
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         field.handleChange(
             type === 'number' ? Number(e.target.value) : e.target.value
@@ -34,11 +37,12 @@ const TextField = ({field, type, placeholder, label, className, dir, onAfterChan
                     placeholder={placeholder}
                     value={field.state.value as string | number}
                     onChange={handleOnChange}
-                    onBlur={field.handleBlur}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => { setIsFocused(false); field.handleBlur(); }}
                     disabled={disabled}
                 />
             </label>
-            {errors.length > 0 && isTouched && (
+            {errors.length > 0 && (isTouched || isFocused) && (
                 <span className="text-red-500 text-xs">{errors[0]?.message}</span>
             )}
         </div>

@@ -8,20 +8,32 @@ import {ImagePlus, X} from "lucide-react";
 import SelectField from "../../components/SelectField.tsx";
 import { useCategoryContext } from "../../context/CategoryContext.tsx";
 import {useCollegeContext} from "../../context/CollegeContext.tsx";
-import {useCreateInitiative} from "../../hooks/use-initiative.ts";
+import {useGetCampaignById, useUpdateInitiative} from "../../hooks/use-initiative.ts";
+import {getImageUrl} from "../../lib/utils.ts";
 import {useUserContext} from "../../context/UserContext.tsx";
 
 
 interface Props {
     setOpen: (open: boolean) => void;
+    initiativeId: number;
+
 }
 
-const InitiativeForm = ({ setOpen }: Props) => {
+const InitiativeEditForm = ({ setOpen, initiativeId }: Props) => {
     const [images, setImages] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { categoryOptions } = useCategoryContext();
     const { collegeOptions } = useCollegeContext();
+    const {data: initiative} = useGetCampaignById(initiativeId)
     const {currentUser} = useUserContext();
+    const { mutate: updateInitiative, isPending } = useUpdateInitiative();
+    const categoryId = initiative?.category ? String(categoryOptions.find((option) => option.label === initiative.category)?.value) : ""
+    const existingPhotoUrls: string[] = initiative?.photos?.length
+        ? initiative.photos
+        : initiative?.photo
+            ? [initiative.photo]
+            : [];
+
 
     const imagePreviews = useMemo(
         () => images.map((file) => URL.createObjectURL(file)),
@@ -34,13 +46,11 @@ const InitiativeForm = ({ setOpen }: Props) => {
         };
     }, [imagePreviews]);
 
-    const { mutate: createInitiative, isPending } = useCreateInitiative();
-
     const form = useForm({
         defaultValues: {
-            title: "",
-            description: "",
-            location: "",
+            title: initiative?.title,
+            description: initiative?.description,
+            location: initiative?.location,
             collegeId: "",
             categoryId: "",
         },
@@ -50,25 +60,29 @@ const InitiativeForm = ({ setOpen }: Props) => {
             onChange: initiativeSchema,
         },
         onSubmit: ({value}) => {
-            console.log("Submitting initiative with values:", value);
-            createInitiative({
-                ...value,
-                proposedById: currentUser.userId,
-                photos: images,
-            }, {
-                onSuccess: () => {
-                    setOpen(false);
-                    setImages([]);
-                    if (fileInputRef.current) {
-                        fileInputRef.current.value = "";
-                    }
-                }
-            });
-            setOpen(false);
-            setImages([]);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = "";
+            if (!currentUser?.userId) {
+                return;
             }
+
+            updateInitiative(
+                {
+                    campaignId: initiativeId,
+                    ...value,
+                    proposedById: currentUser.userId,
+                    status: initiative?.status ?? "PENDING",
+                    photos: images,
+                },
+                {
+                    onSuccess: () => {
+                        setOpen(false);
+                        setImages([]);
+
+                        if (fileInputRef.current) {
+                            fileInputRef.current.value = "";
+                        }
+                    },
+                },
+            );
         },
     });
 
@@ -79,8 +93,19 @@ const InitiativeForm = ({ setOpen }: Props) => {
             file.type.startsWith("image/"),
         );
 
-        setImages(selectedImages);
+        setImages((currentImages) => [...currentImages, ...selectedImages]);
     };
+
+    useEffect(() => {
+        if (initiative && collegeOptions.length > 0) {
+            form.setFieldValue('title', initiative?.title)
+            form.setFieldValue('collegeId', String(initiative.college.id))
+            form.setFieldValue('description', initiative.description)
+            form.setFieldValue('categoryId', categoryId)
+            form.setFieldValue('location', initiative.location)
+        }
+
+    }, [initiative, form, collegeOptions, categoryId]);
     return (
         <form
             className="w-full mt-6 space-y-7"
@@ -99,6 +124,7 @@ const InitiativeForm = ({ setOpen }: Props) => {
                                 label="المبادرة"
                                 placeholder="اسم المبادرة"
                                 className="fieldClasses font-[Thamanyah2]"
+                                disabled={false}
                             />
                         )}
                     </Field>
@@ -111,6 +137,7 @@ const InitiativeForm = ({ setOpen }: Props) => {
                                 label="العنوان"
                                 placeholder="عنوان المبادرة"
                                 className="fieldClasses font-[Thamanyah2]"
+                                disabled={false}
                             />
                         )}
                     </Field>
@@ -177,38 +204,71 @@ const InitiativeForm = ({ setOpen }: Props) => {
                     onChange={handleImageChange}
                 />
 
-                {imagePreviews.length > 0 ? (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {imagePreviews.map((src, index) => (
-                            <figure key={src}
-                                    className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                                <img
-                                    src={src}
-                                    alt={`صورة ${index + 1}`}
-                                    className="h-40 w-full object-cover"
-                                />
-                                <figcaption
-                                    className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-600">
-                                    <span className="truncate">{images[index]?.name}</span>
-                                    <button
-                                        type="button"
-                                        className="inline-flex size-7 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-                                        onClick={() => {
-                                            setImages((currentImages) => currentImages.filter((_, currentIndex) => currentIndex !== index));
-                                        }}
-                                    >
-                                        <X className="size-4"/>
-                                    </button>
-                                </figcaption>
-                            </figure>
-                        ))}
-                    </div>
-                ) : (
-                    <div
-                        className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-sm text-slate-500 font-[Thamanyah2]">
-                        لم يتم اختيار أي صور بعد.
+                {existingPhotoUrls.length > 0 && (
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <h4 className="text-sm font-semibold text-slate-700">الصور الحالية</h4>
+                            <span className="text-xs text-slate-500 font-[Thamanyah2]">للمعاينة فقط</span>
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            {existingPhotoUrls.map((src, index) => (
+                                <figure
+                                    key={`${src}-${index}`}
+                                    className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+                                >
+                                    <img
+                                        src={getImageUrl(src)}
+                                        alt={`صورة حالية ${index + 1}`}
+                                        className="h-40 w-full object-cover"
+                                    />
+                                    <figcaption className="px-3 py-2 text-xs text-slate-600">
+                                        لا يمكن حذف هذه الصورة من هنا
+                                    </figcaption>
+                                </figure>
+                            ))}
+                        </div>
                     </div>
                 )}
+
+                {imagePreviews.length > 0 ? (
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <h4 className="text-sm font-semibold text-slate-700">الصور الجديدة</h4>
+                            <span className="text-xs text-slate-500 font-[Thamanyah2]">يمكنك حذفها قبل الإرسال</span>
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            {imagePreviews.map((src, index) => (
+                                <figure
+                                    key={src}
+                                    className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+                                >
+                                    <img
+                                        src={src}
+                                        alt={`صورة جديدة ${index + 1}`}
+                                        className="h-40 w-full object-cover"
+                                    />
+                                    <figcaption className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-600">
+                                        <span className="truncate">{images[index]?.name}</span>
+                                        <button
+                                            type="button"
+                                            className="inline-flex size-7 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                                            onClick={() => {
+                                                setImages((currentImages) => currentImages.filter((_, currentIndex) => currentIndex !== index));
+                                            }}
+                                        >
+                                            <X className="size-4"/>
+                                        </button>
+                                    </figcaption>
+                                </figure>
+                            ))}
+                        </div>
+                    </div>
+                ) : images.length === 0 ? (
+                    <div
+                        className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-sm text-slate-500 font-[Thamanyah2]">
+                        لم يتم اختيار أي صور جديدة بعد.
+                    </div>
+                ) : null}
             </section>
 
             <div className="flex justify-end gap-3 border-t border-slate-200 pt-5">
@@ -238,4 +298,4 @@ const InitiativeForm = ({ setOpen }: Props) => {
     );
 };
 
-export default InitiativeForm;
+export default InitiativeEditForm;

@@ -31,7 +31,7 @@ const InitiativeDetails = () => {
         error,
     } = useGetCampaignById(campaignId);
 
-    
+
     if (isLoading) {
         return <Loader />;
     }
@@ -47,7 +47,7 @@ const InitiativeDetails = () => {
             <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
                 <InitiativeDetailsHero initiative={initiative}/>
                 <InitiativeDetailsMetaGrid
-                    college={String(initiative.college.name)}
+                    college={String(initiative?.college?.name)}
                     category={initiative.category}
                     address={initiative.location}
                     startDate={initiative.startDate}
@@ -56,17 +56,17 @@ const InitiativeDetails = () => {
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
-                <InitiativeDetailsDescription 
-                    description={initiative.description} 
-                    proposedByName={initiative.proposedByName} 
-                    managedByName={initiative.managedByName} 
+                <InitiativeDetailsDescription
+                    description={initiative.description}
+                    proposedByName={initiative.proposedByName}
+                    managedByName={initiative.managedByName}
                     currentUserRole={userRole}
                 />
                 <InitiativeDetailsProgress percentage={Number(initiative.lastProgress?.percentage ?? 0)} status={initiative.status} rejectedReason={initiative.rejectedReason}/>
-            </div>      
+            </div>
 
-        
-            <InitiativeDetailsActions 
+
+            <InitiativeDetailsActions
                 campaignId={campaignId}
                 initiativeStatus={initiative.status}
             />
@@ -93,12 +93,12 @@ const InitiativeDetails = () => {
                                 <InitiativeDates initiative={initiative} />
                                 <InitiativeMaxVolunteers initiative={initiative} />
                             </div>
-        
+
                             {/* <Volunteer campaignId={campaignId} /> */}
                             {(initiative.status === "ONGOING" || initiative.status === "COMPLETED") && (
                                 <VolunteerManagementSection campaignId={campaignId} campaignStartDate={initiative.startDate} campaignEndDate={initiative.endDate}  />
                             )}
-                            
+
                             <ProgressManagement campaignId={campaignId} />
 
                         </div>

@@ -1,16 +1,15 @@
-import { type ReactElement, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { type ReactElement, type ReactNode, useCallback, useState } from "react";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "./ui/alert-dialog.tsx"
-import {cn} from "../lib/utils.ts";
+    Dialog as ShadcnDialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "./ui/dialog";
+import { Button } from "./ui/button";
+import { cn } from "../lib/utils";
 
 interface Props {
     trigger?: ReactElement;
@@ -38,114 +37,106 @@ interface Props {
 }
 
 const Dialog = ({
-    trigger,
-    title,
-    titleClassName,
-    description,
-    descriptionClassName,
-    children,
-    actionButtonName = "Confirm",
-    actionButtonClassName,
-    cancelButtonName = "اِلغاء",
-    cancelButtonClassName,
-    contentClassName,
-    showFooter = true,
-    closeOnAction = true,
-    open: controlledOpen,
-    defaultOpen = false,
-    onOpenChange,
-    onAction,
-    onCancel,
-    isActionDisabled,
-}: Props) =>  {
-
+                    trigger,
+                    title,
+                    titleClassName,
+                    description,
+                    descriptionClassName,
+                    children,
+                    actionButtonName = "Confirm",
+                    actionButtonClassName,
+                    cancelButtonName = "اِلغاء",
+                    cancelButtonClassName,
+                    contentClassName,
+                    showFooter = true,
+                    closeOnAction = true,
+                    open: controlledOpen,
+                    defaultOpen = false,
+                    onOpenChange,
+                    onAction,
+                    onCancel,
+                    isActionDisabled,
+                }: Props) => {
     const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+
     const isControlled = typeof controlledOpen === "boolean";
     const open = isControlled ? controlledOpen : uncontrolledOpen;
 
-    const dialogRef = useRef<HTMLDivElement | null>(null);
-
-    const setOpen = useCallback((nextOpen: boolean) => {
-        if (!isControlled) {
-            setUncontrolledOpen(nextOpen);
-        }
-        onOpenChange?.(nextOpen);
-    }, [isControlled, onOpenChange]);
+    const setOpen = useCallback(
+        (nextOpen: boolean) => {
+            if (!isControlled) {
+                setUncontrolledOpen(nextOpen);
+            }
+            onOpenChange?.(nextOpen);
+        },
+        [isControlled, onOpenChange]
+    );
 
     const handleCancel = useCallback(() => {
         onCancel?.();
         setOpen(false);
     }, [onCancel, setOpen]);
 
-    useEffect(() => {
-        if (!open) return;
-
-        const handlePointerDown = (event: PointerEvent) => {
-            const target = event.target as Element | null;
-
-            // Ignore clicks if they originate from Radix UI portals like Select dropdowns or menus
-            if (
-                target?.closest('[role="listbox"]') || 
-                target?.closest('[role="menu"]') || 
-                target?.closest('[data-radix-portal]') ||
-                target?.closest('[data-radix-popper-content-wrapper]')
-            ) {
-                return;
-            }
-
-            if (dialogRef.current && !dialogRef.current.contains(target as Node)) {
-                handleCancel();
-            }
-        };
-
-        document.addEventListener("pointerdown", handlePointerDown, true);
-        return () => document.removeEventListener("pointerdown", handlePointerDown, true);
-    }, [open, handleCancel]);
-
     const handleAction = useCallback(() => {
         onAction?.();
+
         if (closeOnAction) {
             setOpen(false);
         }
     }, [closeOnAction, onAction, setOpen]);
 
     return (
-        <AlertDialog open={open} onOpenChange={setOpen}>
-            <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-            <AlertDialogContent
-                ref={dialogRef}
-                className={cn("bg-gray-50 shadow-lg ring-0 rounded-lg p-6 w-[min(92vw,42rem)]", contentClassName)}
+        <ShadcnDialog open={open} onOpenChange={setOpen}>
+            {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+
+            <DialogContent
+                className={cn(
+                    "bg-gray-50 shadow-lg ring-0 rounded-lg p-6 w-[min(92vw,42rem)]",
+                    contentClassName
+                )}
             >
-                <AlertDialogHeader>
-                    <AlertDialogTitle className={cn("text-lg font-bold", titleClassName)}>{title}</AlertDialogTitle>
-                    {description && <AlertDialogDescription className={descriptionClassName}>
-                        {description}
-                    </AlertDialogDescription>}
+                <DialogHeader>
+                    <DialogTitle className={cn("text-lg font-bold", titleClassName)}>
+                        {title}
+                    </DialogTitle>
+
+                    {description && (
+                        <DialogDescription className={descriptionClassName}>
+                            {description}
+                        </DialogDescription>
+                    )}
+
                     {children}
-                </AlertDialogHeader>
+                </DialogHeader>
+
                 {showFooter && (
-                    <AlertDialogFooter>
-                        <AlertDialogCancel
+                    <DialogFooter>
+                        <Button
                             variant="outline"
                             size="default"
                             className={cancelButtonClassName}
                             onClick={handleCancel}
                         >
                             {cancelButtonName}
-                        </AlertDialogCancel>
-                        <AlertDialogAction
+                        </Button>
+
+                        <Button
                             variant="default"
                             size="default"
-                            className={cn("bg-red-600 text-white hover:bg-red-700", actionButtonClassName, isActionDisabled && "cursor-not-allowed opacity-50")}
                             disabled={isActionDisabled}
+                            className={cn(
+                                "bg-red-600 text-white hover:bg-red-700",
+                                actionButtonClassName,
+                                isActionDisabled && "cursor-not-allowed opacity-50"
+                            )}
                             onClick={handleAction}
                         >
                             {actionButtonName}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
+                        </Button>
+                    </DialogFooter>
                 )}
-            </AlertDialogContent>
-        </AlertDialog>
+            </DialogContent>
+        </ShadcnDialog>
     );
 };
 

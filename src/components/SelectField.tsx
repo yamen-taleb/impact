@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type {AnyFieldApi} from "@tanstack/react-form";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "./ui/select.tsx";
 
@@ -13,6 +14,7 @@ interface Props {
 
 const SelectField = ({field, options, placeholder, label, className, disabled = false, onAfterChange}: Props) => {
     const {errors, isTouched} = field.state.meta;
+    const [isFocused, setIsFocused] = useState(false);
     return (
         <div className="flex flex-col gap-2">
             {label && <span className="mb-1 block text-sm font-semibold text-slate-700">
@@ -29,6 +31,8 @@ const SelectField = ({field, options, placeholder, label, className, disabled = 
                 disabled={disabled}
             >
                 <SelectTrigger
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => { setIsFocused(false); field.handleBlur(); }}
                     className={`${className}`}
                 >
                     <SelectValue placeholder={placeholder} />
@@ -43,7 +47,7 @@ const SelectField = ({field, options, placeholder, label, className, disabled = 
                     </SelectGroup>
                 </SelectContent>
             </Select>
-            {errors.length > 0 && isTouched && (
+            {errors.length > 0 && (isTouched || isFocused) && (
                 <span className="text-red-500 text-xs">{errors[0]?.message}</span>
             )}
         </div>

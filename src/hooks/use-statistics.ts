@@ -12,3 +12,16 @@ export const useGetStatistics = () => {
   });
 };
 
+export const useGetAdminStatistics = (collegeId?: string) => {
+  return useQuery({
+    queryKey: ["admin-statistics", collegeId],
+    queryFn: async () => {
+      const response = await axiosClient.get(`v1/statistics`, {
+        params: {
+          collegeId,
+        },
+      });
+      return response.data;
+    },
+  });
+};

@@ -5,6 +5,8 @@ import { ClipboardListIcon, Table } from "lucide-react";
 import ErrorDisplay from "../components/ErrorDisplay.tsx";
 import Loader from "../components/Loader.tsx";
 import BaseInitiatives from "../components/initiative/BaseInitiatives.tsx";
+import type {Initiative} from "../schemas/initiativePageSchema.ts";
+import InitiativeCard from "../components/initiative/InitiativeCard.tsx";
 
 const Initiatives = () => {
     const {
@@ -28,14 +30,14 @@ const Initiatives = () => {
             {/* View Toggle for Managers */}
             {userRole === "Manager" && (
                 <div className="flex gap-2 self-start font-[Thamanyah2] pl-10">
-                    <button 
+                    <button
                         onClick={() => setViewMode("grid")}
                         className={`flex flex-row gap-4 items-center rounded-xl px-5 py-2 text-sm font-medium transition-colors ${viewMode === "grid" ? "bg-black text-white" : "bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50"}`}
                     >
                         عرض البطاقات
                         <ClipboardListIcon />
                     </button>
-                    <button 
+                    <button
                         onClick={() => setViewMode("table")}
                         className={`flex flex-row gap-4 items-center rounded-xl px-5 py-2 text-sm font-medium transition-colors ${viewMode === "table" ? "bg-black text-white" : "bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50"}`}
                     >
@@ -46,15 +48,25 @@ const Initiatives = () => {
             )}
 
             {(userRole === "Admin" || userRole === "User" || (userRole === "Manager" && viewMode === "grid")) && (
-                <BaseInitiatives initiatives={initiatives} isLoading={isLoading} error={error} page={page} setPage={setPage} totalPages={totalPages} />
+                <BaseInitiatives initiatives={initiatives} isLoading={isLoading} error={error} page={page}
+                                 setPage={setPage} totalPages={totalPages}>
+                    <div className="grid grid-cols-1 gap-5 pl-10 md:grid-cols-2 xl:grid-cols-3">
+                        {initiatives.map((initiative: Initiative, index: number) => (
+                            <InitiativeCard
+                                key={`${initiative.campaignId}-${page}-${index}`}
+                                initiative={initiative}
+                            />
+                        ))}
+                    </div>
+                </BaseInitiatives>
             )}
 
             {userRole === "Manager" && viewMode === "table" && (
                 <div>
                     {isLoading ? (
-                        <Loader className="ml-10" />
+                        <Loader className="ml-10"/>
                     ) : error ? (
-                        <ErrorDisplay message="حدث خطأ أثناء تحميل المبادرات" className="ml-10" />
+                        <ErrorDisplay message="حدث خطأ أثناء تحميل المبادرات" className="ml-10"/>
                     ) : initiatives.length > 0 ? (
                         <InitiativeTable initiatives={initiatives} page={page} setPage={setPage} totalPages={totalPages} />
                     ) : (

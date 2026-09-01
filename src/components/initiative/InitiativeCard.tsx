@@ -9,9 +9,10 @@ import {getImageUrl} from "../../lib/utils.ts";
 
 interface Props {
     initiative: Initiative;
+    actions?: React.ReactNode;
 }
 
-const InitiativeCard = ({initiative}: Props) => {
+const InitiativeCard = ({initiative, actions}: Props) => {
     const status = getInitiativeStatus(initiative.status);
 
     const percentage = initiative.lastProgress?.percentage ?? 0;
@@ -89,6 +90,7 @@ const InitiativeCard = ({initiative}: Props) => {
                   <span className="text-sm font-semibold text-slate-900">{percentage}%</span>
               </CircularProgressbarWithChildren>
           </CardFooter>
+          {actions && <div className="flex items-center justify-end gap-2 px-5 pb-5">{actions}</div>}
       </Card>
 );
 };

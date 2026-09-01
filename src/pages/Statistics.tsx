@@ -3,20 +3,29 @@ import StatCard from "../components/StatCard";
 import StatSummaryCard from "../components/StatSummaryCard";
 import CategoriesManagement from "../components/CategoriesManagement";
 import CollegesManagement from "../components/CollegesManagement";
-import { getUserRole } from "../lib/utils";
-import { useGetStatistics } from "../hooks/use-statistics";
+import {getCollegeId, getUserRole} from "../lib/utils";
+import { useGetStatistics, useGetAdminStatistics } from "../hooks/use-statistics";
 import Loader from "../components/Loader.tsx";
 import ErrorDisplay from "../components/ErrorDisplay.tsx";
 import { useGetMyUser } from "../hooks/use-user.ts";
+import {useCollegeContext} from "../context/CollegeContext.tsx";
 
 const Statistics = () => {
     const { data: stats, isLoading, isError } = useGetStatistics();
     const userRole = getUserRole();
     const isStudent = userRole === "User";
     const isAdmin = userRole === "Admin";
+    const {collegeOptions} = useCollegeContext()
 
     const { currentUser } = useGetMyUser();
+    const collegeId = currentUser?.collegeName ? String(getCollegeId(collegeOptions, currentUser.collegeName)) : ""
+    const { data: adminStats, isLoading: isAdminLoading, isError: isAdminError } = useGetAdminStatistics(isAdmin ? collegeId : undefined);
     const currentUserId = Number( currentUser?.userId );
+
+    if (adminStats) {
+        console.log("adminStats");
+        console.log("adminStats", adminStats);
+    }
 
     if (isLoading) {
         return <Loader/>;
@@ -122,6 +131,87 @@ const Statistics = () => {
                 </div>
             </>
             }
+
+            {!isStudent && (
+                <>
+                    <div>
+                        <h2 className="text-2xl font-bold text-zinc-900">إحصائيات المشرف</h2>
+                        <p className="mt-2 text-zinc-600">ملخص إدارة المبادرات والمتطوعين</p>
+                    </div>
+
+                    {isAdminLoading ? <Loader /> : isAdminError || !adminStats ? <ErrorDisplay message="حدث خطأ أثناء تحميل إحصائيات المشرف" /> : (
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+                                <StatSummaryCard
+                                    icon={Lightbulb}
+                                    label="المبادرات النشطة"
+                                    value={adminStats.activeInitiatives ?? 0}
+                                    bgColor="bg-purple-100"
+                                    iconColor="text-purple-600"
+                                    textColor="text-zinc-600"
+                                />
+                                <StatSummaryCard
+                                    icon={FileCheck}
+                                    label="المبادرات المكتملة"
+                                    value={adminStats.completedInitiatives ?? 0}
+                                    bgColor="bg-green-100"
+                                    iconColor="text-green-600"
+                                    textColor="text-zinc-600"
+                                />
+                                <StatSummaryCard
+                                    icon={FileText}
+                                    label="إجمالي المبادرات"
+                                    value={adminStats.totalInitiatives ?? 0}
+                                    bgColor="bg-orange-100"
+                                    iconColor="text-orange-600"
+                                    textColor="text-zinc-600"
+                                />
+                                <StatSummaryCard
+                                    icon={Clock}
+                                    label="ساعات التطوع الكلية"
+                                    value={adminStats.totalVolunteerHours ?? 0}
+                                    bgColor="bg-blue-100"
+                                    iconColor="text-blue-600"
+                                    textColor="text-zinc-600"
+                                />
+
+                                <StatSummaryCard
+                                    icon={CheckCircle}
+                                    label="المتطوعون النشطون"
+                                    value={adminStats.activeVolunteers ?? 0}
+                                    bgColor="bg-zinc-50"
+                                    iconColor="text-zinc-600"
+                                    textColor="text-zinc-600"
+                                />
+                                <StatSummaryCard
+                                    icon={FileText}
+                                    label="إجمالي المتطوعين"
+                                    value={adminStats.totalVolunteers ?? 0}
+                                    bgColor="bg-green-100"
+                                    iconColor="text-green-600"
+                                    textColor="text-green-700"
+                                />
+                                <StatSummaryCard
+                                    icon={ClockIcon}
+                                    label="طلبات التطوع قيد الانتظار"
+                                    value={adminStats.pendingVolunteerRequests ?? 0}
+                                    bgColor="bg-yellow-100"
+                                    iconColor="text-yellow-600"
+                                    textColor="text-yellow-700"
+                                />
+                                <StatSummaryCard
+                                    icon={FileText}
+                                    label="إجمالي طلبات التطوع"
+                                    value={adminStats.totalVolunteerRequests ?? 0}
+                                    bgColor="bg-orange-100"
+                                    iconColor="text-orange-600"
+                                    textColor="text-zinc-600"
+                                />
+                            </div>
+                        </>
+                    )}
+                </>
+            )}
             {(userRole === "Manager") && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <CategoriesManagement />

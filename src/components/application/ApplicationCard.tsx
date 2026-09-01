@@ -17,8 +17,7 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
 
 
     return (
-        <Link to={`/initiatives/${application.campaignId}`}>
-        <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:shadow-md">
+        <Link  className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:shadow-md" to={`/initiatives/${application.campaignId}`}>
             <div className="grid h-full grid-cols-1 md:flex md:items-stretch">
                 {/* Image Section */}
                 <div className="relative h-48 w-full overflow-hidden bg-zinc-100 md:w-56 md:self-stretch md:h-auto">
@@ -109,7 +108,11 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                             </Badge>
                         {onDelete && application.status === "PENDING" && (
                             <button
-                                onClick={() => onDelete(application.id)}
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    onDelete(application.id)
+                                }}
                                 className="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs font-medium text-red-700 transition hover:bg-red-100"
                                 disabled={application.status !== "PENDING"}
                             >
@@ -127,13 +130,12 @@ const ApplicationCard = ({ application, onDelete }: Props) => {
                                         </div>
                                     )
                                 }
-                                
+
                             </button>
                         )}
                     </div>
                 </div>
             </div>
-        </div>
         </Link>
     );
 };
