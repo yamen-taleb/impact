@@ -1,3 +1,4 @@
+import { toArabicNumbers } from "../../lib/utils";
 import {
     Pagination,
     PaginationContent,

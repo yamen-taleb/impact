@@ -5,7 +5,7 @@ import {Link} from "react-router";
 import { buildStyles, CircularProgressbarWithChildren } from "react-circular-progressbar";
 import type {Initiative} from "../../schemas/initiativePageSchema.ts";
 import {getInitiativeStatus} from "../../lib/initiativeStatus.ts";
-import {getImageUrl} from "../../lib/utils.ts";
+import {getImageUrl, toArabicNumbers} from "../../lib/utils.ts";
 
 interface Props {
     initiative: Initiative;
@@ -87,7 +87,7 @@ const InitiativeCard = ({initiative, actions}: Props) => {
                       trailColor: "#e5e7eb",
                   })}
               >
-                  <span className="text-sm font-semibold text-slate-900">{percentage}%</span>
+                  <span className="text-md font-semibold text-slate-900">{toArabicNumbers(percentage)}%</span>
               </CircularProgressbarWithChildren>
           </CardFooter>
           {actions && <div className="flex items-center justify-end gap-2 px-5 pb-5">{actions}</div>}

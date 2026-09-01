@@ -42,6 +42,22 @@ export const useGetColleges = ({
   });
 };
 
+export const useGetCollegesFilter = () => {
+  return useQuery({
+    queryKey: ["colleges"],
+    queryFn: async () => {
+      const response = await axiosClient.get("v1/colleges", {
+        params: {
+          page: 0,
+          size: 100,
+        },
+      });
+
+      return response.data;
+    },
+  });
+};
+
 
 
 

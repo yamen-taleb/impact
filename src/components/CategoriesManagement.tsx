@@ -19,6 +19,7 @@ import {
   useDeleteCategory,
   useGetCategories,
 } from "../hooks/use-category";
+import { toArabicNumbers } from "../lib/utils";
 
 const CategoriesManagement = () => {
   const [newCategory, setNewCategory] =
@@ -108,7 +109,7 @@ const CategoriesManagement = () => {
         </h2>
 
         <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-[Thamanyah2]">
-          {categories.length} تصنيف
+          {toArabicNumbers(categories.length)} تصنيف
         </span>
       </div>
 

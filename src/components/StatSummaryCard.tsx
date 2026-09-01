@@ -1,4 +1,5 @@
 import { ComponentType } from "react";
+import { toArabicNumbers } from "../lib/utils";
 
 interface StatSummaryCardProps {
     icon: ComponentType<{ className?: string }>;
@@ -25,7 +26,7 @@ const StatSummaryCard = ({
             <div className="mt-14">
                 <p className={`text-sm font-medium ${textColor}`}>{label}</p>
                 <p className={`mt-2 text-3xl font-bold ${textColor.replace('700', '800').replace('600', '800')}`}>
-                    {value}
+                    {toArabicNumbers(value)}
                 </p>
             </div>
         </div>

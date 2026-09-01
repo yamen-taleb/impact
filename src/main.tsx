@@ -58,6 +58,8 @@ keycloak.init({
                 <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<App />} />
+
+
                         <Route element={<PrivateRoute><AuthenticatedLayout /></PrivateRoute>}>
                             <Route path="/initiatives">
                                 <Route

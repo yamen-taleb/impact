@@ -27,11 +27,23 @@ import {
   DialogFooter,
 } from "../components/ui/dialog";
 import VolunteerFilters from "../components/initiative/VolunteerFilters";
-import { useGetStudents, useToggleStudentBan } from "../hooks/use-students";
+import { useGetAllStudents, useGetStudents, useToggleStudentBan } from "../hooks/use-students";
 import UserAvatar from "../components/user/UserAvatar";
 import { getImageUrl, toArabicNumbers } from "../lib/utils";
 import { useRole } from "../hooks/use-role";
 import { useNavigate } from "react-router";
+
+import {
+  ALL_STATUSES,
+  ALL_COLLEGIES,
+  ACTIVE_STATUS,
+  BANNED_STATUS,
+  ALL_PROFILE_STATUSES,
+  COMPLETE_PROFILE_STATUS,
+  INCOMPLETE_PROFILE_STATUS,
+} from "../components/initiative/VolunteerFilters";
+
+import type { VolunteerFiltersType } from "../components/initiative/VolunteerFilters";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -50,6 +62,33 @@ interface Student {
   isBanned: boolean;
 }
 
+
+const isStudentProfileComplete = (student: any) => {
+  const requiredFields = [
+    student.firstName,
+    student.lastName,
+    student.email,
+    student.phone,
+    student.collegeName,
+    student.location,
+    student.birthdate,
+    student.academicYear,
+    student.description,
+  ];
+
+  return requiredFields.every((value) => {
+    if (value === null || value === undefined) {
+      return false;
+    }
+
+    if (typeof value === "string") {
+      return value.trim().length > 0;
+    }
+
+    return true;
+  });
+};
+
 const Students = () => {
   const [currentPage, setCurrentPage] =
     useState(1);
@@ -62,22 +101,122 @@ const Students = () => {
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
   const [roleTargetStudent, setRoleTargetStudent] = useState<Student | null>(null);
   const [roleAction, setRoleAction] = useState<"add" | "remove">("add");
+
+  const [filters, setFilters] =
+    useState<VolunteerFiltersType>({
+      search: "",
+      status: ALL_STATUSES,
+      college: ALL_COLLEGIES,
+      profileStatus: ALL_PROFILE_STATUSES,
+    });
   
+
+  const handleFiltersChange = (
+    newFilters: VolunteerFiltersType
+  ) => {
+    setFilters(newFilters);
+    setCurrentPage(1);
+  };
 
   const navigate = useNavigate();
 
 
   const {
-    data,
+    students: allStudents,
     isLoading,
-  } = useGetStudents({
-    page: currentPage - 1,
-    size: ITEMS_PER_PAGE,
+    isError,
+  } = useGetAllStudents();
+
+const students = useMemo(() => {
+  const search = filters.search
+    .trim()
+    .toLowerCase();
+
+  return allStudents.filter((student: any) => {
+    // البحث
+    const matchesSearch =
+      !search ||
+      [
+        student.firstName,
+        student.lastName,
+        student.studentNumber,
+        student.email,
+        student.phone,
+        student.collegeName,
+        student.academicYear,
+        student.userId,
+      ]
+        .filter(Boolean)
+        .some((value) =>
+          String(value)
+            .toLowerCase()
+            .includes(search)
+        );
+
+    // فلترة الكلية
+    const matchesCollege =
+      filters.college === ALL_COLLEGIES ||
+      student.collegeName === filters.college;
+
+    // فلترة حالة الطالب
+    const matchesStatus =
+      filters.status === ALL_STATUSES ||
+      (filters.status === ACTIVE_STATUS &&
+        student.isBanned === false) ||
+      (filters.status === BANNED_STATUS &&
+        student.isBanned === true);
+
+    // فلترة اكتمال الحساب
+    const isComplete =
+      isStudentProfileComplete(student);
+
+    const matchesProfileStatus =
+      filters.profileStatus ===
+        ALL_PROFILE_STATUSES ||
+      (filters.profileStatus ===
+        COMPLETE_PROFILE_STATUS &&
+        isComplete) ||
+      (filters.profileStatus ===
+        INCOMPLETE_PROFILE_STATUS &&
+        !isComplete);
+
+    return (
+      matchesSearch &&
+      matchesCollege &&
+      matchesStatus &&
+      matchesProfileStatus
+    );
   });
+}, [allStudents, filters]);
 
-  const students = data?.content || [];
 
-  const totalPages = data?.totalPages || 1;
+  const totalPages = Math.max(
+    1,
+    Math.ceil(
+      students.length /
+        ITEMS_PER_PAGE
+    )
+  );
+
+  const safeCurrentPage = Math.min(
+    currentPage,
+    totalPages
+  );
+
+  const paginatedStudents = useMemo(() => {
+    const start =
+      (safeCurrentPage - 1) *
+      ITEMS_PER_PAGE;
+
+    return students.slice(
+      start,
+      start + ITEMS_PER_PAGE
+    );
+  }, [
+    students,
+    safeCurrentPage,
+  ]);
+
 
   const { mutate: toggleStudentBan } = useToggleStudentBan();
 
@@ -128,7 +267,13 @@ const Students = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <VolunteerFilters />
+      {/* <VolunteerFilters /> */}
+      <VolunteerFilters
+        filters={filters}
+        onFiltersChange={
+          handleFiltersChange
+        }
+      />
 
       <div className="w-full rounded-2xl border border-zinc-200 bg-white shadow-sm">
         {/* Header */}
@@ -159,7 +304,7 @@ const Students = () => {
               </TableHead>
 
               <TableHead>
-                البريد
+                البريد الإلكتروني
               </TableHead>
 
               <TableHead>
@@ -175,19 +320,24 @@ const Students = () => {
               </TableHead>
 
               <TableHead>
-                الحالة
+                الطالب
+              </TableHead>
+
+              <TableHead>
+                الحساب
               </TableHead>
 
               <TableHead>الدور</TableHead>
 
               <TableHead>
-                الإجراء
+                {/* الإجراء */}
+                التفاصيل
               </TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {students.map((student: any, index: number) => (
+            {paginatedStudents.map((student: any, index: number) => (
                 <TableRow
                   key={`${student.userId}-${currentPage}-${index}`}
                 >
@@ -210,7 +360,7 @@ const Students = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.studentNumber}
+                    {toArabicNumbers(student.studentNumber)}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -218,7 +368,7 @@ const Students = () => {
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
-                    {student.phone}
+                    {toArabicNumbers(student.phone)}
                   </TableCell>
 
                   <TableCell className="font-[Thamanyah2]">
@@ -230,7 +380,7 @@ const Students = () => {
                   </TableCell>
 
 
-                  {/* الحالة */}
+                  {/* الطالب */}
                   <TableCell>
                     <Button
                       variant={
@@ -251,28 +401,39 @@ const Students = () => {
                     </Button>
                   </TableCell>
 
+                  {/* الحساب */}
+                  <TableCell>
+                    {isStudentProfileComplete(student) ? (
+                      <span className="inline-flex items-center px-3 py-1 text-sm font-[Thamanyah2] text-emerald-500">
+                        مكتمل
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-3 py-1 text-sm font-[Thamanyah2] text-red-500">
+                        غير مكتمل
+                      </span>
+                    )}
+                  </TableCell>
+
                   <TableCell>
                     <Button
                       size="sm"
                       className={`rounded-full font-[Thamanyah2] text-white ${
-                        student.role === "ROLE_ADMIN"
+                        student.role === "ROLE_SUPERADMIN"
+                        ? "bg-yellow-400 disabled"
+                        : student.role === "ROLE_ADMIN"
                           ? "bg-red-500 hover:bg-red-600"
                           : "bg-emerald-500 hover:bg-emerald-600"
                       }`}
                       onClick={() => {
                         setRoleTargetStudent(student);
-
-                        const isAdmin =
-                          student.role === "ROLE_ADMIN";
-
-                        setRoleAction(
-                          isAdmin ? "remove" : "add"
-                        );
-
+                        const isAdmin = student.role === "ROLE_ADMIN";
+                        setRoleAction(isAdmin ? "remove" : "add");
                         setRoleDialogOpen(true);
                       }}
                     >
-                      {student.role === "ROLE_ADMIN"
+                      {student.role === "ROLE_SUPERADMIN" 
+                      ? "مدير المنصة"
+                      : student.role === "ROLE_ADMIN"
                         ? "إزالة عضو هيئة"
                         : "إضافة عضو هيئة"}
                     </Button>
@@ -287,7 +448,7 @@ const Students = () => {
                         onClick={() => navigate(`/profile/${student.userId}`)}
                       >
                         <Eye size={16} />
-                        التفاصيل
+                        {/* التفاصيل */}
                       </Button>
                     </TableCell>
                 </TableRow>
@@ -300,10 +461,13 @@ const Students = () => {
         <div className="flex items-center justify-between border-t p-4">
           <Button
             variant="outline"
-            disabled={currentPage === 1}
+            disabled={
+              safeCurrentPage === 1 ||
+              isLoading
+            }
             onClick={() =>
-              setCurrentPage(
-                currentPage - 1
+              setCurrentPage((page) =>
+                Math.max(page - 1, 1)
               )
             }
           >
@@ -312,18 +476,22 @@ const Students = () => {
           </Button>
 
           <span className="text-sm text-zinc-600 font-[Thamanyah2]">
-            صفحة {currentPage} من{" "}
-            {totalPages}
+            صفحة {safeCurrentPage} من{" "}
+            {totalPages} ({students.length} طالب)
           </span>
 
           <Button
             variant="outline"
             disabled={
-              currentPage === totalPages
+              safeCurrentPage === totalPages ||
+              isLoading
             }
             onClick={() =>
-              setCurrentPage(
-                currentPage + 1
+              setCurrentPage((page) =>
+                Math.min(
+                  page + 1,
+                  totalPages
+                )
               )
             }
           >
