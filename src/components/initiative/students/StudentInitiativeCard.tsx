@@ -14,7 +14,7 @@ const StudentInitiativeCard = ({ initiative, hours }: Props) => {
         <Link
 	        to={`/initiatives/${initiative.campaignId}`}
         >
-        <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:shadow-md">
+        <div className="h-full overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:shadow-md">
             <div className="grid h-full grid-cols-1 md:flex md:items-stretch">
                 <div className="relative h-48 w-full overflow-hidden bg-zinc-100 md:w-48 md:self-stretch md:h-auto">
                     {initiative.photo ? (

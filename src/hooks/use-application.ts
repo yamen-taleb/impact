@@ -45,11 +45,13 @@ export const useGetUserApplications = ({
     userId,
     page,
     size,
+    sort = "createdAt,desc",
     status
 }: {
     userId: number | string | undefined;
     page?: number;
     size?: number;
+    sort?: string;
     status?: string;
 }) => {
     const getUserApplicationsRequest = async () => {
@@ -58,6 +60,7 @@ export const useGetUserApplications = ({
             {
                 params: {
                     page,
+                    sort,
                     size,
                     status
                 }
@@ -67,7 +70,7 @@ export const useGetUserApplications = ({
     }
 
     const {data, isLoading, error} = useQuery({
-        queryKey: ["fetchUserApplications", userId, page, size, status],
+        queryKey: ["fetchUserApplications", userId, page, size, status, sort],
         queryFn: getUserApplicationsRequest,
     });
 

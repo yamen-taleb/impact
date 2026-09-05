@@ -25,13 +25,16 @@ export interface UpdateAttendancePayload extends AttendancePayload {
 export const useAttendance = ({
   campaignId,
   studentId,
+  sort = "createdAt,desc",
 }: {
   campaignId: number;
   studentId: number;
+  sort?: string;
 }) => {
   const getAttendance = async () => {
     const response = await axiosClient.get( `/v1/campaigns/${campaignId}/attendance`, {
       params: {
+        sort,
         studentId,
       },
     });
@@ -40,7 +43,7 @@ export const useAttendance = ({
   };
 
   return useQuery({
-    queryKey: [ "attendance", campaignId, studentId, ],
+    queryKey: [ "attendance", campaignId, studentId, sort ],
     queryFn: getAttendance,
     enabled: !!campaignId && !!studentId,
   });
@@ -62,8 +65,8 @@ export const useCreateAttendance = () => {
       createdAt: now,
       updatedAt: now,
     });
-  
-    return response.data; 
+
+    return response.data;
   };
 
   return useMutation({

@@ -212,7 +212,7 @@ export const useGetCVUrl = (id? : string) => {
    }
 
    const {data, isLoading, error} = useQuery({
-       queryKey: ["fetchCVUrl"],
+       queryKey: ["fetchCVUrl", id],
        queryFn: getCVUrl,
    })
     if (error && error?.response?.status !== 404) {
