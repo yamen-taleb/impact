@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import StatCard from "./StatCard";
+import { toArabicNumbers } from "../lib/utils";
 
 const MockIcon = ({ className }: { className?: string }) => (
   <svg data-testid="mock-icon" className={className} />
@@ -31,7 +32,7 @@ describe("StatCard", () => {
     renderStatCard();
 
     expect(screen.getByText("Total Users")).toBeInTheDocument();
-    expect(screen.getByText("1234")).toBeInTheDocument();
+    expect(screen.getByText(toArabicNumbers("1234"))).toBeInTheDocument();
     expect(screen.getByText("Since last month")).toBeInTheDocument();
     expect(screen.getByTestId("mock-icon")).toBeInTheDocument();
   });

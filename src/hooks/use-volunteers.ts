@@ -11,6 +11,7 @@ interface UseVolunteersParams {
   searchText?: string;
   status?: string;
   collegeId?: number | string;
+  sort?: string;
 }
 
 export const useVolunteers = ({
@@ -20,6 +21,7 @@ export const useVolunteers = ({
   searchText,
   status,
   collegeId,
+  sort = "createdAt,desc",
 }: UseVolunteersParams) => {
   const fetchVolunteers = async () => {
     const response = await axiosClient.get(
@@ -33,6 +35,8 @@ export const useVolunteers = ({
           status: status || undefined,
           collegeId: collegeId || undefined,
           campaignId,
+
+          sort
         },
       }
     );

@@ -141,16 +141,18 @@ const Filters = ({ onFiltersChange }: FiltersProps) => {
                     )}
                 </Field>
 
-                <Field form={form} name="category">
-                    {(field) => (
-                        <SelectField
-                            field={field}
-                            options={categoryOptions}
-                            className={"w-full"}
-                            onAfterChange={() => form.handleSubmit()}
-                        />
-                    )}
-                </Field>
+                {!location.pathname.includes("/student-initiatives-participation")  && (
+                    <Field form={form} name="category">
+                        {(field) => (
+                            <SelectField
+                                field={field}
+                                options={categoryOptions}
+                                className={"w-full"}
+                                onAfterChange={() => form.handleSubmit()}
+                            />
+                        )}
+                    </Field>
+                )}
             </div>
         </form>
     );

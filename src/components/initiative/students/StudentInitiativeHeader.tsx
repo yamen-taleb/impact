@@ -13,8 +13,8 @@ const StudentInitiativeHeader = () => {
     return (
         <header className="mb-6">
             <h1 className="text-2xl">
-                <span className="font-bold text-black">ساعات التطوع للطالب </span>
-                <span className="font-light text-zinc-600">{user?.firstName} {user?.lastName}</span>
+                <span className="font-light text-zinc-600">ساعات التطوع للطالب </span>
+                <span className="font-bold text-black">{user?.firstName} {user?.lastName}</span>
             </h1>
 
             <p className="mt-1 text-sm text-zinc-600 font-[Thamanyah2]">

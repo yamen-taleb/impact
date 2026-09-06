@@ -69,6 +69,7 @@ const InitiativeDetails = () => {
             <InitiativeDetailsActions
                 campaignId={campaignId}
                 initiativeStatus={initiative.status}
+                initiativeCollege={initiative.college}
             />
 
             <InitiativeDetailsVolunteersAvatar campaignId={campaignId}/>

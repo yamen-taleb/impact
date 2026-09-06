@@ -27,7 +27,7 @@ const InitiativeDetailsVolunteersAvatar = ({ campaignId }: Props) => {
         <div className="flex flex-row gap-2">
           <UsersIcon />
           <h1>
-            عدد الطلاب المتطوعين في هذه المبادرة هو{" "}
+            عدد الطلاب المتقدمين لهذه المبادرة هو{" "}
             {toArabicNumbers(volunteers.length) + " " + (
               volunteers.length === 2 ? "طالبين" 
               : volunteers.length <= 10 && volunteers.length > 2 ? "طلاب" 

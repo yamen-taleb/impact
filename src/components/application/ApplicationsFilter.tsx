@@ -15,7 +15,7 @@ const ApplicationsFilter = ({ filterStatus, setFilterStatus }: Props) => {
                 <h3 className="font-semibold text-zinc-900">فلترة حسب الحالة</h3>
             </div>
             <div className="flex flex-wrap gap-2 font-[Thamanyah2]">
-                {(["ALL", "APPROVED", "PENDING", "REJECTED", "WITHDRAWN"] as const).map(
+                {(["ALL", "APPROVED", "PENDING", "REJECTED"] as const).map(
                     (status) => (
                         <button
                             key={status}
@@ -26,7 +26,7 @@ const ApplicationsFilter = ({ filterStatus, setFilterStatus }: Props) => {
                                     : "border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50"
                             }`}
                         >
-                            {status === "ALL"
+                            {/* {status === "ALL"
                                 ? "الكل"
                                 : status === "APPROVED"
                                     ? "مقبول"
@@ -34,7 +34,14 @@ const ApplicationsFilter = ({ filterStatus, setFilterStatus }: Props) => {
                                         ? "قيد الانتظار"
                                         : status === "REJECTED"
                                             ? "مرفوض"
-                                            : "مسحوب"}
+                                            : "مسحوب"} */}
+                            {status === "ALL"
+                                ? "الكل"
+                                : status === "APPROVED"
+                                    ? "مقبول"
+                                    : status === "PENDING"
+                                        ? "قيد الانتظار"
+                                            : "مرفوض"}
                         </button>
                     )
                 )}

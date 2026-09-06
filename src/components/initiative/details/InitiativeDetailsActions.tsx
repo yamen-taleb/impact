@@ -22,12 +22,14 @@ interface Props {
   backHref?: string;
   campaignId: number;
   initiativeStatus: string;
+  initiativeCollege: string;
 }
 
 const InitiativeDetailsActions = ({
   backHref = "/initiatives",
   campaignId,
-  initiativeStatus
+  initiativeStatus,
+  initiativeCollege
 }: Props) => {
   const userRole = getUserRole();
   
@@ -37,6 +39,7 @@ const InitiativeDetailsActions = ({
   const { currentUser } = useGetMyUser();
   const currentUserId = Number( currentUser?.userId );
   const { mutate: applyToCampaign } = useApplyToCampaign();
+
 
   const isProfileIncomplete =
         !currentUser?.academicYear ||
@@ -88,7 +91,7 @@ const InitiativeDetailsActions = ({
           العودة للمبادرات
         </Link>
 
-        {((userRole === "User" || userRole === "Admin") && !isProfileIncomplete && (initiativeStatus === "ONGOING")) && (
+        {((userRole === "User" || ((userRole === "Admin") && (currentUser?.collegeName !== initiativeCollege.name) )) && !isProfileIncomplete && (initiativeStatus === "ONGOING")) && (
           currentApplication ? (
               <Link to="/my-applications">
                   لقد قمت بالتقدم لهذه المبادرة!
